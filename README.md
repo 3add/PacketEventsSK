@@ -1,7 +1,7 @@
 ## PacketEventsSK
 PacketEventsSK is a skript addon that adds packet related features to Skript.
 ### Requirements
-PacketEventsSK requires a 18+ server and [packetevents](https://modrinth.com/plugin/packetevents) a seperate plugin to be installed.
+PacketEventsSK requires a 1.18+ server and [packetevents](https://modrinth.com/plugin/packetevents) a seperate plugin to be installed.
 
 ## Features
 Here's a list of some of it's key features, more available on the wiki.
