@@ -27,7 +27,7 @@ They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API
 
 If you want to access the bukkit api, process the packet synchrounsly though be aware, not processing on the netty threads removes the ability to cancel or modify the packets received/sent
 
-Every single packet in packetevents can be listened to, for a list see [this](https://github.com/retrooper/packetevents/blob/a3dc1118f87b7bd1404203ec3b6f3b302c59b2b3/api/src/main/java/com/github/retrooper/packetevents/protocol/packettype/PacketType.java), consider that u have to define a side (send [sent by client, PacketType.x.Server in paceketevents] or receive [sent by client, PacketType.x.Client in paceketevents])
+Every single packet in packetevents can be listened to, for a list see [this](https://github.com/retrooper/packetevents/blob/a3dc1118f87b7bd1404203ec3b6f3b302c59b2b3/api/src/main/java/com/github/retrooper/packetevents/protocol/packettype/PacketType.java), consider that u have to define a side (send [sent by client, `PacketType.x.Server` in paceketevents] or receive [sent by client, `PacketType.x.Client` in paceketevents])
 ```nginx
 on chunk data packet send:
   # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
