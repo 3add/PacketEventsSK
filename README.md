@@ -2,7 +2,7 @@
 PacketEventsSK is a skript addon that adds packet related features to Skript.
 ### Requirements
 PacketEventsSK requires a 1.18+ bukkit server and [packetevents](https://modrinth.com/plugin/packetevents) a seperate plugin to be installed.
-All packets that require a Text Component require SkBee to be installed as well (you can use their expressions to work with text components)
+All packets that require a Text Component require [SkBee](https://modrinth.com/plugin/skbee) to be installed as well (you can use their expressions to work with text components)
 
 ## Features
 Here's a list of some of it's key features, more available on the wiki.
