@@ -14,6 +14,8 @@ command spawn <text>:
       set the packet billboard of the packet entity to fixed
 
       add all players to packet receivers of the packet entity
+      
+      spawn packet entity at player
 ```
 ### Listening to packets
 Packet Listeners can listen to both incomming and outgoing packets. 
