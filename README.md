@@ -2,6 +2,7 @@
 PacketEventsSK is a skript addon that adds packet related features to Skript.
 ### Requirements
 PacketEventsSK requires a 1.18+ bukkit server and [packetevents](https://modrinth.com/plugin/packetevents) a seperate plugin to be installed.
+All packets that require a Text Component require SkBee to be installed as well (you can use their expressions to work with text components)
 
 ## Features
 Here's a list of some of it's key features, more available on the wiki.
@@ -40,7 +41,7 @@ on tab complete packet receive:
 
 ## Credits
 - [PacketEvents](https://github.com/retrooper/packetevents) (all packets), [Install Here](https://modrinth.com/plugin/packetevents)
+- [SkBee](https://github.com/ShaneBeee/SkBee) (text components), [Install Here](https://modrinth.com/plugin/skbee)
 - [EntityLib](https://github.com/Tofaa2/EntityLib) (Packet Entity management)
-- [SkBee](https://github.com/ShaneBeee/SkBee) (text components)
 
 The project code will be uploaded once version 1 will release.
