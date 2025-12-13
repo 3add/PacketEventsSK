@@ -30,7 +30,8 @@ on chunk data packet send:
   set packet block 1, 1, 1 of the packet chunk data of the packet to dirt
 
 on tab complete packet receive:
-  send "%name of event-player% has tab completed!" to console
+  send "%name of event-player% tried to tab complete!" to console
+  packet cancel event
 ```
 
 ## Credits
