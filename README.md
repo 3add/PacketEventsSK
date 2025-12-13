@@ -22,8 +22,10 @@ command spawn <text>:
 ### Listening to packets
 Packet Listeners can listen to both incomming and outgoing packets. 
 
-They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API THROUGH THESE STRUCTURES** 
+They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API THROUGH NETTY PROCESSED STRUCTURES**, 
 (basically just means that any expression accessing something minecraft related [except if provided by this addon] might cause errors)
+
+If you want to access the bukkit api, process the packet synchrounsly though be aware, not processing on the netty threads removes the ability to cancel or modify the packets received/sent
 ```nginx
 on chunk data packet send:
   # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
