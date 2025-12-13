@@ -1,2 +1,37 @@
-# PacketEventsSK
-A skript addon adding packet related features to Skript
+## PacketEventsSK
+PacketEventsSK is a skript addon that adds packet related features to Skript.
+
+## Features
+Here's a list of some of it's key features, more available on the wiki.
+### Entities
+```nginx
+command spawn <text>:
+  trigger:
+    create packet text display entity:
+      # using SkBee text components
+      set the packet text of the packet entity to minimessage from arg-1 
+      set the packet scale of the packet entity to vector(2, 2, 2)
+      set the packet billboard of the packet entity to fixed
+
+      add all players to packet receivers of the packet entity
+```
+### Listening to packets
+Packet Listeners can listen to both incomming and outgoing packets. 
+
+They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API THROUGH THESE STRUCTURES** 
+(basically just means that any expression accessing something minecraft related [except if provided by this addon] might cause errors)
+```nginx
+on chunk data packet send:
+  # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
+  set packet block 1, 1, 1 of the packet chunk data of the packet to dirt
+
+on tab complete packet receive:
+  # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
+  send "%name of event-player% has tab completed!%"
+```
+
+## Credits
+- [PacketEvents](https://github.com/retrooper/packetevents) (all packets)
+- [SkBee](https://github.com/ShaneBeee/SkBee) (text components)
+
+The project code will be uploaded once version 1 will release.
