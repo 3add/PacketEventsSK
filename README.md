@@ -26,7 +26,6 @@ on chunk data packet send:
   set packet block 1, 1, 1 of the packet chunk data of the packet to dirt
 
 on tab complete packet receive:
-  # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
   send "%name of event-player% has tab completed!"
 ```
 
