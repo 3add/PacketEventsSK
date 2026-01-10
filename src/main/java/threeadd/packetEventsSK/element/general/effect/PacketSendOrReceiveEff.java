@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.player.User;
@@ -25,6 +26,7 @@ import java.util.List;
                     add target entity of player to packet entities of the packet
                     send packet the packet to the player
         """)
+@Since("1.0.0")
 public class PacketSendOrReceiveEff extends CustomEffect {
 
     static {

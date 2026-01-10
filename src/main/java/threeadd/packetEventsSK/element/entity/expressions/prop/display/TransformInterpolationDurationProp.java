@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.util.Timespan;
 import ch.njol.skript.util.Timespan.TimePeriod;
@@ -32,6 +33,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
         
                 kill fake entity {_e}
         """)
+@Since("1.0.0")
 public class TransformInterpolationDurationProp extends MetaPropertyExpression<AbstractDisplayMeta, Timespan> {
 
     static {

@@ -3,6 +3,7 @@ package threeadd.packetEventsSK.element.team.sections;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -23,6 +24,7 @@ import threeadd.packetEventsSK.util.section.ReturningSection;
                     set the fake team color of the fake team to green
                     add player to fake team entities of the fake team
         """)
+@Since("1.0.0")
 public class SecCreateFakeTeam extends ReturningSection<FakeTeam> {
 
     private static final Logger log = LoggerFactory.getLogger(SecCreateFakeTeam.class);

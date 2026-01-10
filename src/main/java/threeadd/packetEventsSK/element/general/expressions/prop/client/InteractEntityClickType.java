@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
@@ -34,6 +35,7 @@ import threeadd.packetEventsSK.util.ConversionUtil;
         
             send "You can't hit him! But I can't do much cause it wouldn't be thread safe..."
         """)
+@Since("1.0.0")
 public class InteractEntityClickType extends PacketPropertyExpression<WrapperPlayClientInteractEntity, ClickType> {
 
     static {

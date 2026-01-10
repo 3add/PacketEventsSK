@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.EntityLib;
@@ -30,6 +31,7 @@ import java.util.UUID;
                     if {-uuid::*} contains arg-1 parsed as uuid:
                         send "Found %fake entity with uuid loop-value%"
         """)
+@Since("1.0.0")
 public class FakeEntityWithUuidExpr extends CustomExpression<WrapperEntity> {
 
     static {

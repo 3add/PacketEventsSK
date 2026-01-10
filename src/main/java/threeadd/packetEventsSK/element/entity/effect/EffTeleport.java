@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
@@ -31,6 +32,7 @@ import java.util.List;
 
                     kill fake entity {_entity}
        """)
+@Since("1.0.0")
 public class EffTeleport extends CustomEffect {
 
     static {

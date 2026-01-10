@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
@@ -33,6 +34,7 @@ import java.util.*;
                     send "You can't view him!" to loop-value
                     remove loop-value from fake entity viewers of {-cow}
         """)
+@Since("1.0.0")
 public class FakeEntityViewersProp extends CustomPropertyExpression<WrapperEntity, Player> {
 
     static {

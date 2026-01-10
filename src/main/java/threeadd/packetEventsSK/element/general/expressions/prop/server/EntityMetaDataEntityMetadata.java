@@ -13,7 +13,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
-// TODO Example
+// TODO docs
 @SuppressWarnings("unused")
 public class EntityMetaDataEntityMetadata extends PacketPropertyExpression<WrapperPlayServerEntityMetadata, EntityMeta> {
 

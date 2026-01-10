@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
@@ -23,6 +24,7 @@ import java.util.List;
                     add (entity id of target entity of player) to packet entity ids of the packet
                     send packet the packet to the player
         """)
+@Since("1.0.0")
 public class DestroyEntitiesEntityIds extends PacketPropertyExpression<WrapperPlayServerDestroyEntities, Integer> {
 
     static {

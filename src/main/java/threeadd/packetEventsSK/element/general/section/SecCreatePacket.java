@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Literal;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -22,6 +23,7 @@ import threeadd.packetEventsSK.util.section.ReturningSection;
                     add target entity of player to packet entities of the packet
                     send packet the packet to the player
         """)
+@Since("1.0.0")
 public class SecCreatePacket extends ReturningSection<PacketWrapper<?>> {
 
     @SuppressWarnings("unchecked")

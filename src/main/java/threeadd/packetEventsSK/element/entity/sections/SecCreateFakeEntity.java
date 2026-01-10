@@ -5,6 +5,7 @@ import ch.njol.skript.bukkitutil.EntityUtils;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.entity.EntityType;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.util.Direction;
@@ -43,6 +44,7 @@ import java.util.UUID;
 
                     kill fake entity the fake entity
         """)
+@Since("1.0.0")
 public class SecCreateFakeEntity extends ReturningSection<WrapperEntity> {
 
     private static final Logger log = LoggerFactory.getLogger(SecCreateFakeEntity.class);

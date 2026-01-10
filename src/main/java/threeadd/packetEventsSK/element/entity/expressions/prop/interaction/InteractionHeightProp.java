@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.meta.other.InteractionMeta;
@@ -30,6 +31,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
             cancel packet
             send "You can't touch him!"
         """)
+@Since("1.0.0")
 public class InteractionHeightProp extends MetaPropertyExpression<InteractionMeta, Number> {
 
     static {

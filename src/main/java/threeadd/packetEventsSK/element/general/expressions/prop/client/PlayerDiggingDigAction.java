@@ -8,6 +8,8 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
+@SuppressWarnings("unused")
+// TODO docs
 public class PlayerDiggingDigAction extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, DiggingAction> {
 
     static {

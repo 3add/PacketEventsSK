@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
@@ -33,6 +34,7 @@ import threeadd.packetEventsSK.util.ConversionUtil;
         
                 kill fake entity {_e}
         """)
+@Since("1.0.0")
 public class TranslationProp extends MetaPropertyExpression<AbstractDisplayMeta, Vector> {
 
     static {

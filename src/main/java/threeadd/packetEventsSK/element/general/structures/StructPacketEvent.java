@@ -6,6 +6,7 @@ import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Trigger;
@@ -35,6 +36,7 @@ import java.util.Locale;
         
            send "Welcome %player's name%"
         """)
+@Since("1.0.0")
 public class StructPacketEvent extends Structure {
 
     static {

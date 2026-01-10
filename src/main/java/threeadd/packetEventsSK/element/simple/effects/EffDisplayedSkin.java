@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
                 fetch skin of player named "notch" and store it in {_skin}
                 set displayed skin of player to {_skin} for player
         """)
+@Since("1.0.0")
 public class EffDisplayedSkin extends CustomEffect {
 
     static {

@@ -9,15 +9,16 @@ import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
 
-// TODO Example
-public class PlayerDigginBlockData extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, Vector> {
+// TODO docs
+@SuppressWarnings("unused")
+public class PlayerDiggingBlockData extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, Vector> {
 
     static {
-        PropertyExpression.register(PlayerDigginBlockData.class, Vector.class,
+        PropertyExpression.register(PlayerDiggingBlockData.class, Vector.class,
                 "packet[ ]dug[ ]block[ ]pos[ition]", "packet");
     }
 
-    public PlayerDigginBlockData() {
+    public PlayerDiggingBlockData() {
         super(Vector.class, PacketType.Play.Client.PLAYER_DIGGING, true, true, null, Changer.ChangeMode.SET);
     }
 

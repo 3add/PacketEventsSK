@@ -20,7 +20,7 @@ public class Types {
                                     set the fake team color of the fake team to green
                                     add player to fake team entities of the fake team
                         """)
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<>() {
                     @Override
                     public boolean canParse(ParseContext context) {

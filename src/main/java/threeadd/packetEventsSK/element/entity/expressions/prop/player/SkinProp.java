@@ -5,6 +5,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
+@SuppressWarnings("unused")
 @Name("Fake Player Entity - Skin")
 @Description("Represents the skin held within a player entity.")
 @Example("""
@@ -26,7 +28,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
                     wait 10 seconds
                     kill fake entity the fake entity
         """)
-@SuppressWarnings("unused")
+@Since("1.0.0")
 public class SkinProp extends CustomPropertyExpression<WrapperEntity, Skin> {
 
     static {

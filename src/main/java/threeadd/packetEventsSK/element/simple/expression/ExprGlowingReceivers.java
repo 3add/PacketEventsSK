@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
@@ -29,6 +30,7 @@ import java.util.UUID;
                 if glow entity viewers of player contains player:
                     send "Hey? It worked!"
         """)
+@Since("1.0.0")
 public class ExprGlowingReceivers extends CustomPropertyExpression<Entity, Player> {
 
     static {

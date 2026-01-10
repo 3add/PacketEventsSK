@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
@@ -20,6 +21,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     set fake skin of the fake entity to player's skin
                     set fake fire state of the fake entity to true
         """)
+@Since("1.0.0")
 public class FireProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
     static {

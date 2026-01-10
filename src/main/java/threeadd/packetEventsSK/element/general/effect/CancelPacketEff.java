@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.Proc
             cancel the packet
             send "You can't view my chunks 3add!"
         """)
+@Since("1.0.0")
 public class CancelPacketEff extends CustomEffect {
 
     static {

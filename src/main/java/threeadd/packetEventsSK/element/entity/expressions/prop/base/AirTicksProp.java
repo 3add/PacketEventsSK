@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.util.Timespan;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
@@ -23,6 +24,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
         
                 set fake air time of {_entity} to 100 years
         """)
+@Since("1.0.0")
 public class AirTicksProp extends MetaPropertyExpression<EntityMeta, Timespan> {
 
     //static {

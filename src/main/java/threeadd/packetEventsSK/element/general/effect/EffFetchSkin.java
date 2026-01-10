@@ -5,6 +5,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
@@ -31,6 +32,7 @@ import threeadd.packetEventsSK.element.entity.api.skin.Skins;
         
                 set displayed skin of player to {_skin} for player
         """)
+@Since("1.0.0")
 public class EffFetchSkin extends AsyncEffect {
 
     static {

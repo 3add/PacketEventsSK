@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
@@ -27,6 +28,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
                     set the fake team color of the fake team to green
                     add player to fake team entities of the fake team
         """)
+@Since("1.0.0")
 public class FakeTeamColor extends CustomPropertyExpression<FakeTeam, Color> {
 
     static {

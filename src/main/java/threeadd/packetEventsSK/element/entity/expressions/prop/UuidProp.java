@@ -3,6 +3,7 @@ package threeadd.packetEventsSK.element.entity.expressions.prop;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
@@ -28,6 +29,7 @@ import java.util.UUID;
                     if {-uuid::*} contains arg-1 parsed as uuid:
                         send "Found %fake entity with uuid loop-value%"
         """)
+@Since("1.0.0")
 public class UuidProp extends CustomPropertyExpression<WrapperEntity, UUID> {
 
     static {

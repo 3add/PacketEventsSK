@@ -3,6 +3,7 @@ package threeadd.packetEventsSK.element.entity.expressions.prop;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
@@ -11,6 +12,7 @@ import org.bukkit.util.Vector;
 import threeadd.packetEventsSK.util.ConversionUtil;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
+@SuppressWarnings("unused")
 @Name("Fake Entity - Entity Location")
 @Description("Used to get the entity location as a vector, this is a vector and not a regular location.")
 @Example("""
@@ -28,6 +30,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
         
                 teleport player to {_loc}
         """)
+@Since("1.0.0")
 public class LocationProp extends CustomPropertyExpression<WrapperEntity, Vector> {
 
     static {

@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTabComplete;
@@ -27,6 +28,7 @@ import java.util.List;
                     remove loop-value from packet completions of event-packet
                     send "Why would you want to disable me?" to event-player
         """)
+@Since("1.0.0")
 public class TabCompleteTabCompletions extends PacketPropertyExpression<WrapperPlayServerTabComplete, String> {
 
     static {

@@ -3,6 +3,7 @@ package threeadd.packetEventsSK.element.entity.expressions.prop;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
@@ -26,6 +27,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
                     if {-id::*} contains arg-1 parsed as integer:
                         send "Found %fake entity with id loop-value%"
         """)
+@Since("1.0.0")
 public class IdProp extends CustomPropertyExpression<WrapperEntity, Integer> {
 
     static {

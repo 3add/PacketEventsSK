@@ -15,8 +15,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-// This one was taken from the disky GitHub, see https://github.com/DiSkyOrg/DiSky/blob/581fa28839f9f8050b92f2e8bed52fc72a1743a0/src/main/java/net/itsthesky/disky/api/skript/ReturningSection.java
-// I just added warning suppressions
+// This one was taken from the disky GitHub
+// https://github.com/DiSkyOrg/DiSky/blob/581fa28839f9f8050b92f2e8bed52fc72a1743a0/src/main/java/net/itsthesky/disky/api/skript/ReturningSection.java
+// as of 10/01/2026
+// I just added warning suppressions and some stuff
 
 /**
  * A section that return a value once it's entirely run.

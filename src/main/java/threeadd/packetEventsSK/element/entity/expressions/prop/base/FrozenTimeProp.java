@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.util.Timespan;
 import me.tofaa.entitylib.meta.EntityMeta;
@@ -23,6 +24,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     # actual age of olaf according to https://en.fmyly.com/article/how-old-is-olaf-in-frozen-two/
                     set fake frozen time of the fake entity to 3 years
         """)
+@Since("1.0.0")
 public class FrozenTimeProp extends MetaPropertyExpression<EntityMeta, Timespan> {
 
     static {

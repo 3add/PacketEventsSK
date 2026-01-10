@@ -3,6 +3,7 @@ package threeadd.packetEventsSK.element.general.expressions.prop;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
             trigger:
                 set displayed skin of player to player's skin
         """)
+@Since("1.0.0")
 public class PlayerSkinProp extends CustomPropertyExpression<Player, Skin> {
     static {
         PropertyExpression.register(PlayerSkinProp.class, Skin.class, "[player][ ]skin", "player");

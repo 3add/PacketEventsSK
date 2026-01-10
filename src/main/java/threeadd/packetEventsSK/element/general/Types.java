@@ -36,7 +36,7 @@ public class Types {
                         
                            send "Welcome %player's name%"
                         """)
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<PacketWrapper<?>>() {
 
                     @Override
@@ -68,7 +68,7 @@ public class Types {
                         F
                            send "Welcome %player's name%"
                         """)
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<>() {
 
                     @Override
@@ -112,7 +112,7 @@ public class Types {
                                 fetch skin of player named "notch" and store it in {_skin}
                                 set displayed skin of player to {_skin} for player
                         """)
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<>() {
 
                     @Override
@@ -137,7 +137,7 @@ public class Types {
                 .name("Fake Entity - Entity Meta Data")
                 .description("The entity meta of a fake entity or outbound packet")
                 .examples() // TODO
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<>() {
                     @Override
                     public boolean canParse(ParseContext context) {
@@ -163,7 +163,7 @@ public class Types {
                 .examples("""
                         
                         """) // TODO example
-                .since("1.0")
+                .since("1.0.0")
                 .parser(new Parser<>() {
 
                     @Override

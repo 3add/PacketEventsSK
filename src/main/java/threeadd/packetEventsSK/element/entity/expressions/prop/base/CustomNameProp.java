@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import net.kyori.adventure.text.Component;
@@ -24,6 +25,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     set fake custom name of the fake entity to {_name}
                     set fake custom name visible state of the fake entity to true
         """)
+@Since("1.0.0")
 public class CustomNameProp extends MetaPropertyExpression<EntityMeta, String> {
 
     static {

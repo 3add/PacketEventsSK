@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.shanebeestudios.skbee.api.wrapper.ComponentWrapper;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
@@ -29,6 +30,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     wait 2 seconds
                     kill fake entity the fake entity
         """)
+@Since("1.0.0")
 public class TextProp extends MetaPropertyExpression<TextDisplayMeta, ComponentWrapper> {
 
     static {

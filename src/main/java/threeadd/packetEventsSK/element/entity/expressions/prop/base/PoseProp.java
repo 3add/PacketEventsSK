@@ -4,6 +4,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
@@ -25,6 +26,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
         
                 set fake pose of {_entity} to sleeping pose
         """)
+@Since("1.0.0")
 public class PoseProp extends MetaPropertyExpression<EntityMeta, Pose> {
 
     static {

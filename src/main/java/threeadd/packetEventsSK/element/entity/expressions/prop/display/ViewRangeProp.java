@@ -6,7 +6,7 @@ import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
-// TODO example
+// TODO docs
 @SuppressWarnings("unused")
 public class ViewRangeProp extends MetaPropertyExpression<AbstractDisplayMeta, Number> {
 

@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.EntityLib;
@@ -28,6 +29,7 @@ import threeadd.packetEventsSK.util.expressions.CustomExpression;
                     if {-id::*} contains arg-1 parsed as integer:
                         send "Found %fake entity with id loop-value%"
         """)
+@Since("1.0.0")
 public class FakeEntityWithIdExpr extends CustomExpression<WrapperEntity> {
 
     static {
