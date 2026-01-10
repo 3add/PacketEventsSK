@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 // TODO Example
+
 @SuppressWarnings("unused")
 public class EntityMetaDataEntityMetadata extends PacketPropertyExpression<WrapperPlayServerEntityMetadata, EntityMeta> {
 
