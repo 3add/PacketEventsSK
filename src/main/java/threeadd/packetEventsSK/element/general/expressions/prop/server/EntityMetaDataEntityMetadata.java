@@ -12,7 +12,6 @@ import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
-import threeadd.packetEventsSK.util.ConversionUtil;
 
 // TODO Example
 @SuppressWarnings("unused")

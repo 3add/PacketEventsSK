@@ -10,7 +10,6 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
@@ -18,7 +17,6 @@ import threeadd.packetEventsSK.util.DebugUtil;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
 import threeadd.packetEventsSK.util.registry.PacketTypeRegistry;
 
-import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
