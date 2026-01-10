@@ -1,0 +1,11 @@
+name: PacketEventsSK
+version: '1.0'
+main: threeadd.packetEventsSK.PacketEventsSK
+api-version: '1.21'
+authors: [3add, retrooper and contributors (packetevents)]
+description: packetevents addon for Skript
+softdepend:
+  - SkBee
+depend:
+  - Skript
+  - packetevents
