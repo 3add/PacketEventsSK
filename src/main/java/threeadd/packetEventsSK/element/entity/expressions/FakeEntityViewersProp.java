@@ -82,7 +82,7 @@ public class FakeEntityViewersProp extends CustomPropertyExpression<WrapperEntit
         if (delta == null) return;
 
         List<WrapperEntity> entities = getValuesOrNull(0, WrapperEntity.class, event);
-        List<Player> players = getDeltaValuesOrNull(delta, Player.class);;
+        List<Player> players = getDeltaValuesOrNull(delta, Player.class);
 
         if (entities == null || players == null) return;
 

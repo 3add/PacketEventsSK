@@ -7,7 +7,6 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;

@@ -7,13 +7,10 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
-import me.tofaa.entitylib.EntityLib;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.element.team.api.FakeTeamRegistry;
-import threeadd.packetEventsSK.element.team.expressions.prop.FakeTeamName;
 import threeadd.packetEventsSK.util.expressions.CustomExpression;
 
 @SuppressWarnings("unused")
