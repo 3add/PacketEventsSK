@@ -33,7 +33,7 @@ public class EffSpawn extends CustomEffect {
 
     static {
         Skript.registerEffect(EffSpawn.class,
-                "spawn fake[ ]entit(y|ies) %fakeentitys% at %location%");
+                "spawn fake[ ]entit(y|ies) %fakeentities% at %location%");
     }
 
     @Override

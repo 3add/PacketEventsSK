@@ -35,7 +35,7 @@ public class EffTeleport extends CustomEffect {
 
     static {
         Skript.registerEffect(EffTeleport.class,
-                "teleport fake[ ]entit(y|ies) %fakeentitys% to %location%");
+                "teleport fake[ ]entit(y|ies) %fakeentities% to %location%");
     }
 
     @Override

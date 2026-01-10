@@ -27,7 +27,7 @@ public class EffKill extends CustomEffect {
 
     static {
         Skript.registerEffect(EffKill.class,
-                "kill fake[ ]entit(y|ies) %fakeentitys%");
+                "kill fake[ ]entit(y|ies) %fakeentities%");
     }
 
     @Override
