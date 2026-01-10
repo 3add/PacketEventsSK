@@ -46,20 +46,10 @@ public class AddonLoader {
             Config skBeeConfig = skBee.getPluginConfig();
             if (skBeeConfig.ELEMENTS_TEXT_COMPONENT) {
                 HAS_SKBEE_COMPONENT = true;
-                PacketEventsSK.getInstance().getComponentLogger()
-                        .info(Component.text("SkBee Text Components loaded")
-                                .appendSpace()
-                                .append(Component.text("successfully")
-                                        .decorate(TextDecoration.UNDERLINED)
-                                        .color(TextColor.color(0x89F53B))));
+                logElementStatus("SkBee Text Components", true);
             }
         } else {
-            PacketEventsSK.getInstance().getComponentLogger()
-                    .info(Component.text("SkBee Text Components loading")
-                            .appendSpace()
-                            .append(Component.text("failed")
-                                    .decorate(TextDecoration.UNDERLINED)
-                                    .color(TextColor.color(0xF52A0D))));
+            logElementStatus("SkBee Text Components", false);
         }
 
         if (!Skript.isAcceptRegistrations()) {
@@ -79,13 +69,25 @@ public class AddonLoader {
     }
 
     private void loadElement(ElementCollection element) {
-        log.info("Loaded {} elements", element.identifier());
-
         try {
             skriptAddon.loadClasses(element.getClass().getPackageName());
+            logElementStatus(element.identifier(), true);
         } catch (IOException e) {
+            logElementStatus(element.identifier(), false);
             log.error("Something went wrong loading {} ", element, e);
         }
+    }
+
+    private void logElementStatus(String elementName, boolean success) {
+        String statusText = success ? "successfully" : "failed";
+        int color = success ? 0x89F53B : 0xF52A0D;
+
+        PacketEventsSK.getInstance().getComponentLogger()
+                .info(Component.text(elementName + " loaded")
+                        .appendSpace()
+                        .append(Component.text(statusText)
+                                .decorate(TextDecoration.UNDERLINED)
+                                .color(TextColor.color(color))));
     }
 
     private boolean isPlugmanReloaded() {
