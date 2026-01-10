@@ -37,15 +37,16 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT") // PaperMC
 
-    compileOnly("com.github.retrooper:packetevents-spigot:2.10.1")
-    compileOnly("com.github.SkriptLang:Skript:2.13.0") {
+    compileOnly("com.github.retrooper:packetevents-spigot:2.10.1") // PacketEvents
+    compileOnly("com.github.SkriptLang:Skript:2.13.0") { // Skript
         transitive = false
     }
-    compileOnly("com.github.ShaneBeee:SkBee:3.5.8")
+    compileOnly("com.github.ShaneBeee:SkBee:3.5.8") // SkBee
 
-    implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
+    implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT") // EntityLib
+    implementation("org.bstats:bstats-bukkit:3.1.0") // bstats (metrics)
 }
 
 build {
@@ -53,9 +54,10 @@ build {
 }
 
 shadowJar {
-    archiveClassifier.set("")
-    relocate("me.tofaa.entitylib", "threeadd.entitylib")
-    relocate("org.objenesis", "threeadd.objenesis")
+    archiveFileName = project.name + "-" + project.version + ".jar"
+
+    relocate("me.tofaa.entitylib", "threeadd.packeteventssk.entitylib")
+    relocate("org.bstats", "threeadd.packeteventssk.metrics")
 }
 
 tasks {
