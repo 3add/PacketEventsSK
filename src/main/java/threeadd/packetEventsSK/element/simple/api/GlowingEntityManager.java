@@ -40,8 +40,26 @@ public class GlowingEntityManager {
             return;
         }
 
+        List<UUID> oldReceivers = glowingMap.get(glowingEntityId);
+        if (oldReceivers != null) {
+            Set<UUID> toRemove = new HashSet<>(oldReceivers);
+            glowingReceivers.forEach(toRemove::remove);
+            if (!toRemove.isEmpty()) {
+                sendGlowPacket(glowingEntity, toRemove, false);
+            }
+        }
+
+        Set<UUID> newReceivers = new HashSet<>(glowingReceivers);
+        if (oldReceivers != null) {
+            oldReceivers.forEach(newReceivers::remove);
+        }
+
         glowingMap.put(glowingEntityId, new CopyOnWriteArrayList<>(glowingReceivers));
-        sendGlowPacket(glowingEntity, glowingReceivers, true);
+
+        // Only send glow packet to new receivers
+        if (!newReceivers.isEmpty()) {
+            sendGlowPacket(glowingEntity, newReceivers, true);
+        }
     }
 
     public static void setGlowingReceivers(int glowingEntity, UUID glowingReceiver) {
@@ -131,7 +149,11 @@ public class GlowingEntityManager {
             meta.setIndex((byte) data.getIndex(), (EntityDataType) data.getType(), data.getValue());
         }
 
-        meta.setGlowing(shouldGlow);
+        if (shouldGlow) {
+            meta.setGlowing(true);
+        } else {
+            meta.setGlowing(glowingEntity.isGlowing());
+        }
 
         WrapperPlayServerEntityMetadata packet = meta.createPacket();
 
