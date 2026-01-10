@@ -7,18 +7,13 @@ All packets that require a Text Component require [SkBee](https://modrinth.com/p
 ## Features
 Here's a list of some of it's key features, more available on the wiki.
 ### Entities
-```nginx
-command spawn <text>:
-  trigger:
-    create packet text display entity:
-      # using SkBee text components
-      set the packet text of the packet entity to minimessage from arg-1 
-      set the packet scale of the packet entity to vector(2, 2, 2)
-      set the packet billboard of the packet entity to fixed
-
-      add all players to packet receivers of the packet entity
-      
-      spawn packet entity at player
+```applescript
+command test:
+    trigger:
+        create new fake block display entity at player for players:
+            set fake display block data of the fake entity to dirt[]
+            wait 2 seconds
+            kill fake entity the fake entity
 ```
 ### Listening to packets
 Packet Listeners can listen to both incomming and outgoing packets. 
@@ -29,19 +24,19 @@ They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API
 If you want to access the bukkit api, process the packet synchrounsly though be aware, not processing on the netty threads removes the ability to cancel or modify the packets received/sent
 
 Every single packet in packetevents can be listened to, for a list see [this](https://github.com/retrooper/packetevents/blob/a3dc1118f87b7bd1404203ec3b6f3b302c59b2b3/api/src/main/java/com/github/retrooper/packetevents/protocol/packettype/PacketType.java), consider that u have to define a side (send [sent by client, `PacketType.x.Server` in paceketevents] or receive [sent by client, `PacketType.x.Client` in paceketevents])
-```nginx
-on chunk data packet send:
-  # All Chunks will now have their block at 1, 1, 1 (relative coordinates) set to dirt
-  set packet block 1, 1, 1 of the packet chunk data of the packet to dirt
-
-on tab complete packet receive:
-  send "%name of event-player% tried to tab complete!" to console
-  packet cancel event
+```applescript
+on interact entity receive netty processed:
+   if packet entity id of event-packet is not {-interactables::%player's uuid%}:
+      stop
+ 
+   send "Welcome %player's name%"
 ```
+
+For more information on how to use the addon, please checkout it's wiki
 
 ## Credits
 - [PacketEvents](https://github.com/retrooper/packetevents) (all packets), [Install Here](https://modrinth.com/plugin/packetevents)
 - [SkBee](https://github.com/ShaneBeee/SkBee) (text components), [Install Here](https://modrinth.com/plugin/skbee)
 - [EntityLib](https://github.com/Tofaa2/EntityLib) (Packet Entity management)
 
-The project code will be uploaded once version 1 will release.
+Join [the discord](https://discord.gg/vHbVvgJt) for community help or get in touch with contributors
