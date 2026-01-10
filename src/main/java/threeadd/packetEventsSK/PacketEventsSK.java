@@ -59,6 +59,8 @@ public final class PacketEventsSK extends JavaPlugin {
         PacketEventsSK.loader = new AddonLoader(this);
         if (!PacketEventsSK.loader.canLoad()) return;
 
+        MetricsLoader.loadMetrics(this);
+
         getServer().getPluginManager().registerEvents(new PlayerSkinRegistry(), this);
         getServer().getPluginManager().registerEvents(new UserManager(), this);
 
