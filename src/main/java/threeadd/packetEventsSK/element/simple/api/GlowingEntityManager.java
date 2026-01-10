@@ -1,6 +1,8 @@
 package threeadd.packetEventsSK.element.simple.api;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
@@ -116,12 +118,19 @@ public class GlowingEntityManager {
         return glowingMap.getOrDefault(glowingEntity, Collections.emptyList());
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static void sendGlowPacket(Entity glowingEntity, Collection<UUID> receivers, boolean shouldGlow) {
         if (glowingEntity == null || receivers == null || receivers.isEmpty()) {
             return;
         }
 
-        EntityMeta meta = new EntityMeta(glowingEntity.getEntityId(), SpigotConversionUtil.getEntityMetadata(glowingEntity));
+        EntityMeta meta = new EntityMeta(glowingEntity.getEntityId());
+
+        // copying over the old entity data to the new meta
+        for (EntityData<?> data : SpigotConversionUtil.getEntityMetadata(glowingEntity)) {
+            meta.setIndex((byte) data.getIndex(), (EntityDataType) data.getType(), data.getValue());
+        }
+
         meta.setGlowing(shouldGlow);
 
         WrapperPlayServerEntityMetadata packet = meta.createPacket();

@@ -20,14 +20,19 @@ repositories {
         url = 'https://repo.skriptlang.org/releases'
     }
 
-    maven {
+    maven { // SkBee
         name = "jitpack"
         url = "https://jitpack.io"
     }
 
     maven { // packetevents
         name = "code-mc"
-        url = uri("https://repo.codemc.io/repository/maven-releases/")
+        url = "https://repo.codemc.io/repository/maven-releases/"
+    }
+
+    maven { // EntityLib
+        name = "tofaa-pvp-hub"
+        url = "https://maven.pvphub.me/tofaa"
     }
 }
 
@@ -40,7 +45,7 @@ dependencies {
     }
     compileOnly("com.github.ShaneBeee:SkBee:3.5.8")
 
-    implementation(files('libs/EntityLib-spigot-3.0.3-SNAPSHOT.jar'))
+    implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
 }
 
 build {

@@ -42,7 +42,10 @@ public class EntityMetaDataEntityMetadata extends PacketPropertyExpression<Wrapp
             type = SpigotConversionUtil.fromBukkitEntityType(bukkitEntity.getType());
         }
 
-        return EntityMeta.createMeta(wrapper, type);
+        EntityMeta meta = EntityMeta.createMeta(wrapper.getEntityId(), type);
+        meta.getMetadata().setMetaFromPacket(wrapper);
+        
+        return meta;
     }
 
     @Override

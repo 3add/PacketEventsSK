@@ -20,7 +20,8 @@ public class GlowingEntityListener implements PacketListener {
         int entityId = packet.getEntityId();
 
         if (GlowingEntityManager.isGlowingFor(entityId, playerUUID)) {
-            EntityMeta meta = new EntityMeta(packet);
+            EntityMeta meta = new EntityMeta(packet.getEntityId());
+            meta.getMetadata().setMetaFromPacket(packet);
             meta.setGlowing(true);
 
             packet.setEntityMetadata(meta.entityData());
