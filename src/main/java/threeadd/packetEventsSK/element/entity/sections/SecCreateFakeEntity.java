@@ -63,6 +63,10 @@ public class SecCreateFakeEntity extends ReturningSection<WrapperEntity> {
         );
     }
 
+    public SecCreateFakeEntity() {
+        super(WrapperEntity.class);
+    }
+
     private Expression<EntityType> entityTypeExpr;
     private @Nullable Expression<Location> locationExpr = null;
     private @Nullable Expression<Player> playerExpr = null;

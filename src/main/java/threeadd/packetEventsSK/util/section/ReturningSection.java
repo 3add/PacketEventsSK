@@ -43,8 +43,14 @@ public abstract class ReturningSection<T> extends EffectSection {
 
     protected ParseResult parseResult;
     protected Expression<?>[] exprs;
+    protected Class<T> returnType;
+
     private T currentValue;
-    private Variable<T> variable;
+    private Expression<T> expression;
+
+    protected ReturningSection(Class<T> returnType) {
+        this.returnType = returnType;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -54,18 +60,25 @@ public abstract class ReturningSection<T> extends EffectSection {
 
         this.parseResult = parseResult;
         this.exprs = expressions;
-        variable = (Variable<T>) exprs[exprs.length - 1];
+
+        this.expression = (Expression<T>) exprs[exprs.length - 1];
+
+        if (!Changer.ChangerUtils.acceptsChange(this.expression, Changer.ChangeMode.SET, returnType)) {
+            Skript.error(this.expression.toString(null, Skript.debug()) + " cannot be set to store a " + returnType.getSimpleName() + " value");
+            return false;
+        }
 
         return initialize();
     }
+
     protected abstract boolean initialize();
 
     @Override
     protected @Nullable TriggerItem walk(@NotNull Event e) {
 
         currentValue = createNewValue(e);
-        if (variable != null)
-            variable.change(e, new Object[] {currentValue}, Changer.ChangeMode.SET);
+        if (expression != null)
+            expression.change(e, new Object[] {currentValue}, Changer.ChangeMode.SET);
 
         return walk(e, true);
     }

@@ -43,6 +43,10 @@ public class SecCreateFakeTeam extends ReturningSection<FakeTeam> {
         );
     }
 
+    public SecCreateFakeTeam() {
+        super(FakeTeam.class);
+    }
+
     private Expression<String> nameExpr;
     private Expression<Player> playerExpr;
 

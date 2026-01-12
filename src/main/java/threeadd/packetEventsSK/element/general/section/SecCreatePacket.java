@@ -40,6 +40,11 @@ public class SecCreatePacket extends ReturningSection<PacketWrapper<?>> {
         );
     }
 
+    @SuppressWarnings("unchecked")
+    public SecCreatePacket() {
+        super((Class<PacketWrapper<?>>) (Class<?>) PacketWrapper.class);
+    }
+
     private Literal<PacketTypeCommon> packetTypeLiteral;
 
     @SuppressWarnings("unchecked")
