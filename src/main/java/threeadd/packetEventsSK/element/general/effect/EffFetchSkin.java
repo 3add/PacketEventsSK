@@ -37,7 +37,8 @@ public class EffFetchSkin extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffFetchSkin.class,
-                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%");
+                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
+                "set %objects% to skin (from|of) player named %string%");
     }
 
     private Expression<String> nameExpr;
@@ -48,8 +49,14 @@ public class EffFetchSkin extends AsyncEffect {
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         getParser().setHasDelayBefore(Kleenean.TRUE);
 
-        this.nameExpr = (Expression<String>) expressions[0];
-        this.variable = (Variable<?>) expressions[1];
+        if (matchedPattern == 0) {
+            this.nameExpr = (Expression<String>) expressions[0];
+            this.variable = (Variable<?>) expressions[1];
+
+        } else {
+            this.variable = (Variable<?>) expressions[0];
+            this.nameExpr = (Expression<String>) expressions[1];
+        }
 
         return true;
     }
