@@ -63,7 +63,7 @@ public abstract class ReturningSection<T> extends EffectSection {
 
         this.expression = (Expression<T>) exprs[exprs.length - 1];
 
-        if (!Changer.ChangerUtils.acceptsChange(this.expression, Changer.ChangeMode.SET, returnType)) {
+        if (this.expression != null && !Changer.ChangerUtils.acceptsChange(this.expression, Changer.ChangeMode.SET, returnType)) {
             Skript.error(this.expression.toString(null, Skript.debug()) + " cannot be set to store a " + returnType.getSimpleName() + " value");
             return false;
         }
