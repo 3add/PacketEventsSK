@@ -37,10 +37,10 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT") // PaperMC
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT") // PaperMC
 
-    compileOnly("com.github.retrooper:packetevents-spigot:2.10.1") // PacketEvents
-    compileOnly("com.github.SkriptLang:Skript:2.13.0") { // Skript
+    compileOnly("com.github.retrooper:packetevents-spigot:2.11.1") // PacketEvents
+    compileOnly("com.github.SkriptLang:Skript:2.14.0") { // Skript
         transitive = false
     }
     compileOnly("com.github.ShaneBeee:SkBee:3.5.8") // SkBee
