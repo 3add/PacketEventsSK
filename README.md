@@ -39,4 +39,4 @@ For more information on how to use the addon, please checkout it's wiki
 - [SkBee](https://github.com/ShaneBeee/SkBee) (Text Components), [Install Here](https://modrinth.com/plugin/skbee)
 - [EntityLib](https://github.com/Tofaa2/EntityLib) (Fake Entity management, Metadata Wrappers) [Included]
 
-Join [the discord](https://discord.gg/vHbVvgJt) for community help or get in touch with contributors
+Join [the discord](https://discord.gg/CzQ863nxDB) for community help or get in touch with contributors
