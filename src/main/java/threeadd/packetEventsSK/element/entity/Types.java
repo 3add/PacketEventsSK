@@ -18,7 +18,7 @@ public class Types {
                         command cloneMe:
                             trigger:
                                 create new fake player entity at player for all players:
-                                    set packet skin of the fake entity to player's skin
+                                    set fake skin of the fake entity to player's skin
                         """)
                 .since("1.0.0")
                 .parser(new Parser<>() {

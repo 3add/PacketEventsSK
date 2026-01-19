@@ -18,7 +18,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
         command spawnfakeplayer:
             trigger:
                 create new fake player entity at player for all players:
-                    set packet skin of the fake entity to player's skin
+                    set fake skin of the fake entity to player's skin
                     add the packet entity id of the fake entity to {-id::*}
 
         command lookup <text>:

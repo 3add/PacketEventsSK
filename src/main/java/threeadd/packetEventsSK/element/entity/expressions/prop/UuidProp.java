@@ -20,7 +20,7 @@ import java.util.UUID;
         command spawnfakeplayer:
             trigger:
                 create new fake player entity at player for all players:
-                    set packet skin of the fake entity to player's skin
+                    set fake skin of the fake entity to player's skin
                     add the packet entity uuid of the fake entity to {-uuid::*}
 
         command lookup <text>:
