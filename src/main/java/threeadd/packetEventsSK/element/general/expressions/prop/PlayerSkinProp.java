@@ -6,6 +6,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,10 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("General - Player Skin of Player")
-@Description("Gets the skin the player had when they joined the server")
+@Description("""
+            Gets the skin the player had when they joined the server
+            NOTE: This only works on servers in online mode
+            """)
 @Example("""
         command revertToMySkin:
             trigger:
@@ -23,8 +27,11 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
         """)
 @Since("1.0.0")
 public class PlayerSkinProp extends CustomPropertyExpression<Player, Skin> {
+
+    private static final boolean ONLINE_MODE = Bukkit.getServer().getServerConfig().isProxyOnlineMode();
+
     static {
-        PropertyExpression.register(PlayerSkinProp.class, Skin.class, "[player][ ]skin", "player");
+        if (ONLINE_MODE) PropertyExpression.register(PlayerSkinProp.class, Skin.class, "[player][ ]skin", "player");
     }
 
     public PlayerSkinProp() {

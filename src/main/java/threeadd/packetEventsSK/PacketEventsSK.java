@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,10 @@ public final class PacketEventsSK extends JavaPlugin {
 
         MetricsLoader.loadMetrics(this);
 
-        getServer().getPluginManager().registerEvents(new PlayerSkinRegistry(), this);
+        // Exclusive to online-mode servers
+        if (Bukkit.getServerConfig().isProxyOnlineMode())
+            getServer().getPluginManager().registerEvents(new PlayerSkinRegistry(), this);
+
         getServer().getPluginManager().registerEvents(new UserManager(), this);
 
         float secondsPassed = (float) (System.currentTimeMillis() - start) / 1000;
