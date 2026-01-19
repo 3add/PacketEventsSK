@@ -29,13 +29,13 @@ import java.util.List;
                     send "Why would you want to disable me?" to event-player
         """)
 @Since("1.0.0")
-public class TabCompleteTabCompletions extends PacketPropertyExpression<WrapperPlayServerTabComplete, String> {
+public class TabCompleteTabCompletionsProp extends PacketPropertyExpression<WrapperPlayServerTabComplete, String> {
 
     static {
-        PropertyExpression.register(TabCompleteTabCompletions.class, String.class, "packet[ ]completions", "packet");
+        PropertyExpression.register(TabCompleteTabCompletionsProp.class, String.class, "packet[ ]completions", "packet");
     }
 
-    public TabCompleteTabCompletions() {
+    public TabCompleteTabCompletionsProp() {
         super(String.class, PacketType.Play.Server.TAB_COMPLETE, false, true, null,
                 Changer.ChangeMode.SET,
                 Changer.ChangeMode.ADD,

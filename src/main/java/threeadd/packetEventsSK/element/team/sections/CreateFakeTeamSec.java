@@ -25,15 +25,15 @@ import threeadd.packetEventsSK.util.section.ReturningSection;
                     add player to fake team entities of the fake team
         """)
 @Since("1.0.0")
-public class SecCreateFakeTeam extends ReturningSection<FakeTeam> {
+public class CreateFakeTeamSec extends ReturningSection<FakeTeam> {
 
-    private static final Logger log = LoggerFactory.getLogger(SecCreateFakeTeam.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateFakeTeamSec.class);
 
-    public static class FakeTeamBuilder extends LastBuilderExpression<FakeTeam, SecCreateFakeTeam> {}
+    public static class FakeTeamBuilder extends LastBuilderExpression<FakeTeam, CreateFakeTeamSec> {}
 
     static {
         register(
-                SecCreateFakeTeam.class,
+                CreateFakeTeamSec.class,
                 FakeTeam.class,
                 FakeTeamBuilder.class,
                 new String[]{
@@ -43,7 +43,7 @@ public class SecCreateFakeTeam extends ReturningSection<FakeTeam> {
         );
     }
 
-    public SecCreateFakeTeam() {
+    public CreateFakeTeamSec() {
         super(FakeTeam.class);
     }
 

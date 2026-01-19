@@ -1,4 +1,4 @@
-package threeadd.packetEventsSK.element.entity.expressions;
+package threeadd.packetEventsSK.element.entity.expressions.prop;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;

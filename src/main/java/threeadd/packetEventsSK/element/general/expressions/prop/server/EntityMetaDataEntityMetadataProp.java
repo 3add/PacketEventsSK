@@ -15,14 +15,14 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 // TODO docs
 @SuppressWarnings("unused")
-public class EntityMetaDataEntityMetadata extends PacketPropertyExpression<WrapperPlayServerEntityMetadata, EntityMeta> {
+public class EntityMetaDataEntityMetadataProp extends PacketPropertyExpression<WrapperPlayServerEntityMetadata, EntityMeta> {
 
     static {
-        PropertyExpression.register(EntityMetaDataEntityMetadata.class, EntityMeta.class,
+        PropertyExpression.register(EntityMetaDataEntityMetadataProp.class, EntityMeta.class,
                 "packet[ ]entity[ ]meta[ ][data]", "packet");
     }
 
-    public EntityMetaDataEntityMetadata() {
+    public EntityMetaDataEntityMetadataProp() {
         super(EntityMeta.class, PacketType.Play.Server.ENTITY_METADATA, true, true, null, Changer.ChangeMode.SET);
     }
 

@@ -33,10 +33,10 @@ import java.util.stream.Collectors;
                 set glow state of player to true for player
         """)
 @Since("1.0.0")
-public class EffGlow extends CustomEffect {
+public class GlowEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(EffGlow.class,
+        Skript.registerEffect(GlowEff.class,
                 "set glow[ing] [state] of %entities% [to] %boolean% [for %-players%]");
     }
 

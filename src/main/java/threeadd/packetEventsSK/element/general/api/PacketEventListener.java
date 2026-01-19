@@ -4,7 +4,7 @@ import com.github.retrooper.packetevents.event.*;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.jetbrains.annotations.NotNull;
 import threeadd.packetEventsSK.element.general.api.PacketEventRegistry.RegisteredListener;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.ProcessWay;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.ProcessWay;
 import threeadd.packetEventsSK.util.registry.EventPacketMapper;
 
 public class PacketEventListener implements PacketListener {

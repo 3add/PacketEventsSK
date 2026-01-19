@@ -33,10 +33,10 @@ import java.util.List;
                     kill fake entity {_entity}
        """)
 @Since("1.0.0")
-public class EffTeleport extends CustomEffect {
+public class TeleportEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(EffTeleport.class,
+        Skript.registerEffect(TeleportEff.class,
                 "teleport fake[ ]entit(y|ies) %fakeentities% to %location%");
     }
 

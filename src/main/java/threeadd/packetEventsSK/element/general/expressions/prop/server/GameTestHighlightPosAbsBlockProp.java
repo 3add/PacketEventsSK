@@ -28,14 +28,14 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
                     send packet the packet to the player
         """)
 @Since("1.0.0")
-public class GameTestHighlightPosAbsBlock extends PacketPropertyExpression<WrapperPlayServerGameTestHighlightPos, Vector> {
+public class GameTestHighlightPosAbsBlockProp extends PacketPropertyExpression<WrapperPlayServerGameTestHighlightPos, Vector> {
 
     static {
-        PropertyExpression.register(GameTestHighlightPosAbsBlock.class, Vector.class,
+        PropertyExpression.register(GameTestHighlightPosAbsBlockProp.class, Vector.class,
                 "packet[ ]absolute[ ]block", "packet");
     }
 
-    public GameTestHighlightPosAbsBlock() {
+    public GameTestHighlightPosAbsBlockProp() {
         super(Vector.class, PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, true, true, null,
                 Changer.ChangeMode.SET);
     }

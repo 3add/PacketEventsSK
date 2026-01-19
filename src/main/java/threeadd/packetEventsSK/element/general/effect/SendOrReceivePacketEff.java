@@ -27,10 +27,10 @@ import java.util.List;
                     send packet the packet to the player
         """)
 @Since("1.0.0")
-public class PacketSendOrReceiveEff extends CustomEffect {
+public class SendOrReceivePacketEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(PacketSendOrReceiveEff.class,
+        Skript.registerEffect(SendOrReceivePacketEff.class,
                 "[:(silently|default)] :(send|receive) packet %packets% (to|from) %player%");
     }
 

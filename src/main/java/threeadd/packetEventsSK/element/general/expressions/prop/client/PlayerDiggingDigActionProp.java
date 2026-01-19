@@ -10,14 +10,14 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 @SuppressWarnings("unused")
 // TODO docs
-public class PlayerDiggingDigAction extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, DiggingAction> {
+public class PlayerDiggingDigActionProp extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, DiggingAction> {
 
     static {
-        PropertyExpression.register(PlayerDiggingDigAction.class, DiggingAction.class,
+        PropertyExpression.register(PlayerDiggingDigActionProp.class, DiggingAction.class,
                 "packet[ ]dig[ging][ ]action", "packet");
     }
 
-    public PlayerDiggingDigAction() {
+    public PlayerDiggingDigActionProp() {
         super(DiggingAction.class, PacketType.Play.Client.PLAYER_DIGGING, true, true, null, Changer.ChangeMode.SET);
     }
 

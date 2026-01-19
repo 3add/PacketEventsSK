@@ -9,7 +9,6 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -18,29 +17,33 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-@Name("Fake Team - Team Entities")
-@Description("Represents the entities within a fake team")
+@Name("Fake Team - Team Receivers")
+@Description("""
+        Represents the packet receivers of a fake team
+        If you're not within this list, the team properties will be ignored by your client
+        """)
 @Example("""
         command glowGreen:
             trigger:
                 set glowing state of player to true for player
-                create new fake team named player's name for players:
+                create new fake team named player's name:
+                    add players to fake team viewers of the fake team
                     set the fake team color of the fake team to green
                     add player to fake team entities of the fake team
         """)
 @Since("1.0.0")
-public class FakeTeamEntities extends CustomPropertyExpression<FakeTeam, Entity> {
+public class FakeTeamReceiversProp extends CustomPropertyExpression<FakeTeam, Player> {
 
     static {
-        PropertyExpression.register(FakeTeamEntities.class, Entity.class, "fake[ ]team[ ]entities", "faketeam");
+        PropertyExpression.register(FakeTeamReceiversProp.class, Player.class, "fake[ ]team[ ]viewers", "faketeam");
     }
 
-    public FakeTeamEntities() {
-        super(Entity.class, FakeTeam.class, false);
+    @SuppressWarnings("unused")
+    public FakeTeamReceiversProp() {
+        super(Player.class, FakeTeam.class, false);
     }
 
     @Override
@@ -49,18 +52,12 @@ public class FakeTeamEntities extends CustomPropertyExpression<FakeTeam, Entity>
     }
 
     @Override
-    protected List<Entity> getMany(Event event) {
-        FakeTeam team = getValueOrNull(0, FakeTeam.class, event);
-        if (team == null) return null;
+    protected @Nullable List<Player> getMany(Event currentEvent) {
+        List<FakeTeam> source = getValues(0, FakeTeam.class, currentEvent);
 
-        return team.getEntities().stream()
-                .map(id -> {
-                    if (id.length() == 36) {
-                        return Bukkit.getEntity(UUID.fromString(id));
-                    } else {
-                        return Bukkit.getPlayer(id);
-                    }
-                })
+        return source.stream()
+                .flatMap(team -> team.getViewingPlayers().stream())
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();
@@ -73,7 +70,7 @@ public class FakeTeamEntities extends CustomPropertyExpression<FakeTeam, Entity>
                 || mode.equals(Changer.ChangeMode.SET)
                 || mode.equals(Changer.ChangeMode.RESET)
                 || mode == Changer.ChangeMode.REMOVE_ALL)
-            return CollectionUtils.array(Entity[].class);
+            return CollectionUtils.array(Player[].class);
 
         return null;
     }
@@ -83,40 +80,37 @@ public class FakeTeamEntities extends CustomPropertyExpression<FakeTeam, Entity>
         if (delta == null) return;
 
         List<FakeTeam> teams = getValuesOrNull(0, FakeTeam.class, event);
-        List<Entity> entities = getDeltaValuesOrNull(delta, Entity.class);
+        List<Player> players = getDeltaValuesOrNull(delta, Player.class);
 
-        if (teams == null || entities == null) return;
+        if (teams == null || players == null) return;
 
         for (FakeTeam team : teams)
-            modify(team, mode, entities);
+            modify(team, mode, players);
     }
 
-    private static void modify(FakeTeam team, Changer.ChangeMode mode, List<Entity> entities) {
+    private static void modify(FakeTeam team, Changer.ChangeMode mode, List<Player> players) {
 
-        String[] entityIds = entities.stream()
-                .map(entity -> {
-                    if (entity instanceof Player player)
-                        return player.getName();
-                    else
-                        return entity.getUniqueId().toString();
-                })
-                .toList().toArray(new String[0]);
+        UUID[] uuids = players.stream().map(Player::getUniqueId)
+                .toList().toArray(new UUID[0]);
 
         switch (mode) {
-            case RESET, REMOVE_ALL -> clearEntries(team);
-            case ADD -> team.addEntities(entityIds);
+            case RESET, REMOVE_ALL -> team.clearViewers();
+            case ADD -> team.addViewers(uuids);
 
             case SET -> {
-                team.clearEntities();
-                team.addEntities(entityIds);
+                team.clearViewers();
+                team.addViewers(uuids);
             }
 
-            case REMOVE -> team.removeEntity(entityIds);
+            case REMOVE -> {
+                for (Player player : players)
+                    team.removeViewer(player.getUniqueId());
+            }
         }
     }
 
-    private static void clearEntries(FakeTeam team) {
-        for (String entityId : Set.copyOf(team.getEntities()))
-            team.removeEntity(entityId);
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "fake entity viewers of fake entity";
     }
 }

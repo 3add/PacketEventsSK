@@ -35,15 +35,15 @@ import threeadd.packetEventsSK.util.ConversionUtil;
             send "You can't touch him! But I can't do much cause it wouldn't be thread safe..."
         """)
 @Since("1.0.0")
-public class InteractEntityEntity extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Entity> {
+public class InteractEntityEntityProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Entity> {
 
     static {
-        PropertyExpression.register(InteractEntityEntity.class, Entity.class,
+        PropertyExpression.register(InteractEntityEntityProp.class, Entity.class,
                 "packet[ ]entity", "packet");
     }
 
-    public InteractEntityEntity() {
-        super(Entity.class, PacketType.Play.Client.INTERACT_ENTITY, true, false, InteractEntityEntityId.class, Changer.ChangeMode.SET);
+    public InteractEntityEntityProp() {
+        super(Entity.class, PacketType.Play.Client.INTERACT_ENTITY, true, false, InteractEntityEntityIdProp.class, Changer.ChangeMode.SET);
     }
 
     @Override

@@ -10,8 +10,8 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.PacketEventParserData;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.ProcessWay;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.PacketEventParserData;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.ProcessWay;
 
 @SuppressWarnings("unused")
 @Name("General - Cancel Packet")

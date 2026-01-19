@@ -25,10 +25,10 @@ import java.util.List;
                 kill fake entity {_e}
         """)
 @Since("1.0.0")
-public class EffKill extends CustomEffect {
+public class KillEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(EffKill.class,
+        Skript.registerEffect(KillEff.class,
                 "kill fake[ ]entit(y|ies) %fakeentities%");
     }
 

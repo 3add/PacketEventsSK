@@ -37,10 +37,10 @@ import java.util.Locale;
            send "Welcome %player's name%"
         """)
 @Since("1.0.0")
-public class StructPacketEvent extends Structure {
+public class PacketEventStruct extends Structure {
 
     static {
-        Skript.registerStructure(StructPacketEvent.class, "[on] [packet] %packettype% [:(sync|async|netty) processed]");
+        Skript.registerStructure(PacketEventStruct.class, "[on] [packet] %packettype% [:(sync|async|netty) processed]");
         ParserInstance.registerData(PacketEventParserData.class, PacketEventParserData::new);
     }
 

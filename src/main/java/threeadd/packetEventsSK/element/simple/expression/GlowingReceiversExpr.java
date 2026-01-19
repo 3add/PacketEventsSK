@@ -31,14 +31,14 @@ import java.util.UUID;
                     send "Hey? It worked!"
         """)
 @Since("1.0.0")
-public class ExprGlowingReceivers extends CustomPropertyExpression<Entity, Player> {
+public class GlowingReceiversExpr extends CustomPropertyExpression<Entity, Player> {
 
     static {
-        PropertyExpression.register(ExprGlowingReceivers.class, Player.class,
+        PropertyExpression.register(GlowingReceiversExpr.class, Player.class,
                 "[the] glow[ing][ ][entity][ ]viewers", "entity");
     }
 
-    public ExprGlowingReceivers() {
+    public GlowingReceiversExpr() {
         super(Player.class, Entity.class, false);
     }
 

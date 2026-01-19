@@ -31,10 +31,10 @@ import java.util.List;
                     kill fake entity {_entity}
         """)
 @Since("1.0.0")
-public class EffSpawn extends CustomEffect {
+public class SpawnEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(EffSpawn.class,
+        Skript.registerEffect(SpawnEff.class,
                 "spawn fake[ ]entit(y|ies) %fakeentities% at %location%");
     }
 

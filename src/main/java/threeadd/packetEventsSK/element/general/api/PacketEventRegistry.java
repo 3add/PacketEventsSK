@@ -2,7 +2,7 @@ package threeadd.packetEventsSK.element.general.api;
 
 import ch.njol.skript.lang.Trigger;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +40,9 @@ public class PacketEventRegistry {
         return registry.containsKey(packetType);
     }
 
-    public record ListenerData(PacketTypeCommon packetType, StructPacketEvent.ProcessWay processWay) {
+    public record ListenerData(PacketTypeCommon packetType, PacketEventStruct.ProcessWay processWay) {
 
-        public ListenerData(StructPacketEvent.PacketEventParserData data) {
+        public ListenerData(PacketEventStruct.PacketEventParserData data) {
             this(data.getPacketType(), data.getProcessWay());
         }
 

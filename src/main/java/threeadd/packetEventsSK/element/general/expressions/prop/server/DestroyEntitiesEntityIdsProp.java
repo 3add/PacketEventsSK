@@ -8,47 +8,38 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
-import org.bukkit.entity.Entity;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
-import threeadd.packetEventsSK.util.ConversionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
-@Name("General - Destroy Entities Packet - Entities")
-@Description("""
-        Represents the entities of an destroy entities packet.
-        **This property is NOT thread safe.**
-        """)
+@Name("General - Destroy Entities Packet - Entity Ids")
+@Description("Represents the entity ids of an destroy entities packet.")
 @Example("""
         command killTargetForMe:
             trigger:
                 create a new destroy entities send packet:
-                    add target entity of player to packet entities of the packet
+                    add (entity id of target entity of player) to packet entity ids of the packet
                     send packet the packet to the player
         """)
 @Since("1.0.0")
-public class DestroyEntitiesEntities extends PacketPropertyExpression<WrapperPlayServerDestroyEntities, Entity> {
+public class DestroyEntitiesEntityIdsProp extends PacketPropertyExpression<WrapperPlayServerDestroyEntities, Integer> {
 
     static {
-        PropertyExpression.register(DestroyEntitiesEntities.class, Entity.class,
-                "packet[ ]entities", "packet");
+        PropertyExpression.register(DestroyEntitiesEntityIdsProp.class, Integer.class,
+                "packet[ ]entity[ ]ids", "packet");
     }
 
-    public DestroyEntitiesEntities() {
-        super(Entity.class, PacketType.Play.Server.DESTROY_ENTITIES, false, false, DestroyEntitiesEntityIds.class,
+    public DestroyEntitiesEntityIdsProp() {
+        super(Integer.class, PacketType.Play.Server.DESTROY_ENTITIES, false, true, null,
                 Changer.ChangeMode.SET, Changer.ChangeMode.ADD, Changer.ChangeMode.REMOVE, Changer.ChangeMode.REMOVE_ALL, Changer.ChangeMode.RESET);
     }
 
     @Override
-    protected List<Entity> getMany(WrapperPlayServerDestroyEntities input) {
-        return Arrays.stream(input.getEntityIds())
-                .mapToObj(ConversionUtil::getEntityById)
-                .filter(Objects::nonNull)
-                .toList();
+    protected List<Integer> getMany(WrapperPlayServerDestroyEntities input) {
+        return Arrays.stream(input.getEntityIds()).boxed().toList();
     }
 
     @Override
@@ -61,13 +52,13 @@ public class DestroyEntitiesEntities extends PacketPropertyExpression<WrapperPla
                 mode.equals(Changer.ChangeMode.ADD) ||
                 mode.equals(Changer.ChangeMode.REMOVE)) {
 
-            deltaIds = getDeltaValues(delta, Entity.class).stream()
-                    .map(Entity::getEntityId)
-                    .toList();
+            deltaIds = getDeltaValues(delta, Integer.class).stream().toList();
         }
 
         switch (mode) {
-            case SET -> wrapper.setEntityIds(convertToPrimitiveArray(deltaIds));
+            case SET -> {
+                wrapper.setEntityIds(convertToPrimitiveArray(deltaIds));
+            }
 
             case ADD -> {
                 currentIds.addAll(deltaIds);
@@ -91,6 +82,6 @@ public class DestroyEntitiesEntities extends PacketPropertyExpression<WrapperPla
 
     @Override
     public String toString() {
-        return "entities of entities destroy packet";
+        return "entity ids of entities destroy packet";
     }
 }

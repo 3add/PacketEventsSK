@@ -24,15 +24,15 @@ import threeadd.packetEventsSK.util.section.ReturningSection;
                     send packet the packet to the player
         """)
 @Since("1.0.0")
-public class SecCreatePacket extends ReturningSection<PacketWrapper<?>> {
+public class CreatePacketSec extends ReturningSection<PacketWrapper<?>> {
 
     @SuppressWarnings("unchecked")
     private static final Class<PacketWrapper<?>> clazz = (Class<PacketWrapper<?>>) (Class<?>) PacketWrapper.class;
 
-    public static class PacketBuilder extends LastBuilderExpression<PacketWrapper<?>, SecCreatePacket> {}
+    public static class PacketBuilder extends LastBuilderExpression<PacketWrapper<?>, CreatePacketSec> {}
 
     static {
-        register(SecCreatePacket.class, clazz, PacketBuilder.class,
+        register(CreatePacketSec.class, clazz, PacketBuilder.class,
                 new String[]{
                         "[the] packet [builder]"
                 },
@@ -41,7 +41,7 @@ public class SecCreatePacket extends ReturningSection<PacketWrapper<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    public SecCreatePacket() {
+    public CreatePacketSec() {
         super((Class<PacketWrapper<?>>) (Class<?>) PacketWrapper.class);
     }
 

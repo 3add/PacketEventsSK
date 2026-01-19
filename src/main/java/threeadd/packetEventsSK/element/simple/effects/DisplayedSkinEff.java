@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
                 set displayed skin of player to {_skin} for player
         """)
 @Since("1.0.0")
-public class EffDisplayedSkin extends CustomEffect {
+public class DisplayedSkinEff extends CustomEffect {
 
     static {
-        Skript.registerEffect(EffDisplayedSkin.class,
+        Skript.registerEffect(DisplayedSkinEff.class,
                 "set displayed skin of %players% to %skin% [for %-players%]");
     }
 

@@ -11,14 +11,14 @@ import threeadd.packetEventsSK.util.ConversionUtil;
 
 // TODO docs
 @SuppressWarnings("unused")
-public class PlayerDiggingBlockData extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, Vector> {
+public class PlayerDiggingBlockDataProp extends PacketPropertyExpression<WrapperPlayClientPlayerDigging, Vector> {
 
     static {
-        PropertyExpression.register(PlayerDiggingBlockData.class, Vector.class,
+        PropertyExpression.register(PlayerDiggingBlockDataProp.class, Vector.class,
                 "packet[ ]dug[ ]block[ ]pos[ition]", "packet");
     }
 
-    public PlayerDiggingBlockData() {
+    public PlayerDiggingBlockDataProp() {
         super(Vector.class, PacketType.Play.Client.PLAYER_DIGGING, true, true, null, Changer.ChangeMode.SET);
     }
 

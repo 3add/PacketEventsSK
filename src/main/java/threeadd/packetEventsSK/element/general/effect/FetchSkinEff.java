@@ -32,10 +32,10 @@ import threeadd.packetEventsSK.element.entity.api.skin.Skins;
                 set displayed skin of player to {_skin} for player
         """)
 @Since("1.0.0")
-public class EffFetchSkin extends AsyncEffect {
+public class FetchSkinEff extends AsyncEffect {
 
     static {
-        Skript.registerEffect(EffFetchSkin.class,
+        Skript.registerEffect(FetchSkinEff.class,
                 "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
                 "set %-~objects% to skin (from|of) player named %string%");
     }

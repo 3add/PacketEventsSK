@@ -1,19 +1,21 @@
-package threeadd.packetEventsSK.element.team.effects;
+package threeadd.packetEventsSK.element.team.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
-import threeadd.packetEventsSK.util.effect.CustomEffect;
+import threeadd.packetEventsSK.element.team.api.FakeTeamRegistry;
+import threeadd.packetEventsSK.util.expressions.CustomExpression;
 
 @SuppressWarnings("unused")
-@Name("Fake Team Team - Delete Fake Team")
-@Description("Used to delete a fake team that's viewable by at least 1 player.")
+@Name("Fake Team - From Name")
+@Description("Retrieve a fake team from it's name")
 @Example("""
         command deleteNow <text>:
             trigger:
@@ -25,11 +27,16 @@ import threeadd.packetEventsSK.util.effect.CustomEffect;
                 send "Deleted the %arg-1% team"
         """)
 @Since("1.0.0")
-public class EffDeleteTeam extends CustomEffect {
+public class FakeTeamWithNameExpr extends CustomExpression<FakeTeam> {
 
     static {
-        Skript.registerEffect(EffDeleteTeam.class,
-                "(delete|destroy|remove) fake[ ]team %faketeam%");
+        Skript.registerExpression(FakeTeamWithNameExpr.class, FakeTeam.class, ExpressionType.SIMPLE,
+                "fake[ ]team (named|with name) %string%");
+    }
+
+    @SuppressWarnings("unused")
+    public FakeTeamWithNameExpr() {
+        super(FakeTeam.class, true);
     }
 
     @Override
@@ -38,15 +45,15 @@ public class EffDeleteTeam extends CustomEffect {
     }
 
     @Override
-    protected void execute(Event event) {
-        FakeTeam team = getValueOrNull(0, FakeTeam.class, event);
-        if (team == null) return;
+    protected @Nullable FakeTeam getOne(Event currentEvent) {
+        String name = getValueOrNull(0, String.class, currentEvent);
+        if (name == null) return null;
 
-        team.destroy();
+        return FakeTeamRegistry.INSTANCE.getByName(name);
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "delete fake team";
+        return "fake team from name";
     }
 }

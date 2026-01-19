@@ -29,13 +29,13 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
                     add player to fake team entities of the fake team
         """)
 @Since("1.0.0")
-public class FakeTeamColor extends CustomPropertyExpression<FakeTeam, Color> {
+public class FakeTeamColorProp extends CustomPropertyExpression<FakeTeam, Color> {
 
     static {
-        PropertyExpression.register(FakeTeamColor.class, Color.class, "fake[ ]team[ ]color", "faketeam");
+        PropertyExpression.register(FakeTeamColorProp.class, Color.class, "fake[ ]team[ ]color", "faketeam");
     }
 
-    public FakeTeamColor() {
+    public FakeTeamColorProp() {
         super(Color.class, FakeTeam.class, true);
     }
 

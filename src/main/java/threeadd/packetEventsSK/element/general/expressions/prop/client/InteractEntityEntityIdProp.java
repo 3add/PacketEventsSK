@@ -31,14 +31,14 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
             send "You can't touch him!"
         """)
 @Since("1.0.0")
-public class InteractEntityEntityId extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Integer> {
+public class InteractEntityEntityIdProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Integer> {
 
     static {
-        PropertyExpression.register(InteractEntityEntityId.class, Integer.class,
+        PropertyExpression.register(InteractEntityEntityIdProp.class, Integer.class,
                 "packet[ ]entity[ ]id", "packet");
     }
 
-    public InteractEntityEntityId() {
+    public InteractEntityEntityIdProp() {
         super(Integer.class, PacketType.Play.Client.INTERACT_ENTITY, true, true, null, Changer.ChangeMode.SET);
     }
 

@@ -45,15 +45,15 @@ import java.util.UUID;
                     kill fake entity the fake entity
         """)
 @Since("1.0.0")
-public class SecCreateFakeEntity extends ReturningSection<WrapperEntity> {
+public class CreateFakeEntitySec extends ReturningSection<WrapperEntity> {
 
-    private static final Logger log = LoggerFactory.getLogger(SecCreateFakeEntity.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateFakeEntitySec.class);
 
-    public static class FakeEntityBuilder extends ReturningSection.LastBuilderExpression<WrapperEntity, SecCreateFakeEntity> {}
+    public static class FakeEntityBuilder extends ReturningSection.LastBuilderExpression<WrapperEntity, CreateFakeEntitySec> {}
 
     static {
         register(
-                SecCreateFakeEntity.class,
+                CreateFakeEntitySec.class,
                 WrapperEntity.class,
                 FakeEntityBuilder.class,
                 new String[]{
@@ -63,7 +63,7 @@ public class SecCreateFakeEntity extends ReturningSection<WrapperEntity> {
         );
     }
 
-    public SecCreateFakeEntity() {
+    public CreateFakeEntitySec() {
         super(WrapperEntity.class);
     }
 

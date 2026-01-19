@@ -11,13 +11,13 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 @SuppressWarnings("unused")
 //TODO docs
-public class AckBlockChangeBlockData extends PacketPropertyExpression<WrapperPlayServerBlockChange, BlockData> {
+public class AckBlockChangeBlockDataProp extends PacketPropertyExpression<WrapperPlayServerBlockChange, BlockData> {
 
     static {
-        PropertyExpression.register(AckBlockChangeBlockData.class, BlockData.class, "packet[ ]changed[ ]block[ ]data", "packet");
+        PropertyExpression.register(AckBlockChangeBlockDataProp.class, BlockData.class, "packet[ ]changed[ ]block[ ]data", "packet");
     }
 
-    public AckBlockChangeBlockData() {
+    public AckBlockChangeBlockDataProp() {
         super(BlockData.class, PacketType.Play.Server.BLOCK_CHANGE, true, true, null, Changer.ChangeMode.SET);
     }
 

@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.PacketEventsSK;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.PacketEventParserData;
-import threeadd.packetEventsSK.element.general.structures.StructPacketEvent.ProcessWay;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.PacketEventParserData;
+import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.ProcessWay;
 
 import java.util.Arrays;
 import java.util.EnumSet;

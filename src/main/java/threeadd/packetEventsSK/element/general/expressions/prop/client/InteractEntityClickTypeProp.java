@@ -36,14 +36,14 @@ import threeadd.packetEventsSK.util.ConversionUtil;
             send "You can't hit him! But I can't do much cause it wouldn't be thread safe..."
         """)
 @Since("1.0.0")
-public class InteractEntityClickType extends PacketPropertyExpression<WrapperPlayClientInteractEntity, ClickType> {
+public class InteractEntityClickTypeProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, ClickType> {
 
     static {
-        PropertyExpression.register(InteractEntityClickType.class, ClickType.class,
+        PropertyExpression.register(InteractEntityClickTypeProp.class, ClickType.class,
                 "packet[ ]click[ ]type", "packet");
     }
 
-    public InteractEntityClickType() {
+    public InteractEntityClickTypeProp() {
         super(ClickType.class, PacketType.Play.Client.INTERACT_ENTITY, true, true, null, Changer.ChangeMode.SET);
     }
 
