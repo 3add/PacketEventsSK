@@ -1,0 +1,24 @@
+# Welcome to PacketEventsSK v1.0
+
+# If you have any questions, please first refer to the wiki:
+# - https://github.com/3add/PacketEventsSK/wiki
+
+# This config section contains all configurable syntax elements
+# that PacketEventsSK contains.
+elements:
+  # General Elements cannot be turned on/off,
+  # they contain events, packet builder and other basic features
+
+  # Simple Elements are defined by being "hard coded" by me,
+  # they contain stuff like, setting the skin of a player or setting a glow state.
+  # these elements will always be hard to code in manually through general elements
+  # and thus this simplicity has been provided to you.
+  simple: true
+
+  # Entity Elements are defined by using the EntityLib dependency,
+  # they contain all "fake" entity building features
+  entity: true
+
+  # Team Elements are defined by using the custom FakeTeam api,
+  # they contain all "fake" team building features
+  team: true
