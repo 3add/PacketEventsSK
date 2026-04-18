@@ -8,6 +8,8 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -23,9 +25,13 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class EntityIdProp extends CustomPropertyExpression<Entity, Integer> {
 
-    static {
-        PropertyExpression.register(EntityIdProp.class, Integer.class, "entity[ ]id",
-                "entity");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(EntityIdProp.class, Integer.class)
+                        .addPatterns("entity id of %entity%")
+                        .build()
+        );
     }
 
     public EntityIdProp() {

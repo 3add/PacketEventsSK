@@ -5,35 +5,40 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Text Display Entity - Display Text Shadowed")
 @Description("""
         Represents the shadowed state of a Text Display Entity.
-        See [Display Entity Data](https://minecraft.wiki/w/Display#Entity_data) on McWiki for more details.
+        See [Display Entity Data](https://minecraft.wiki/w/Display#Entity_data ) on McWiki for more details.
         """)
 @Example("""
         command display <text>:
             trigger:
-                set {_content} to minimessage from "<rainbow>%arg-1%"
-
                 create new fake text display entity at player for players:
-                    set fake display text of the fake entity to {_content}
-                    set fake display text shadowed of the fake entity to true
-                    set fake display billboard of the fake entity to center
-                    wait 10 seconds
+                    set fake display text of the fake entity to "Hello <rainbow>World"
+                    set fake display text shadowed state of the fake entity to true
+                    wait 2 seconds
                     kill fake entity the fake entity
         """)
 @Since("1.0.0")
 public class TextShadowedProp extends MetaPropertyExpression<TextDisplayMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(TextShadowedProp.class, Boolean.class,
-                "fake[ ]display[ ](text|content)[ ]shadowed", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(TextShadowedProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake display text shadowed state of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display text shadowed state"
+                        )
+                        .build()
+        );
     }
 
     public TextShadowedProp() {

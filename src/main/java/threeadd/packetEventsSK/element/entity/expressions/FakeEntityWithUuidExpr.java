@@ -1,16 +1,16 @@
 package threeadd.packetEventsSK.element.entity.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomExpression;
 
 import java.util.UUID;
@@ -34,9 +34,13 @@ import java.util.UUID;
 @Since("1.0.0")
 public class FakeEntityWithUuidExpr extends CustomExpression<WrapperEntity> {
 
-    static {
-        Skript.registerExpression(FakeEntityWithUuidExpr.class, WrapperEntity.class, ExpressionType.SIMPLE,
-                "fake[ ]entity with uuid %uuid%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(FakeEntityWithUuidExpr.class, WrapperEntity.class)
+                        .addPatterns("fake[ ]entity with uuid %uuid%")
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

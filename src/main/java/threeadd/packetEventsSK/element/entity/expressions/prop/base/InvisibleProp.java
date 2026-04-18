@@ -10,6 +10,8 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.registration.SyntaxInfo;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Invisible State")
@@ -27,8 +29,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class InvisibleProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(InvisibleProp.class, Boolean.class, "fake[ ]invisible[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(InvisibleProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake invisible state of %fakeentity%",
+                                "%fakeentity%'s fake invisible state"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

@@ -9,7 +9,9 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.util.Timespan;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Interpolation Delay")
@@ -33,11 +35,19 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                 kill fake entity {_e}
         """)
 @Since("1.0.0")
+
 public class InterpolationDelayProp extends MetaPropertyExpression<AbstractDisplayMeta, Timespan> {
 
-    static {
-        PropertyExpression.register(InterpolationDelayProp.class, Timespan.class,
-                "fake[ ]display[ ]interpolation[ ]delay", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(InterpolationDelayProp.class, Timespan.class)
+                        .addPatterns(
+                                "[the] fake display interpolation delay of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display interpolation delay"
+                        )
+                        .build()
+        );
     }
 
     public InterpolationDelayProp() {

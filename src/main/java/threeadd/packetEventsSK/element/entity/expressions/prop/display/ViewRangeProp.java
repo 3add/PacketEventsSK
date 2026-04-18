@@ -1,18 +1,43 @@
 package threeadd.packetEventsSK.element.entity.expressions.prop.display;
 
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.expressions.base.PropertyExpression;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Name;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
-// TODO docs
+@Name("Fake Display Entity - View Range")
+@Description("""
+        Represents the view range of a Display Entity.
+        See [Display Entity Data](https://minecraft.wiki/w/Display#Entity_data) on McWiki for more details.
+        """)
+@Example("""
+        command display <text>:
+            trigger:
+                create new fake text display entity at player for players:
+                    set fake display text of the fake entity to "Hello <rainbow>World"
+                    set fake display view range of the fake entity to 10
+                    wait 2 seconds
+                    kill fake entity the fake entity
+        """)
 @SuppressWarnings("unused")
 public class ViewRangeProp extends MetaPropertyExpression<AbstractDisplayMeta, Number> {
 
-    static {
-        PropertyExpression.register(ViewRangeProp.class, Number.class,
-                "fake[ ]display[ ]view[ ]range", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ViewRangeProp.class, Number.class)
+                        .addPatterns(
+                                "[the] fake display view range of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display view range"
+                        )
+                        .build()
+        );
     }
 
     public ViewRangeProp() {

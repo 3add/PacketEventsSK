@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTabComplete;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTabComplete.CommandMatch;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 import java.util.ArrayList;
@@ -31,8 +33,16 @@ import java.util.List;
 @Since("1.0.0")
 public class TabCompleteTabCompletionsProp extends PacketPropertyExpression<WrapperPlayServerTabComplete, String> {
 
-    static {
-        PropertyExpression.register(TabCompleteTabCompletionsProp.class, String.class, "packet[ ]completions", "packet");
+    public static void registry(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(TabCompleteTabCompletionsProp.class, String.class)
+                        .addPatterns(
+                                "[the] packet[ ]completions of %packet%",
+                                "%packet%'[s] packet[ ]completions"
+                                )
+                        .build()
+        );
     }
 
     public TabCompleteTabCompletionsProp() {

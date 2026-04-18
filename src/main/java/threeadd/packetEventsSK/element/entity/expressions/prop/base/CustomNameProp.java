@@ -5,19 +5,20 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Custom Name")
 @Description("A custom name of a fake entity, this does not support colors due to minecraft limitations.")
 @Example("""
-        command spawnRichCow <text>:
+        command spawnRichCow:
             trigger:
                 set {_name} to mini message from arg-1
 
@@ -26,10 +27,19 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     set fake custom name visible state of the fake entity to true
         """)
 @Since("1.0.0")
+
 public class CustomNameProp extends MetaPropertyExpression<EntityMeta, String> {
 
-    static {
-         PropertyExpression.register(CustomNameProp.class, String.class, "fake[ ]custom[ ]name", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+         registry.register(
+                 SyntaxRegistry.EXPRESSION,
+                 SyntaxInfo.Expression.builder(CustomNameProp.class, String.class)
+                         .addPatterns(
+                                 "[the] fake custom name of %fakeentity%",
+                                 "%fakeentity%'s fake custom name"
+                         )
+                         .build()
+         );
     }
 
     @SuppressWarnings("unused")

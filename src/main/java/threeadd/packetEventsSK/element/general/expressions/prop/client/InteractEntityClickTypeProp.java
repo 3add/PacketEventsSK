@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
 
@@ -38,10 +40,18 @@ import threeadd.packetEventsSK.util.ConversionUtil;
 @Since("1.0.0")
 public class InteractEntityClickTypeProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, ClickType> {
 
-    static {
-        PropertyExpression.register(InteractEntityClickTypeProp.class, ClickType.class,
-                "packet[ ]click[ ]type", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(InteractEntityClickTypeProp.class, ClickType.class)
+                        .addPatterns(
+                                "[the] packet[ ]click[ ]type of %packet%",
+                                "%packet%'[s] packet[ ]click[ ]type"
+                        )
+                        .build()
+        );
     }
+
 
     public InteractEntityClickTypeProp() {
         super(ClickType.class, PacketType.Play.Client.INTERACT_ENTITY, true, true, null, Changer.ChangeMode.SET);

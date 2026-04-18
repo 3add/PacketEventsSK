@@ -5,13 +5,16 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+
+import javax.annotation.Syntax;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Scale")
@@ -37,9 +40,16 @@ import threeadd.packetEventsSK.util.ConversionUtil;
 @Since("1.0.0")
 public class ScaleProp extends MetaPropertyExpression<AbstractDisplayMeta, Vector> {
 
-    static {
-        PropertyExpression.register(ScaleProp.class, Vector.class,
-                "fake[ ]display[ ]scale", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ScaleProp.class, Vector.class)
+                        .addPatterns(
+                                "[the] fake display scale of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display scale"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

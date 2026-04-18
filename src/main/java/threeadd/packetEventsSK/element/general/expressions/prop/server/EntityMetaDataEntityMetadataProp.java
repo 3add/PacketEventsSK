@@ -1,25 +1,43 @@
 package threeadd.packetEventsSK.element.general.expressions.prop.server;
 
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Name;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
-// TODO docs
+import javax.annotation.Syntax;
+
+@Name("General - Entity Metadata Packet - Entity Metadata")
+@Description("Used to get the entity metadata of an entity metadata packet. This is represented as an EntityMeta object, which is a custom class that contains all the metadata of an entity. This is NOT thread safe, and should only be used in a synchronous context.")
+
+@Since("1.0.0")
+// TODO Example
 @SuppressWarnings("unused")
 public class EntityMetaDataEntityMetadataProp extends PacketPropertyExpression<WrapperPlayServerEntityMetadata, EntityMeta> {
 
-    static {
-        PropertyExpression.register(EntityMetaDataEntityMetadataProp.class, EntityMeta.class,
-                "packet[ ]entity[ ]meta[ ][data]", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(EntityMetaDataEntityMetadataProp.class, EntityMeta.class)
+                        .addPatterns(
+                                "[the] packet[ ]entity[ ]meta[ ][data] of %packet%",
+                                "%packet%'[s] packet[ ]entity[ ]meta[ ][data]"
+                                )
+                        .build()
+        );
     }
 
     public EntityMetaDataEntityMetadataProp() {

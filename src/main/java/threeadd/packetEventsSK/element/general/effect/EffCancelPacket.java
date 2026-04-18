@@ -8,6 +8,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.PacketEventParserData;
@@ -27,11 +29,16 @@ import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.Proc
             send "You can't view my chunks 3add!"
         """)
 @Since("1.0.0")
-public class CancelPacketEff extends CustomEffect {
+public class EffCancelPacket extends CustomEffect {
 
-    static {
-        Skript.registerEffect(CancelPacketEff.class,
-                "cancel [the] packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffCancelPacket.class)
+                        .addPatterns("cancel (the|this) packet")
+                        .build()
+        );
+
     }
 
     @Override

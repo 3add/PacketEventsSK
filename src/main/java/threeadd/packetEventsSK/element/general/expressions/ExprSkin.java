@@ -1,14 +1,14 @@
 package threeadd.packetEventsSK.element.general.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomExpression;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 
@@ -29,14 +29,18 @@ import threeadd.packetEventsSK.element.entity.api.skin.Skin;
                 set displayed skin of player to {-skin}
         """)
 @Since("1.0.0")
-public class SkinExpr extends CustomExpression<Skin> {
+public class ExprSkin extends CustomExpression<Skin> {
 
-    static {
-        Skript.registerExpression(SkinExpr.class, Skin.class, ExpressionType.COMBINED,
-                "[new] [player] skin from [value] %string% [(with|and) signature %-string%]");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ExprSkin.class, Skin.class)
+                        .addPatterns("[new] [player] skin from [value] %string% [(with|and) signature %-string%]")
+                        .build()
+        );
     }
 
-    public SkinExpr() {
+    public ExprSkin() {
         super(Skin.class, true);
     }
 

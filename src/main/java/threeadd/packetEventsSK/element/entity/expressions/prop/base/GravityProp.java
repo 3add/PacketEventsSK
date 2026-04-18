@@ -10,6 +10,8 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.registration.SyntaxInfo;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Gravity State")
@@ -24,8 +26,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class GravityProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(GravityProp.class, Boolean.class, "fake[ ]gravity[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(GravityProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake gravity state of %fakeentity%",
+                                "%fakeentity%'s fake gravity state"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

@@ -1,6 +1,5 @@
 package threeadd.packetEventsSK.element.general.effect;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
@@ -12,6 +11,8 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 
 import java.util.List;
@@ -27,11 +28,18 @@ import java.util.List;
                     send packet the packet to the player
         """)
 @Since("1.0.0")
-public class SendOrReceivePacketEff extends CustomEffect {
+public class EffSendOrReceivePacket extends CustomEffect {
 
-    static {
-        Skript.registerEffect(SendOrReceivePacketEff.class,
-                "[:(silently|default)] :(send|receive) packet %packets% (to|from) %player%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSendOrReceivePacket.class)
+                        .addPatterns(
+                                "[force] send packet[s] %packet% to %players% [silently]",
+                                "[force] receive packet[s] %packet% from %players% [silently]"
+                        )
+                        .build()
+        );
     }
 
     private boolean isSilent = false;

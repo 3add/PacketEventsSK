@@ -10,6 +10,8 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.registration.SyntaxInfo;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - On Fire State")
@@ -24,8 +26,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class FireProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(FireProp.class, Boolean.class, "fake[ ][on][ ]fire[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(FireProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake fire state of %fakeentity%",
+                                "%fakeentity%'s fake fire state"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

@@ -20,6 +20,8 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.script.Script;
 import org.skriptlang.skript.lang.structure.Structure;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.PacketEventsSK;
 import threeadd.packetEventsSK.element.general.api.PacketEventRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketEventRegistry.ListenerData;
@@ -39,9 +41,13 @@ import java.util.Locale;
 @Since("1.0.0")
 public class PacketEventStruct extends Structure {
 
-    static {
-        Skript.registerStructure(PacketEventStruct.class, "[on] [packet] %packettype% [:(sync|async|netty) processed]");
-        ParserInstance.registerData(PacketEventParserData.class, PacketEventParserData::new);
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.STRUCTURE,
+                SyntaxInfo.Structure.builder(PacketEventStruct.class)
+                        .addPatterns("[on] [packet] %packettype% [:(sync|async|netty) processed]")
+                        .build()
+        );
     }
 
     private ProcessWay processWay = ProcessWay.NETTY;

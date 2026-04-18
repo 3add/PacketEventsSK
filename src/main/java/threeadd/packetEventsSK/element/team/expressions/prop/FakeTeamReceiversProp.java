@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -37,8 +39,14 @@ import java.util.UUID;
 @Since("1.0.0")
 public class FakeTeamReceiversProp extends CustomPropertyExpression<FakeTeam, Player> {
 
-    static {
-        PropertyExpression.register(FakeTeamReceiversProp.class, Player.class, "fake[ ]team[ ]viewers", "faketeam");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(FakeTeamReceiversProp.class, Player.class)
+                        .addPatterns("%faketeam%'s fake team viewers", "%faketeam%'s fake team receivers")
+                        .build()
+        );
+
     }
 
     @SuppressWarnings("unused")

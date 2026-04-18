@@ -13,8 +13,10 @@ import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Player Entity - Skin")
@@ -31,8 +33,16 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class SkinProp extends CustomPropertyExpression<WrapperEntity, Skin> {
 
-    static {
-        PropertyExpression.register(SkinProp.class, Skin.class, "fake[ ]skin", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(SkinProp.class, Skin.class)
+                        .addPatterns(
+                                "[the] fake skin of %fakeentity%",
+                                "%fakeentity%'s fake skin"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

@@ -10,9 +10,11 @@ import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Width/Height")
@@ -37,9 +39,16 @@ public class HeightOrHeightProp extends MetaPropertyExpression<AbstractDisplayMe
 
     private static final Logger log = LoggerFactory.getLogger(HeightOrHeightProp.class);
 
-    static {
-        PropertyExpression.register(HeightOrHeightProp.class, Number.class,
-                "fake[ ]display[ ]:(height|width)", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(HeightOrHeightProp.class, Number.class)
+                        .addPatterns(
+                                "[the] fake display (height|width) of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display (height|width)"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

@@ -9,6 +9,8 @@ import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.element.simple.api.PlayerSkinManager;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
@@ -31,11 +33,15 @@ import java.util.stream.Collectors;
                 set displayed skin of player to {_skin} for player
         """)
 @Since("1.0.0")
-public class DisplayedSkinEff extends CustomEffect {
+public class EffDisplayedSkin extends CustomEffect {
 
-    static {
-        Skript.registerEffect(DisplayedSkinEff.class,
-                "set displayed skin of %players% to %skin% [for %-players%]");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffDisplayedSkin.class)
+                        .addPatterns("set displayed skin of %players% to %skin% [for %-players%]")
+                        .build()
+        );
     }
 
     @Override

@@ -10,6 +10,7 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Frozen Time")
@@ -27,9 +28,18 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class AirTicksProp extends MetaPropertyExpression<EntityMeta, Timespan> {
 
-    //static {
-    //    PropertyExpression.register(AirTicksProp.class, Timespan.class, "fake[ ]air[ ]time", "fakeentity/fakeentitymeta");
+    //public static void register(SyntaxRegistry registry) {
+    //    registry.register(
+    //            SyntaxRegistry.EXPRESSION,
+    //            SyntaxInfo.Expression.builder(AirTicksProp.class, Timespan.class)
+    //                    .addPatterns(
+    //                            "[the] fake air time of %fakeentity%",
+    //                            "%fakeentity%'s fake air time"
+    //                    )
+    //                    .build()
+    //    );
     //}
+    // prolly uncomment if packetevents fixes the bug
 
     public AirTicksProp() {
         super(Timespan.class, EntityMeta.class, Changer.ChangeMode.SET);

@@ -10,8 +10,10 @@ import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Translation")
@@ -37,9 +39,16 @@ import threeadd.packetEventsSK.util.ConversionUtil;
 @Since("1.0.0")
 public class TranslationProp extends MetaPropertyExpression<AbstractDisplayMeta, Vector> {
 
-    static {
-        PropertyExpression.register(TranslationProp.class, Vector.class,
-                "fake[ ]display[ ]translation", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(TranslationProp.class, Vector.class)
+                        .addPatterns(
+                                "[the] fake display translation of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display translation"
+                        )
+                        .build()
+        );
     }
 
     public TranslationProp() {

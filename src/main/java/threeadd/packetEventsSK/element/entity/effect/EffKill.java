@@ -1,6 +1,5 @@
 package threeadd.packetEventsSK.element.entity.effect;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
@@ -9,6 +8,8 @@ import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 
 import java.util.List;
@@ -25,11 +26,16 @@ import java.util.List;
                 kill fake entity {_e}
         """)
 @Since("1.0.0")
-public class KillEff extends CustomEffect {
 
-    static {
-        Skript.registerEffect(KillEff.class,
-                "kill fake[ ]entit(y|ies) %fakeentities%");
+public class EffKill extends CustomEffect {
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffKill.class)
+                        .addPatterns("kill fake[ ]entit(y|ies) %fakeentities%")
+                        .build()
+        );
     }
 
     @Override

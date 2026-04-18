@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -33,9 +35,16 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 @Since("1.0.0")
 public class InteractEntityEntityIdProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Integer> {
 
-    static {
-        PropertyExpression.register(InteractEntityEntityIdProp.class, Integer.class,
-                "packet[ ]entity[ ]id", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(InteractEntityEntityIdProp.class, Integer.class)
+                        .addPatterns(
+                                "[the] packet[ ]entity[ ]id of %packet%",
+                                "%packet%'[s] packet[ ]entity[ ]id"
+                                )
+                        .build()
+        );
     }
 
     public InteractEntityEntityIdProp() {

@@ -10,7 +10,9 @@ import ch.njol.skript.util.Timespan;
 import ch.njol.skript.util.Timespan.TimePeriod;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Transform Interpolation Duration")
@@ -36,9 +38,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class TransformInterpolationDurationProp extends MetaPropertyExpression<AbstractDisplayMeta, Timespan> {
 
-    static {
-        PropertyExpression.register(TransformInterpolationDurationProp.class, Timespan.class,
-                "fake[ ]display[ ]transform[ation][ ]interpolation[ ]duration", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(TransformInterpolationDurationProp.class, Timespan.class)
+                        .addPatterns(
+                                "[the] fake display transform interpolation duration of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display transform interpolation duration"
+                        )
+                        .build()
+        );
     }
 
     public TransformInterpolationDurationProp() {

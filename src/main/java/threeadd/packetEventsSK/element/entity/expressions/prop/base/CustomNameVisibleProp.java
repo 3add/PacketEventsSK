@@ -10,6 +10,8 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.registration.SyntaxInfo;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Custom Name Visible State")
@@ -26,8 +28,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class CustomNameVisibleProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(CustomNameVisibleProp.class, Boolean.class, "fake[ ]custom[ ]name[ ]visible[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(CustomNameVisibleProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake custom name visible state of %fakeentity%",
+                                "%fakeentity%'s fake custom name visible state"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

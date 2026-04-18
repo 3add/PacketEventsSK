@@ -12,6 +12,8 @@ import org.bukkit.entity.Pose;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.registration.SyntaxInfo;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Entity Pose")
@@ -29,8 +31,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class PoseProp extends MetaPropertyExpression<EntityMeta, Pose> {
 
-    static {
-        PropertyExpression.register(PoseProp.class, Pose.class, "fake[ ]pose", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(PoseProp.class, Pose.class)
+                        .addPatterns(
+                                "[the] fake pose of %fakeentity%",
+                                "%fakeentity%'s fake pose"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

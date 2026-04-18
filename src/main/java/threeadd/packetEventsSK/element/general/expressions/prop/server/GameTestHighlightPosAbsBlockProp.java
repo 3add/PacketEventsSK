@@ -12,7 +12,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerGa
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
+
+import javax.annotation.Syntax;
 
 @SuppressWarnings("unused")
 @Name("General - Game Test Highlight Pos Packet - Absolute Block")
@@ -30,9 +34,16 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 @Since("1.0.0")
 public class GameTestHighlightPosAbsBlockProp extends PacketPropertyExpression<WrapperPlayServerGameTestHighlightPos, Vector> {
 
-    static {
-        PropertyExpression.register(GameTestHighlightPosAbsBlockProp.class, Vector.class,
-                "packet[ ]absolute[ ]block", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(GameTestHighlightPosAbsBlockProp.class, Vector.class)
+                        .addPatterns(
+                                "[the] packet[ ]absolute[ ]block of %packet%",
+                                "%packet%'[s] packet[ ]absolute[ ]block"
+                        )
+                        .build()
+        );
     }
 
     public GameTestHighlightPosAbsBlockProp() {

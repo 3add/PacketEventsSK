@@ -13,9 +13,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 import java.util.*;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity - Fake Entity Viewers")
@@ -37,8 +39,16 @@ import java.util.*;
 @Since("1.0.0")
 public class FakeEntityViewersProp extends CustomPropertyExpression<WrapperEntity, Player> {
 
-    static {
-        PropertyExpression.register(FakeEntityViewersProp.class, Player.class, "fake[ ]entity[ ]viewers", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+       registry.register(
+               SyntaxRegistry.EXPRESSION,
+               SyntaxInfo.Expression.builder(FakeEntityViewersProp.class, Player.class)
+                       .addPatterns(
+                               "[the] fake entity viewers of %fakeentity%",
+                               "%fakeentity%'s fake entity viewers"
+                       )
+                       .build()
+       );
     }
 
     @SuppressWarnings("unused")

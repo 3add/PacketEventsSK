@@ -8,6 +8,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 import java.util.ArrayList;
@@ -27,9 +29,16 @@ import java.util.List;
 @Since("1.0.0")
 public class DestroyEntitiesEntityIdsProp extends PacketPropertyExpression<WrapperPlayServerDestroyEntities, Integer> {
 
-    static {
-        PropertyExpression.register(DestroyEntitiesEntityIdsProp.class, Integer.class,
-                "packet[ ]entity[ ]ids", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(DestroyEntitiesEntityIdsProp.class, Integer.class)
+                        .addPatterns(
+                                "[the] packet[ ]entity[ ]ids of %packet%",
+                                "%packet%'[s] packet[ ]entity[ ]ids"
+                                )
+                        .build()
+        );
     }
 
     public DestroyEntitiesEntityIdsProp() {
