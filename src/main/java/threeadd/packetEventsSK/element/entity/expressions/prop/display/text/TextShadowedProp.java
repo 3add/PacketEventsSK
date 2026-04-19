@@ -33,9 +33,10 @@ public class TextShadowedProp extends MetaPropertyExpression<TextDisplayMeta, Bo
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(TextShadowedProp.class, Boolean.class)
+                        .supplier(TextShadowedProp::new)
                         .addPatterns(
-                                "[the] fake display text shadowed state of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display text shadowed state"
+                                "[the] fake display text shadowed [state] of %fakeentity/fakeentitymeta%",
+                                "%fakeentity/fakeentitymeta%'s fake display text shadowed [state]"
                         )
                         .build()
         );

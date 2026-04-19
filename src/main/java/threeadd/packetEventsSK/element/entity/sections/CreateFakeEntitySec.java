@@ -2,6 +2,7 @@ package threeadd.packetEventsSK.element.entity.sections;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.EntityUtils;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -65,7 +66,7 @@ public class CreateFakeEntitySec extends Section {
                 SyntaxRegistry.SECTION,
                 SyntaxInfo.builder(CreateFakeEntitySec.class)
                         .supplier(CreateFakeEntitySec::new)
-                        .addPatterns("(make|create|spawn) [a] [new] fake %entitytype% [entity] [%-direction% %-location%] [for %-players%]:")
+                        .addPatterns("(make|create|spawn) [a] [new] fake %entitytype% [entity] [%-direction% %-location%] [for %-players%] [and store (it|the result) in %-objects%]:")
                         .build()
         );
     }
@@ -77,6 +78,7 @@ public class CreateFakeEntitySec extends Section {
     private Expression<EntityType> entityTypeExpr;
     private @Nullable Expression<Location> locationExpr;
     private @Nullable Expression<Player> playerExpr;
+    private @Nullable Expression<Object> storeExpr;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -104,6 +106,14 @@ public class CreateFakeEntitySec extends Section {
             this.playerExpr = (Expression<Player>) expressions[3];
         }
 
+        if (expressions[4] != null) {
+            this.storeExpr = (Expression<Object>) expressions[4];
+            if (!Changer.ChangerUtils.acceptsChange(storeExpr, Changer.ChangeMode.SET, WrapperEntity.class)) {
+                Skript.error(storeExpr.toString(null, Skript.debug()) + " cannot be set to store a fake entity");
+                return false;
+            }
+        }
+
         if (sectionNode != null) {
             loadOptionalCode(sectionNode);
         }
@@ -118,6 +128,11 @@ public class CreateFakeEntitySec extends Section {
         }
 
         lastEntities.put(event, entity);
+
+        if (storeExpr != null) {
+            storeExpr.change(event, new Object[]{entity}, Changer.ChangeMode.SET);
+        }
+
         return walk(event, true);
     }
 
