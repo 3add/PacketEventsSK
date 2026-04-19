@@ -44,26 +44,27 @@ public abstract class PacketPropertyExpression<Wrapper extends PacketWrapper<?>,
 
     @Override
     protected boolean initialize(SkriptParser.ParseResult parseResult) {
+        PacketEventParserData data = getParser().getData(PacketEventParserData.class);
+        if (data != null) {
+            ProcessWay processWay = data.getProcessWay();
+            if (processWay != null && !processWay.equals(ProcessWay.SYNC) && !isThreadSafe) {
+                if (alternative == null) {
+                    Skript.error("This property is not thread safe, you can't retrieve/alter it from a netty/async processed event, there is no alternative.");
+                    return false;
+                }
 
-        ProcessWay processWay = getParser().getData(PacketEventParserData.class).getProcessWay();
-        if (processWay != null && !processWay.equals(ProcessWay.SYNC) && !isThreadSafe) {
+                @SuppressWarnings("UnstableApiUsage")
+                String pattern = PacketEventsSK.getLoader().getAddon().syntaxRegistry().syntaxes(SyntaxRegistry.EXPRESSION).stream()
+                        .filter(expression -> expression.type().equals(alternative))
+                        .findAny()
+                        .orElseThrow(() -> new IllegalStateException("Couldn't find expression element for loaded expression"))
+                        .patterns().stream()
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Couldn't find any patterns for the alternative expression."));
 
-            if (alternative == null) {
-                Skript.error("This property is not thread safe, you can't retrieve/alter it from a netty/async processed event, there is no alternative.");
+                Skript.error("This property is not thread safe, you can't retrieve/alter it from a netty/async processed event, here's the alternative: " + pattern);
                 return false;
             }
-
-            @SuppressWarnings("UnstableApiUsage")
-            String pattern = PacketEventsSK.getLoader().getAddon().syntaxRegistry().syntaxes(SyntaxRegistry.EXPRESSION).stream()
-                    .filter(expression -> expression.type().equals(alternative))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalStateException("Couldn't find expression element for loaded expression"))
-                    .patterns().stream()
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Couldn't find any patterns for the alternative expression."));
-
-            Skript.error("This property is not thread safe, you can't retrieve/alter it from a netty/async processed event, here's the alternative: " + pattern);
-            return false;
         }
 
         return true;
@@ -117,7 +118,9 @@ public abstract class PacketPropertyExpression<Wrapper extends PacketWrapper<?>,
         Expression<PacketWrapper<?>> input = getExpressionOrNull(0, Expression.class);
         if (input == null) return;
 
-        ProcessWay processWay = getParser().getData(PacketEventParserData.class).getProcessWay();
+        PacketEventParserData data = getParser().getData(PacketEventParserData.class);
+        ProcessWay processWay = data != null ? data.getProcessWay() : null;
+
         if (input instanceof EventValueExpression<PacketWrapper<?>>) {
             if (processWay != null && !processWay.equals(ProcessWay.SYNC)) {
                 Skript.error("Cannot alter the on a non-sync thread");

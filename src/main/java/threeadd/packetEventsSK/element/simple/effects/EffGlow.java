@@ -41,7 +41,7 @@ public class EffGlow extends CustomEffect {
         syntaxRegistry.register(
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffGlow.class)
-                        .addPatterns("set glow state of %entities% to %boolean% [for %-players%]")
+                        .addPatterns("set glow[ing] [state] of %entities% [to] %boolean% [for %-players%]")
                         .build()
         );
     }

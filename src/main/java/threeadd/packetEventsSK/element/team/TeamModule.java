@@ -1,13 +1,14 @@
 package threeadd.packetEventsSK.element.team;
 
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.element.team.effects.EffDeleteTeam;
 import threeadd.packetEventsSK.element.team.expressions.ExprFakeTeamWithName;
+import threeadd.packetEventsSK.element.team.expressions.ExprLastFakeTeam;
 import threeadd.packetEventsSK.element.team.expressions.prop.FakeTeamColorProp;
 import threeadd.packetEventsSK.element.team.expressions.prop.FakeTeamEntitiesProp;
 import threeadd.packetEventsSK.element.team.expressions.prop.FakeTeamNameProp;
 import threeadd.packetEventsSK.element.team.expressions.prop.FakeTeamReceiversProp;
+import threeadd.packetEventsSK.element.team.sections.CreateFakeTeamSec;
 
 public class TeamModule {
 
@@ -15,13 +16,15 @@ public class TeamModule {
 
     // Team syntax classes register in static blocks, so initialize them once here.
     private static final String[] STATIC_REGISTRATION_CLASSES = {
-            BASE_PACKAGE + ".Types",
-            BASE_PACKAGE + ".sections.CreateFakeTeamSec"
+            BASE_PACKAGE + ".Types"
 
     };
 
     public static void registerAll(SyntaxRegistry registry) {
 
+        CreateFakeTeamSec.register(registry);
+
+        ExprLastFakeTeam.register(registry);
         ExprFakeTeamWithName.register(registry);
         FakeTeamColorProp.register(registry);
         FakeTeamEntitiesProp.register(registry);

@@ -21,10 +21,10 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 @Example("""
         command display <color>:
             trigger:
-                set {_color} to arg-1 parsed as color
                 create new fake text display entity at player for players:
-                    set fake display text of the fake entity to "Hello World"
-                    set fake display background color of the fake entity to {_color}
+                    set fake display text of the fake entity to "<white>Hello World"
+                    set fake display background color of the fake entity to arg-1
+                    set fake display billboard of the fake entity to center
                     wait 2 seconds
                     kill fake entity the fake entity
         """)

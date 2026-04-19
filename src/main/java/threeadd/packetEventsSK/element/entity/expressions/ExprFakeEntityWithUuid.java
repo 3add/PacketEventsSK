@@ -32,19 +32,19 @@ import java.util.UUID;
                         send "Found %fake entity with uuid loop-value%"
         """)
 @Since("1.0.0")
-public class FakeEntityWithUuidExpr extends CustomExpression<WrapperEntity> {
+public class ExprFakeEntityWithUuid extends CustomExpression<WrapperEntity> {
 
     public static void register(SyntaxRegistry registry) {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
-                DefaultSyntaxInfos.Expression.builder(FakeEntityWithUuidExpr.class, WrapperEntity.class)
+                DefaultSyntaxInfos.Expression.builder(ExprFakeEntityWithUuid.class, WrapperEntity.class)
                         .addPatterns("fake[ ]entity with uuid %uuid%")
                         .build()
         );
     }
 
     @SuppressWarnings("unused")
-    public FakeEntityWithUuidExpr() {
+    public ExprFakeEntityWithUuid() {
         super(WrapperEntity.class, true);
     }
 

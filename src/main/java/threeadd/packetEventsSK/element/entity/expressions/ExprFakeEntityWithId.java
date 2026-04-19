@@ -30,20 +30,20 @@ import threeadd.packetEventsSK.util.expressions.CustomExpression;
                         send "Found %fake entity with id loop-value%"
         """)
 @Since("1.0.0")
-public class FakeEntityWithIdExpr extends CustomExpression<WrapperEntity> {
+public class ExprFakeEntityWithId extends CustomExpression<WrapperEntity> {
 
 
     public static void register(SyntaxRegistry registry) {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
-                DefaultSyntaxInfos.Expression.builder(FakeEntityWithIdExpr.class, WrapperEntity.class)
+                DefaultSyntaxInfos.Expression.builder(ExprFakeEntityWithId.class, WrapperEntity.class)
                         .addPatterns("fake[ ]entity with id %integer%")
                         .build()
         );
     }
 
     @SuppressWarnings("unused")
-    public FakeEntityWithIdExpr() {
+    public ExprFakeEntityWithId() {
         super(WrapperEntity.class, true);
     }
 

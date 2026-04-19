@@ -12,6 +12,8 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValue;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.util.DebugUtil;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
@@ -21,10 +23,19 @@ import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class Types {
-    static {
-        EventValues.registerEventValue(PacketTriggerEvent.class, Player.class, event -> event.getEvent().getPlayer());
-        EventValues.registerEventValue(PacketTriggerEvent.class, PacketWrapper.class, PacketTriggerEvent::getWrapper);
 
+    public static void registerEventValues(EventValueRegistry eventValueRegistry) {
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, Player.class)
+                .getter(event -> event.getEvent().getPlayer())
+                .build());
+
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, PacketWrapper.class)
+                .getter(PacketTriggerEvent::getWrapper)
+                .build());
+    }
+
+
+    static {
         Classes.registerClass(new ClassInfo<>(PacketWrapper.class, "packet")
                 .user("packet")
                 .name("General - Packet")
@@ -62,18 +73,22 @@ public class Types {
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. chunk data send)")
                 .examples("""
-                        on interact entity receive netty processed:
-                           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-                              stop
-                        F
-                           send "Welcome %player's name%"
-                        """)
+                on interact entity receive netty processed:
+                   if packet entity id of event-packet is not {-interactables::%player's uuid%}:
+                      stop
+                F
+                   send "Welcome %player's name%"
+                """)
                 .since("1.0.0")
                 .parser(new Parser<>() {
 
                     @Override
                     public @Nullable PacketTypeCommon parse(String input, ParseContext context) {
                         input = input.trim();
+                        if (input.toLowerCase(Locale.ENGLISH).endsWith(" packet")) {
+                            input = input.substring(0, input.length() - 7).trim();
+                        }
+
                         boolean isSend;
                         String name;
 

@@ -1,13 +1,12 @@
 package threeadd.packetEventsSK.element.entity;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.data.type.Fire;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.effect.EffKill;
 import threeadd.packetEventsSK.element.entity.effect.EffSpawn;
 import threeadd.packetEventsSK.element.entity.effect.EffTeleport;
-import threeadd.packetEventsSK.element.entity.expressions.FakeEntityWithIdExpr;
-import threeadd.packetEventsSK.element.entity.expressions.FakeEntityWithUuidExpr;
+import threeadd.packetEventsSK.element.entity.expressions.ExprLastFakeEntity;
+import threeadd.packetEventsSK.element.entity.expressions.ExprFakeEntityWithId;
+import threeadd.packetEventsSK.element.entity.expressions.ExprFakeEntityWithUuid;
 import threeadd.packetEventsSK.element.entity.expressions.prop.FakeEntityViewersProp;
 import threeadd.packetEventsSK.element.entity.expressions.prop.IdProp;
 import threeadd.packetEventsSK.element.entity.expressions.prop.LocationProp;
@@ -21,20 +20,23 @@ import threeadd.packetEventsSK.element.entity.expressions.prop.display.text.Text
 import threeadd.packetEventsSK.element.entity.expressions.prop.display.text.TextShadowedProp;
 import threeadd.packetEventsSK.element.entity.expressions.prop.interaction.InteractionHeightProp;
 import threeadd.packetEventsSK.element.entity.expressions.prop.player.SkinProp;
+import threeadd.packetEventsSK.element.entity.sections.CreateFakeEntitySec;
 
 public class EntityModule {
 
     private static final String BASE_PACKAGE = "threeadd.packetEventsSK.element.entity";
 
     private static final String[] STATIC_REGISTRATION_CLASSES = {
-            BASE_PACKAGE + ".Types",
-            BASE_PACKAGE + ".sections.CreateFakeEntitySec",
+            BASE_PACKAGE + ".Types"
     };
 
     public static void registerAll(SyntaxRegistry registry) {
 
-        FakeEntityWithIdExpr.register(registry);
-        FakeEntityWithUuidExpr.register(registry);
+        CreateFakeEntitySec.register(registry);
+
+        ExprLastFakeEntity.register(registry);
+        ExprFakeEntityWithId.register(registry);
+        ExprFakeEntityWithUuid.register(registry);
 
         FakeEntityViewersProp.register(registry);
         IdProp.register(registry);

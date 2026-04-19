@@ -39,7 +39,9 @@ public class FakeTeamColorProp extends CustomPropertyExpression<FakeTeam, Color>
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(FakeTeamColorProp.class, Color.class)
-                        .addPatterns("%faketeam%'s fake team color")
+                        .addPatterns("%faketeam%'s fake team color",
+                                    "fake team color of %faketeam%"
+                                )
                         .build()
         );
     }
