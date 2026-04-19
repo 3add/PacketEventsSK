@@ -4,6 +4,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.effect.EffCancelPacket;
 import threeadd.packetEventsSK.element.general.effect.EffFetchSkin;
 import threeadd.packetEventsSK.element.general.effect.EffSendOrReceivePacket;
+import threeadd.packetEventsSK.element.general.expressions.ExprEventPacket;
 import threeadd.packetEventsSK.element.general.expressions.ExprLastPacket;
 import threeadd.packetEventsSK.element.general.expressions.ExprSkin;
 import threeadd.packetEventsSK.element.general.expressions.prop.EntityIdProp;
@@ -43,6 +44,7 @@ public class GeneralModule {
         PlayerSkinProp.register(registry);
 
         ExprSkin.register(registry);
+        ExprEventPacket.register(registry);
         ExprLastPacket.register(registry);
 
         EffCancelPacket.register(registry);

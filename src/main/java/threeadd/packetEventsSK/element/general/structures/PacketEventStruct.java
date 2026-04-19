@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.lang.util.SimpleEvent;
+import ch.njol.skript.registrations.EventValues;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -33,13 +34,13 @@ import java.util.Locale;
 @Name("General - On Packet")
 @Description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
 @Example("""
-        on packet interact entity packet receive netty processed:
+        on packet interact entity receive netty processed:
             cancel packet
         
-        on packet chunk data packet send netty processed:
+        on packet chunk data send netty processed:
             cancel packet
         """)
-@Since("1.0.0")
+@Since("INSERT VERSION")
 public class PacketEventStruct extends Structure {
 
     public static void register(SyntaxRegistry registry) {
