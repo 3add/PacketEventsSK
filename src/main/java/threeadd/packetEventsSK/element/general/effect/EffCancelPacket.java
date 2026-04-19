@@ -44,9 +44,14 @@ public class EffCancelPacket extends CustomEffect {
 
     @Override
     protected boolean initialize(SkriptParser.ParseResult parseResult) {
+        PacketEventParserData data = getParser().getData(PacketEventParserData.class);
+        if (data == null) {
+            Skript.error("Can't cancel packets outside of packet events.");
+            return false;
+        }
 
-        ProcessWay way = getParser().getData(PacketEventParserData.class).getProcessWay();
-        if (way != null && !way.equals(ProcessWay.NETTY)) {
+        ProcessWay way = data.getProcessWay();
+        if (way != ProcessWay.NETTY) {
             Skript.error("Can't cancel packets outside of netty processed packet events, this is because they have probably already been processed on the netty thread.");
             return false;
         }
