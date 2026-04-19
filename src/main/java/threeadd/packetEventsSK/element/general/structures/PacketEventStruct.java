@@ -32,12 +32,12 @@ import java.util.Locale;
 @Name("General - On Packet")
 @Description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
 @Example("""
-        on interact entity receive netty processed:
-           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-              stop
+        on packet interact entity packet receive netty processed:
+            cancel packet
         
-           send "Welcome %player's name%"
-        """)
+        on packet chunk data packet send netty processed:
+            cancel packet
+        """
 @Since("1.0.0")
 public class PacketEventStruct extends Structure {
 
