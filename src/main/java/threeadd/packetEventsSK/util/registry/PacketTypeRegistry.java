@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +14,7 @@ public class PacketTypeRegistry {
 
     private static final Map<String, PacketTypeCommon> SEND_PACKETS_BY_NAME = new ConcurrentHashMap<>();
     private static final Map<String, PacketTypeCommon> RECEIVE_PACKETS_BY_NAME = new ConcurrentHashMap<>();
+
 
     static {
         BiConsumer<Map<String, PacketTypeCommon>, PacketTypeCommon[]> populateMap = (map, types) -> {
@@ -32,6 +34,14 @@ public class PacketTypeRegistry {
         populateMap.accept(RECEIVE_PACKETS_BY_NAME, PacketType.Login.Client.values());
         populateMap.accept(RECEIVE_PACKETS_BY_NAME, PacketType.Handshaking.Client.values());
         populateMap.accept(RECEIVE_PACKETS_BY_NAME, PacketType.Status.Client.values());
+    }
+
+    public static Collection<PacketTypeCommon> getAllSendPackets() {
+        return SEND_PACKETS_BY_NAME.values();
+    }
+
+    public static Collection<PacketTypeCommon> getAllReceivePackets() {
+        return RECEIVE_PACKETS_BY_NAME.values();
     }
 
     public static @Nullable PacketTypeCommon getPacket(String rawName, boolean isSend) {

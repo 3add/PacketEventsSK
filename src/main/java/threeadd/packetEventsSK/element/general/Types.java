@@ -19,6 +19,8 @@ import threeadd.packetEventsSK.util.DebugUtil;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
 import threeadd.packetEventsSK.util.registry.PacketTypeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
@@ -80,6 +82,12 @@ public class Types {
                    send "Welcome %player's name%"
                 """)
                 .since("1.0.0")
+                .supplier(() -> {
+                    List<PacketTypeCommon> all = new ArrayList<>();
+                    all.addAll(PacketTypeRegistry.getAllSendPackets());
+                    all.addAll(PacketTypeRegistry.getAllReceivePackets());
+                    return all.iterator();
+                })
                 .parser(new Parser<>() {
 
                     @Override
