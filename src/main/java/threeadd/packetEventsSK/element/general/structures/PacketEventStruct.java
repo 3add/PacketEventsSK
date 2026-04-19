@@ -37,7 +37,7 @@ import java.util.Locale;
         
         on packet chunk data packet send netty processed:
             cancel packet
-        """
+        """)
 @Since("1.0.0")
 public class PacketEventStruct extends Structure {
 
