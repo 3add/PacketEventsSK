@@ -1,6 +1,7 @@
 package threeadd.packetEventsSK.element.general.section;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -30,9 +31,9 @@ import java.util.WeakHashMap;
 @Examples("""
         command killTargetForMe:
             trigger:
-                create a new destroy entities packet:
-                    add target entity of player to packet entities of the packet
-                    send packet the packet to the player
+                create a new destroy entities packet and store it in {_packet}:
+                    add target entity of player to packet entities of {_packet}
+                    send packet {_packet} to the player
         """)
 @Since("1.0.0")
 public class CreatePacketSec extends Section {
@@ -44,7 +45,7 @@ public class CreatePacketSec extends Section {
                 SyntaxRegistry.SECTION,
                 SyntaxInfo.builder(CreatePacketSec.class)
                         .supplier(CreatePacketSec::new)
-                        .addPatterns("(make|create) [a] [new] %packettype%:")
+                        .addPatterns("(make|create) [a] [new] %packettype% [and store (it|the result) in %-objects%]:")
                         .build()
         );
     }
@@ -54,6 +55,7 @@ public class CreatePacketSec extends Section {
     }
 
     private Literal<PacketTypeCommon> packetTypeLiteral;
+    private @Nullable Expression<Object> storeExpr;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -71,6 +73,14 @@ public class CreatePacketSec extends Section {
             return false;
         }
 
+        if (expressions[1] != null) {
+            this.storeExpr = (Expression<Object>) expressions[1];
+            if (!Changer.ChangerUtils.acceptsChange(storeExpr, Changer.ChangeMode.SET, PacketWrapper.class)) {
+                Skript.error(storeExpr.toString(null, Skript.debug()) + " cannot be set to store a packet");
+                return false;
+            }
+        }
+
         if (sectionNode != null) {
             loadOptionalCode(sectionNode);
         }
@@ -85,6 +95,11 @@ public class CreatePacketSec extends Section {
         }
 
         lastPackets.put(event, packet);
+
+        if (storeExpr != null) {
+            storeExpr.change(event, new Object[]{packet}, Changer.ChangeMode.SET);
+        }
+
         return walk(event, true);
     }
 

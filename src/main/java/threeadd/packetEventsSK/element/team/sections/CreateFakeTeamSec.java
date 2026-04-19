@@ -1,5 +1,7 @@
 package threeadd.packetEventsSK.element.team.sections;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -27,9 +29,9 @@ import java.util.WeakHashMap;
 @Examples("""
         command glowGreen:
             trigger:
-                create new fake team named player's name for player:
-                    set the fake team color of the fake team to green
-                    add player to fake team entities of the fake team
+                create new fake team named player's name for player and store it in {_team}:
+                    set {_team}'s fake team color to green
+                    add player to {_team}'s fake team entities
         """)
 @Since("1.0.0")
 public class CreateFakeTeamSec extends Section {
@@ -41,7 +43,7 @@ public class CreateFakeTeamSec extends Section {
                 SyntaxRegistry.SECTION,
                 SyntaxInfo.builder(CreateFakeTeamSec.class)
                         .supplier(CreateFakeTeamSec::new)
-                        .addPatterns("(make|create) [a] [new] fake[ ]team (with name|named) %string% [for %-players%]:")
+                        .addPatterns("(make|create) [a] [new] fake[ ]team (with name|named) %string% [for %-players%] [and store (it|the result) in %-objects%]:")
                         .build()
         );
     }
@@ -52,6 +54,7 @@ public class CreateFakeTeamSec extends Section {
 
     private Expression<String> nameExpr;
     private @Nullable Expression<Player> playerExpr;
+    private @Nullable Expression<Object> storeExpr;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -68,6 +71,14 @@ public class CreateFakeTeamSec extends Section {
             this.playerExpr = (Expression<Player>) expressions[1];
         }
 
+        if (expressions[2] != null) {
+            this.storeExpr = (Expression<Object>) expressions[2];
+            if (!Changer.ChangerUtils.acceptsChange(storeExpr, Changer.ChangeMode.SET, FakeTeam.class)) {
+                Skript.error(storeExpr.toString(null, Skript.debug()) + " cannot be set to store a fake team");
+                return false;
+            }
+        }
+
         if (sectionNode != null) {
             loadOptionalCode(sectionNode);
         }
@@ -82,6 +93,11 @@ public class CreateFakeTeamSec extends Section {
         }
 
         lastTeams.put(event, team);
+
+        if (storeExpr != null) {
+            storeExpr.change(event, new Object[]{team}, Changer.ChangeMode.SET);
+        }
+
         return walk(event, true);
     }
 
