@@ -20,6 +20,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.script.Script;
 import org.skriptlang.skript.lang.structure.Structure;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.PacketEventsSK;
@@ -42,10 +43,14 @@ import java.util.Locale;
 public class PacketEventStruct extends Structure {
 
     public static void register(SyntaxRegistry registry) {
+        ParserInstance.registerData(PacketEventParserData.class, PacketEventParserData::new);
+
         registry.register(
                 SyntaxRegistry.STRUCTURE,
                 SyntaxInfo.Structure.builder(PacketEventStruct.class)
+                        .supplier(PacketEventStruct::new)
                         .addPatterns("[on] [packet] %packettype% [:(sync|async|netty) processed]")
+                        .nodeType(DefaultSyntaxInfos.Structure.NodeType.SECTION)
                         .build()
         );
     }

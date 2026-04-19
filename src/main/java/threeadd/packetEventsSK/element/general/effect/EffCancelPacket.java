@@ -32,13 +32,14 @@ import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.Proc
 public class EffCancelPacket extends CustomEffect {
 
     public static void register(SyntaxRegistry registry) {
+        System.out.println("[PacketEventsSK] Registering EffCancelPacket");
         registry.register(
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffCancelPacket.class)
-                        .addPatterns("cancel (the|this) packet")
+                        .supplier(EffCancelPacket::new)
+                        .addPatterns("cancel [the] packet")
                         .build()
         );
-
     }
 
     @Override
