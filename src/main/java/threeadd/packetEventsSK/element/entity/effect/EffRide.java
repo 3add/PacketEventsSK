@@ -35,8 +35,8 @@ public class EffRide extends CustomEffect {
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffRide.class)
                         .addPatterns(
-                                "make fake[ ]entit(y|ies) %fakeentities% ride %fakeentity/livingentity%",
-                                "remove fake[ ]entit(y|ies) %fakeentities% as passenger[s] of %fakeentity/livingentity%"
+                                "(make|let|force) fake[ ]entit(y|ies) %fakeentities% [to] (ride|mount) %fakeentity/livingentity%",
+                                "(make|let|force) fake[ ]entit(y|ies) %fakeentities% [to] (dismount|(dismount|leave) as passenger[s] of %fakeentity/livingentity%"
                         )
                         .build()
         );
