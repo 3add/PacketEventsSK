@@ -1,11 +1,17 @@
 <!--suppress HtmlDeprecatedAttribute --> 
-<div align="center"> 
-    <h2>PacketEventsSK</h2>
-    <h3>PacketEventsSK is a skript addon that adds packet related features to Skript.</h3>
-    <a href="https://discord.gg/CzQ863nxDB"><img src="https://img.shields.io/discord/1459606994389307463?color=5562e9&logo=discord&logoColor=white&style=for-the-badge"></a>
-    <img src="https://img.shields.io/github/license/3add/PacketEventsSK?style=for-the-badge&logo=github"> 
-    <a href="https://bstats.org/plugin/bukkit/PacketEventsSK/28798"><img src="https://img.shields.io/bstats/servers/28798?style=for-the-badge"></a>
-    <a href="https://modrinth.com/plugin/packeteventssk"><img src="https://img.shields.io/modrinth/dt/packeteventssk?style=for-the-badge&logo=modrinth&logoColor=white&label=downloads"></a>
+<div align="center">
+  <h2>PacketEventsSK</h2>
+  <h3>PacketEventsSK is a skript addon that adds packet related features to Skript.</h3>
+  
+  <a href="https://discord.gg/CzQ863nxDB"><img src="https://img.shields.io/discord/1459606994389307463?color=5562e9&logo=discord&logoColor=white&style=for-the-badge"></a>
+  <img src="https://img.shields.io/github/license/3add/PacketEventsSK?style=for-the-badge&logo=github">
+  <a href="https://bstats.org/plugin/bukkit/PacketEventsSK/28798"><img src="https://img.shields.io/bstats/servers/28798?style=for-the-badge"></a>
+  <a href="https://modrinth.com/plugin/packeteventssk"><img src="https://img.shields.io/modrinth/dt/packeteventssk?style=for-the-badge&logo=modrinth&logoColor=white&label=downloads"></a>
+  
+  <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
+    <img src="http://skripthub.net/static/addon/ViewTheDocsButton.png" alt="SkriptHubViewTheDocs">
+  </a>
+</a>
 </div>
 
 ## Requirements
