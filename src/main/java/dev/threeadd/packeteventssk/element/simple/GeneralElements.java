@@ -1,0 +1,24 @@
+package dev.threeadd.packeteventssk.element.simple;
+
+import org.skriptlang.skript.addon.SkriptAddon;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import dev.threeadd.packeteventssk.util.registry.element.ElementCollection;
+
+public class GeneralElements implements ElementCollection {
+
+    @Override
+    public String identifier() {
+        return "general";
+    }
+
+    @Override
+    public String name() {
+        return identifier();
+    }
+
+    @Override
+    public void load(SkriptAddon addon) {
+        SyntaxRegistry registry = addon.syntaxRegistry();
+        GeneralModule.registerAll(registry);
+    }
+}

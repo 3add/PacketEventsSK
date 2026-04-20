@@ -1,0 +1,63 @@
+package dev.threeadd.packeteventssk.element.entity.expressions.prop.base;
+
+import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Example;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
+import me.tofaa.entitylib.meta.EntityMeta;
+import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
+
+@SuppressWarnings("unused")
+@Name("Fake Entity Property - Swimming State")
+@Description("If the entity is swimming.")
+@Example("""
+        command swimOrDie <integer>:
+            trigger:
+                set {_entity} to fake entity with id arg-1
+                if {_entity} is not set:
+                    send "Couldn't find that entity"
+                    stop
+        
+                set fake swimming state of {_entity} to true
+        """)
+@Since("1.0.0")
+public class SwimmingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(SwimmingProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake swim[ming] [state] of %fakeentity%",
+                                "%fakeentity%'s fake swim[ming] [state]"
+                        )
+                        .build()
+        );
+    }
+
+    @SuppressWarnings("unused")
+    public SwimmingProp() {
+        super(Boolean.class, EntityMeta.class, Changer.ChangeMode.SET);
+    }
+
+    @Override
+    protected @Nullable Boolean get(EntityMeta meta) {
+        return meta.isSwimming();
+    }
+
+    @Override
+    protected void change(EntityMeta meta, Changer.ChangeMode mode, Object[] delta) {
+        boolean newState = (boolean) delta[0];
+        meta.setSwimming(newState);
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "swimming of fake entity";
+    }
+}
