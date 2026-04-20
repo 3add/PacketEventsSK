@@ -29,7 +29,7 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
                 spawn a new fake player entity at player for players and store it in {_e}
                 set {_e}'s scale fake attribute to 2
         """)
-@Since("INSERT VERSION")
+@Since("1.0.1")
 public class AttributeProp extends CustomPropertyExpression<Object, Number> {
 
     public static void register(SyntaxRegistry registry) {

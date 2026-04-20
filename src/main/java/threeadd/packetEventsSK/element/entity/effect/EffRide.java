@@ -27,7 +27,7 @@ import java.util.List;
                 wait 5 seconds
                 remove fake entity {_display} as passenger of player
         """)
-@Since("INSERT VERSION")
+@Since("1.0.1")
 public class EffRide extends CustomEffect {
 
     public static void register(SyntaxRegistry registry) {
