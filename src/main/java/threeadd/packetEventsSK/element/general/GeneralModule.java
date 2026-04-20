@@ -4,7 +4,6 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.effect.EffCancelPacket;
 import threeadd.packetEventsSK.element.general.effect.EffFetchSkin;
 import threeadd.packetEventsSK.element.general.effect.EffSendOrReceivePacket;
-import threeadd.packetEventsSK.element.general.expressions.ExprEventPacket;
 import threeadd.packetEventsSK.element.general.expressions.ExprLastPacket;
 import threeadd.packetEventsSK.element.general.expressions.ExprSkin;
 import threeadd.packetEventsSK.element.general.expressions.prop.EntityIdProp;
@@ -13,6 +12,7 @@ import threeadd.packetEventsSK.element.general.expressions.prop.client.*;
 import threeadd.packetEventsSK.element.general.expressions.prop.server.*;
 import threeadd.packetEventsSK.element.general.section.CreatePacketSec;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 
 public class GeneralModule {
 
@@ -23,7 +23,7 @@ public class GeneralModule {
             BASE_PACKAGE + ".Types"
     };
 
-    public static void registerAll(SyntaxRegistry registry) {
+    public static void registerAll(SyntaxRegistry registry, EventValueRegistry eventValueRegistry) {
 
         CreatePacketSec.register(registry);
 
@@ -44,7 +44,6 @@ public class GeneralModule {
         PlayerSkinProp.register(registry);
 
         ExprSkin.register(registry);
-        ExprEventPacket.register(registry);
         ExprLastPacket.register(registry);
 
         EffCancelPacket.register(registry);
@@ -52,6 +51,7 @@ public class GeneralModule {
         EffSendOrReceivePacket.register(registry);
 
         PacketEventStruct.register(registry);
+        PacketEventStruct.registerEventValues(eventValueRegistry); // add this
 
         for (String className : STATIC_REGISTRATION_CLASSES) {
             forceInitialize(className);

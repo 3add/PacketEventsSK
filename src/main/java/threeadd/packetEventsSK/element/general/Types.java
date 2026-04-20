@@ -26,17 +26,6 @@ import java.util.Locale;
 @SuppressWarnings("unused")
 public class Types {
 
-    public static void registerEventValues(EventValueRegistry eventValueRegistry) {
-        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, Player.class)
-                .getter(event -> event.getEvent().getPlayer())
-                .build());
-
-        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, PacketWrapper.class)
-                .getter(PacketTriggerEvent::getWrapper)
-                .build());
-    }
-
-
     static {
         Classes.registerClass(new ClassInfo<>(PacketWrapper.class, "packet")
                 .user("packet")

@@ -14,10 +14,14 @@ import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValue;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.script.Script;
 import org.skriptlang.skript.lang.structure.Structure;
@@ -54,6 +58,16 @@ public class PacketEventStruct extends Structure {
                         .nodeType(DefaultSyntaxInfos.Structure.NodeType.SECTION)
                         .build()
         );
+    }
+
+    public static void registerEventValues(EventValueRegistry eventValueRegistry) {
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, Player.class)
+                .getter(event -> (Player) event.getEvent().getPlayer())
+                .build());
+
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, PacketWrapper.class)
+                .getter(PacketTriggerEvent::getWrapper)
+                .build());
     }
 
     private ProcessWay processWay = ProcessWay.NETTY;
