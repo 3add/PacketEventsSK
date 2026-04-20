@@ -24,8 +24,8 @@ public class PlayerDiggingDigActionProp extends PacketPropertyExpression<Wrapper
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(PlayerDiggingDigActionProp.class, DiggingAction.class)
                         .addPatterns(
-                                "[the] packet[ ]dig[ging][ ]action of %packet%",
-                                "%packet%'[s] packet[ ]dig[ging][ ]action"
+                                "[the] packet dig[ging][ ]action of %packet%",
+                                "%packet%'[s] packet dig[ging][ ]action"
                         )
                         .build()
         );

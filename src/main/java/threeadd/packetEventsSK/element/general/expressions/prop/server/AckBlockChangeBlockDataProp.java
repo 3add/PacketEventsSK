@@ -26,8 +26,8 @@ public class AckBlockChangeBlockDataProp extends PacketPropertyExpression<Wrappe
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(AckBlockChangeBlockDataProp.class, BlockData.class)
                         .addPatterns(
-                                "[the] packet[ ]changed[ ]block[ ]data of %packet%",
-                                "%packet%'[s] packet[ ]changed[ ]block[ ]data"
+                                "[the] packet changed block[ ]data of %packet%",
+                                "%packet%'[s] packet changed block[ ]data"
                         )
                         .build()
         );

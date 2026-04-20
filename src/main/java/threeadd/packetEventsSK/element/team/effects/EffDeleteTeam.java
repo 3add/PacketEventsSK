@@ -32,7 +32,7 @@ public class EffDeleteTeam extends CustomEffect {
         registry.register(
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffDeleteTeam.class)
-                        .addPatterns("delete fake team %faketeam%")
+                        .addPatterns("(delete|destroy|remove) fake[ ]team %faketeam%")
                         .build()
         );
     }

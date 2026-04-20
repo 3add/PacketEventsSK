@@ -39,8 +39,8 @@ public class InteractEntityEntityIdProp extends PacketPropertyExpression<Wrapper
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(InteractEntityEntityIdProp.class, Integer.class)
                         .addPatterns(
-                                "[the] packet[ ]entity[ ]id of %packet%",
-                                "%packet%'[s] packet[ ]entity[ ]id"
+                                "[the] (protocol|packet|fake) [entity][ ]id of %packet%",
+                                "%packet%'[s] (protocol|packet|fake) [entity][ ]id"
                                 )
                         .build()
         );

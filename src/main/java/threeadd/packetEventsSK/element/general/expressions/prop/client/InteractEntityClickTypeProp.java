@@ -44,8 +44,8 @@ public class InteractEntityClickTypeProp extends PacketPropertyExpression<Wrappe
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(InteractEntityClickTypeProp.class, ClickType.class)
                         .addPatterns(
-                                "[the] packet[ ]click[ ]type of %packet%",
-                                "%packet%'[s] packet[ ]click[ ]type"
+                                "[the] packet click[ ]type of %packet%",
+                                "%packet%'[s] packet click[ ]type"
                         )
                         .build()
         );

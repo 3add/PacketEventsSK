@@ -38,7 +38,7 @@ public class GlowingReceiversExpr extends CustomPropertyExpression<Entity, Playe
         syntaxRegistry.register(
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(GlowingReceiversExpr.class, Player.class)
-                        .addPatterns("glow[ing] entity viewers of %entities%")
+                        .addPatterns("[the] glow[ing] [entity][ ]viewers of %entities%")
                         .build()
         );
     }

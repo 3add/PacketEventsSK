@@ -39,8 +39,8 @@ public class DestroyEntitiesEntitiesProp extends PacketPropertyExpression<Wrappe
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(DestroyEntitiesEntitiesProp.class, Entity.class)
                         .addPatterns(
-                                "[the] packet[ ]entities of %packet%",
-                                "%packet%'[s] packet[ ]entities"
+                                "[the] packet entities of %packet%",
+                                "%packet%'[s] packet entities"
                         )
                         .build()
         );

@@ -28,7 +28,7 @@ public class EntityIdProp extends CustomPropertyExpression<Entity, Integer> {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(EntityIdProp.class, Integer.class)
-                        .addPatterns("entity id of %entity%")
+                        .addPatterns("(protocol|packet|fake) [entity][ ]id of %entity%")
                         .build()
         );
     }

@@ -42,8 +42,8 @@ public class FakeTeamReceiversProp extends CustomPropertyExpression<FakeTeam, Pl
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(FakeTeamReceiversProp.class, Player.class)
-                        .addPatterns("%faketeam%'s fake team viewers",
-                                "fake team viewers of %faketeam%")
+                        .addPatterns("%faketeam%'s fake[ ]team viewers",
+                                "fake[ ]team viewers of %faketeam%")
                         .build()
         );
 

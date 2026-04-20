@@ -37,8 +37,8 @@ public class TabCompleteTabCompletionsProp extends PacketPropertyExpression<Wrap
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(TabCompleteTabCompletionsProp.class, String.class)
                         .addPatterns(
-                                "[the] packet[ ]completions of %packet%",
-                                "%packet%'[s] packet[ ]completions"
+                                "[the] packet completions of %packet%",
+                                "%packet%'[s] packet completions"
                                 )
                         .build()
         );

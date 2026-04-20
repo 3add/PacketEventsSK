@@ -40,8 +40,8 @@ public class FakeTeamEntitiesProp extends CustomPropertyExpression<FakeTeam, Ent
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(FakeTeamEntitiesProp.class, Entity.class)
-                        .addPatterns("%faketeam%'s fake team entities",
-                                "fake team entities of %faketeam%"
+                        .addPatterns("%faketeam%'s fake[ ]team entities",
+                                "fake[ ]team entities of %faketeam%"
                                 )
                         .build()
         );

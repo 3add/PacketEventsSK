@@ -43,8 +43,8 @@ public class InteractEntityEntityProp extends PacketPropertyExpression<WrapperPl
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(InteractEntityEntityProp.class, Entity.class)
                         .addPatterns(
-                                "[the] packet[ ]entity of %packet%",
-                                "%packet%'[s] packet[ ]entity of %entity%"
+                                "[the] packet entity of %packet%",
+                                "%packet%'[s] packet entity of %entity%"
                                 )
                         .build()
         );

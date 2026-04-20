@@ -25,8 +25,8 @@ public class PlayerDiggingBlockDataProp extends PacketPropertyExpression<Wrapper
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(PlayerDiggingBlockDataProp.class, Vector.class)
                         .addPatterns(
-                                "[the] packet[ ]dug[ ]block[ ]pos[ition] of %packet%",
-                                "%packet%'[s] packet[ ]dug[ ]block[ ]pos[ition]"
+                                "[the] packet dug block[ ]pos[ition] of %packet%",
+                                "%packet%'[s] packet dug block[ ]pos[ition]"
                         )
                         .build()
         );

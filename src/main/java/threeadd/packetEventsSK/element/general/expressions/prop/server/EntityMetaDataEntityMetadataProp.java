@@ -30,8 +30,8 @@ public class EntityMetaDataEntityMetadataProp extends PacketPropertyExpression<W
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(EntityMetaDataEntityMetadataProp.class, EntityMeta.class)
                         .addPatterns(
-                                "[the] packet[ ]entity[ ]meta[ ][data] of %packet%",
-                                "%packet%'[s] packet[ ]entity[ ]meta[ ][data]"
+                                "[the] packet entity[ ]meta[ ][data] of %packet%",
+                                "%packet%'[s] packet entity[ ]meta[ ][data]"
                                 )
                         .build()
         );

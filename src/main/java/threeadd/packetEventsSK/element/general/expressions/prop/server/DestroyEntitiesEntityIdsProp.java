@@ -33,8 +33,8 @@ public class DestroyEntitiesEntityIdsProp extends PacketPropertyExpression<Wrapp
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(DestroyEntitiesEntityIdsProp.class, Integer.class)
                         .addPatterns(
-                                "[the] packet[ ]entity[ ]ids of %packet%",
-                                "%packet%'[s] packet[ ]entity[ ]ids"
+                                "[the] (protocol|packet|fake) [entity][ ]ids of %packet%",
+                                "%packet%'[s] (protocol|packet|fake) [entity][ ]ids"
                                 )
                         .build()
         );

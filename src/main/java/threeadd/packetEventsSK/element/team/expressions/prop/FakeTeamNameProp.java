@@ -29,8 +29,8 @@ public class FakeTeamNameProp extends CustomPropertyExpression<FakeTeam, String>
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(FakeTeamNameProp.class, String.class)
-                        .addPatterns("%faketeam%'s fake team name",
-                                "fake team name of %faketeam%"
+                        .addPatterns("%faketeam%'s fake[ ]team name",
+                                "fake[ ]team name of %faketeam%"
                                 )
                         .build()
         );

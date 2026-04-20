@@ -33,7 +33,7 @@ public class ExprFakeTeamWithName extends CustomExpression<FakeTeam> {
         registry.register(
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(ExprFakeTeamWithName.class, FakeTeam.class)
-                        .addPatterns("fake team named %string%")
+                        .addPatterns("fake[ ]team (named|with name) %string%")
                         .build()
         );
 

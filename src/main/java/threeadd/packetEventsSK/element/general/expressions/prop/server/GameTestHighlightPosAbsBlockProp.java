@@ -36,8 +36,8 @@ public class GameTestHighlightPosAbsBlockProp extends PacketPropertyExpression<W
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(GameTestHighlightPosAbsBlockProp.class, Vector.class)
                         .addPatterns(
-                                "[the] packet[ ]absolute[ ]block of %packet%",
-                                "%packet%'[s] packet[ ]absolute[ ]block"
+                                "[the] packet absolute[ ]block[ ]pos[ition] of %packet%",
+                                "%packet%'[s] packet absolute[ ]block[ ]pos[ition]"
                         )
                         .build()
         );
