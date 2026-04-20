@@ -18,7 +18,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Name("Fake Entity Property - Custom Name")
 @Description("A custom name of a fake entity, this does not support colors due to minecraft limitations.")
 @Example("""
-        command spawnRichCow:
+        command spawnRichCow <arg-1>:
             trigger:
                 set {_name} to mini message from arg-1
 
