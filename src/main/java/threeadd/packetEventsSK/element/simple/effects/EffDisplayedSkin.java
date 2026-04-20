@@ -1,6 +1,5 @@
 package threeadd.packetEventsSK.element.simple.effects;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;

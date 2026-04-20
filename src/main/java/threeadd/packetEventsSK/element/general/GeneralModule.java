@@ -1,5 +1,6 @@
 package threeadd.packetEventsSK.element.general;
 
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.effect.EffCancelPacket;
 import threeadd.packetEventsSK.element.general.effect.EffFetchSkin;
@@ -12,7 +13,6 @@ import threeadd.packetEventsSK.element.general.expressions.prop.client.*;
 import threeadd.packetEventsSK.element.general.expressions.prop.server.*;
 import threeadd.packetEventsSK.element.general.section.CreatePacketSec;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct;
-import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 
 public class GeneralModule {
 

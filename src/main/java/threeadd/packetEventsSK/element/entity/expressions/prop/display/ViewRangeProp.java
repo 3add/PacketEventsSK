@@ -1,15 +1,14 @@
 package threeadd.packetEventsSK.element.entity.expressions.prop.display;
 
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
-import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import org.skriptlang.skript.registration.SyntaxRegistry;
+import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @Name("Fake Display Entity - View Range")
 @Description("""

@@ -14,12 +14,9 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
-import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
-
-import javax.annotation.Syntax;
 
 @SuppressWarnings("unused")
 @Name("Fake Team - Team Color")

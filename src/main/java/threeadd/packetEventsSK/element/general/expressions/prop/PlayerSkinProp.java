@@ -4,7 +4,6 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
-import threeadd.packetEventsSK.util.registry.PlayerSkinRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
+import threeadd.packetEventsSK.util.registry.PlayerSkinRegistry;
 
 @SuppressWarnings("unused")
 @Name("General - Player Skin of Player")

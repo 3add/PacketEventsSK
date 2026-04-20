@@ -9,8 +9,8 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import threeadd.packetEventsSK.util.expressions.CustomExpression;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
+import threeadd.packetEventsSK.util.expressions.CustomExpression;
 
 @SuppressWarnings("unused")
 @Name("General - Player Skin From Base64/Signature")

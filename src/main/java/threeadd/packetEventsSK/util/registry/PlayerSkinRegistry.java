@@ -8,8 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.PacketEventsSK;
+import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 
 import java.util.HashMap;
 import java.util.Map;

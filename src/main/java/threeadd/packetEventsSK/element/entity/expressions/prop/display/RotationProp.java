@@ -11,9 +11,9 @@ import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
-import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Rotation")

@@ -11,8 +11,8 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
-import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import org.skriptlang.skript.registration.SyntaxRegistry;
+import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Custom Name")

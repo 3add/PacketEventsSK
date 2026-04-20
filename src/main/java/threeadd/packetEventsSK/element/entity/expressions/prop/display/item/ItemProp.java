@@ -11,8 +11,8 @@ import me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
-import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import org.skriptlang.skript.registration.SyntaxRegistry;
+import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Item Display Entity - Display Item Type")

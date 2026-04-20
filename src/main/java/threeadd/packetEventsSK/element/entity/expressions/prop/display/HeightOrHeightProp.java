@@ -5,16 +5,15 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
-import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Width/Height")

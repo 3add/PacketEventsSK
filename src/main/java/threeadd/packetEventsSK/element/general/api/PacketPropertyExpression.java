@@ -13,9 +13,9 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.PacketEventsSK;
-import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.PacketEventParserData;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.ProcessWay;
+import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 import java.util.Arrays;
 import java.util.EnumSet;

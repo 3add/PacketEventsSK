@@ -7,12 +7,9 @@ import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.registration.DefaultSyntaxInfos;
-import org.skriptlang.skript.registration.SyntaxInfo;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import java.util.List;
 
 public abstract class CustomExpression<Return> extends SimpleExpression<Return> {

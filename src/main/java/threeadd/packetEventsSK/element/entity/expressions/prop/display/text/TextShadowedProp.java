@@ -8,8 +8,8 @@ import ch.njol.skript.doc.Since;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
-import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 import org.skriptlang.skript.registration.SyntaxRegistry;
+import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Text Display Entity - Display Text Shadowed")

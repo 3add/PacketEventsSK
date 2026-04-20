@@ -24,7 +24,6 @@ import threeadd.packetEventsSK.element.entity.api.skin.Skins;
 import threeadd.packetEventsSK.util.ConversionUtil;
 
 import java.util.*;
-import java.util.List;
 
 public class PlayerSkinManager {
 

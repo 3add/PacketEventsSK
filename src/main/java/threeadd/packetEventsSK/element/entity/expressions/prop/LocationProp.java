@@ -4,15 +4,14 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.ConversionUtil;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
-import org.skriptlang.skript.registration.SyntaxRegistry;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity - Entity Location")
