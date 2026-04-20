@@ -7,6 +7,10 @@
   <img src="https://img.shields.io/github/license/3add/PacketEventsSK?style=for-the-badge&logo=github">
   <a href="https://bstats.org/plugin/bukkit/PacketEventsSK/28798"><img src="https://img.shields.io/bstats/servers/28798?style=for-the-badge"></a>
   <a href="https://modrinth.com/plugin/packeteventssk"><img src="https://img.shields.io/modrinth/dt/packeteventssk?style=for-the-badge&logo=modrinth&logoColor=white&label=downloads"></a>
+    
+  <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
+    <img src="https://camo.githubusercontent.com/1623c33b83fe153048358ded38409eb55182c29a98158e78b1aeca2ad9575e32/687474703a2f2f736b646f63732e6f72672f76696577646f63732e706e67" alt="SkDocs">
+  </a>
   
   <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
     <img src="http://skripthub.net/static/addon/ViewTheDocsButton.png" alt="SkriptHubViewTheDocs">
