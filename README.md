@@ -39,12 +39,12 @@ The main project.
 ### PacketEvents
 Packet management library.
 
-- Repository: https://github.com/retrooper/packetevents  
-- Install: https://modrinth.com/plugin/packetevents
+- [Github Repository](https://github.com/retrooper/packetevents)
+- [Install Here](https://modrinth.com/plugin/packetevents)
 ### EntityLib
 Fake entity management and metadata wrappers.
 
-- Repository: https://github.com/Tofaa2/EntityLib  
+- [Github Repository](https://github.com/Tofaa2/EntityLib)
 - **Included with PacketEventsSK**
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
