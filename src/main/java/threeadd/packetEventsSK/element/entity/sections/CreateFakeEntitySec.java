@@ -20,6 +20,7 @@ import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import me.tofaa.entitylib.wrapper.WrapperLivingEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ import java.util.WeakHashMap;
 @SuppressWarnings("unused")
 @Name("Fake Entity - Create Fake Entity")
 @Description("Create a new fake entity from an entity type.")
-@Examples(
+@Examples({
         """
         command test:
             trigger:
@@ -54,7 +55,7 @@ import java.util.WeakHashMap;
          
                     kill fake entity the fake entity
         """
-)
+})
 @Since("1.0.0")
 public class CreateFakeEntitySec extends Section {
 
@@ -148,11 +149,13 @@ public class CreateFakeEntitySec extends Section {
         int entityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, packetEventsType);
 
         WrapperEntity entity;
-        if (packetEventsType != EntityTypes.PLAYER) {
-            entity = new WrapperEntity(entityId, uuid, packetEventsType);
-        } else {
+        if (packetEventsType == EntityTypes.PLAYER) {
             UserProfile profile = new UserProfile(uuid, "test");
             entity = new WrapperPlayer(profile, entityId);
+        } else if (isLivingEntity(bukkitType)) {
+            entity = new WrapperLivingEntity(entityId, uuid, packetEventsType);
+        } else {
+            entity = new WrapperEntity(entityId, uuid, packetEventsType);
         }
 
         if (locationExpr != null) {
@@ -169,6 +172,15 @@ public class CreateFakeEntitySec extends Section {
         }
 
         return entity;
+    }
+
+    private boolean isLivingEntity(org.bukkit.entity.EntityType bukkitType) {
+        try {
+            Class<? extends org.bukkit.entity.Entity> entityClass = bukkitType.getEntityClass();
+            return entityClass != null && org.bukkit.entity.LivingEntity.class.isAssignableFrom(entityClass);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

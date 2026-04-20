@@ -2,6 +2,7 @@ package threeadd.packetEventsSK.element.entity;
 
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.effect.EffKill;
+import threeadd.packetEventsSK.element.entity.effect.EffRide;
 import threeadd.packetEventsSK.element.entity.effect.EffSpawn;
 import threeadd.packetEventsSK.element.entity.effect.EffTeleport;
 import threeadd.packetEventsSK.element.entity.expressions.ExprFakeEntityWithId;
@@ -42,10 +43,12 @@ public class EntityModule {
         BlockProp.register(registry);
 
         EffKill.register(registry);
+        EffRide.register(registry);
         EffSpawn.register(registry);
         EffTeleport.register(registry);
 
         //AirTicksProp.register(registry);
+        AttributeProp.register(registry);
         CustomNameProp.register(registry);
         CustomNameVisibleProp.register(registry);
         ElytraProp.register(registry);
