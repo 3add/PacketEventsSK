@@ -40,8 +40,8 @@ public class InteractionHeightProp extends MetaPropertyExpression<InteractionMet
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(InteractionHeightProp.class, Number.class)
                         .addPatterns(
-                                "[the] fake interaction :(height|width) of %fakeentity%",
-                                "%fakeentity%'s fake interaction :(height|width)"
+                                "[the] fake interaction (:(height|width)) of %fakeentity%",
+                                "%fakeentity%'s fake interaction (:(height|width))"
                         )
                         .build()
         );

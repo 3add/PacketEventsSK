@@ -53,7 +53,7 @@ public class PacketEventStruct extends Structure {
                 SyntaxRegistry.STRUCTURE,
                 SyntaxInfo.Structure.builder(PacketEventStruct.class)
                         .supplier(PacketEventStruct::new)
-                        .addPatterns("[on] [packet] %packettype% [:(sync|async|netty) processed]")
+                        .addPatterns("[on] [packet] %packettype% [(:(sync|async|netty)) processed]")
                         .nodeType(DefaultSyntaxInfos.Structure.NodeType.SECTION)
                         .build()
         );
