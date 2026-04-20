@@ -41,8 +41,8 @@ public class EffFetchSkin extends AsyncEffect {
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffFetchSkin.class)
                         .addPatterns(
-                                "fetch skin of player named %string% and store it in %skin%",
-                                "fetch skin of player named %string% and set it to %skin%"
+                                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
+                                "set %-~objects% to skin (from|of) player named %string%"
                         )
                         .build()
         );
