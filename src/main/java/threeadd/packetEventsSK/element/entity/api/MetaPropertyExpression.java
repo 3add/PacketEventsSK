@@ -1,5 +1,6 @@
 package threeadd.packetEventsSK.element.entity.api;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.lang.SkriptParser;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
@@ -58,6 +59,10 @@ public abstract class MetaPropertyExpression<Meta extends EntityMeta, Return> ex
         Object input = getValueOrNull(0, Object.class, event);
         switch (input) {
             case WrapperEntity entity -> {
+                if (!entityMetaClass.isInstance(entity.getEntityMeta())) {
+                    Skript.error("Cannot use this property on this entity type. Expected " + entityMetaClass.getSimpleName() + " but got " + entity.getEntityMeta().getClass().getSimpleName());
+                    return;
+                }
                 entity.consumeEntityMeta(entityMetaClass, m -> change(m, mode, delta));
                 entity.refresh();
             }
