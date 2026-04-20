@@ -57,7 +57,7 @@ public final class PacketEventsSK extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        PacketEventsSK.loader = new AddonLoader(this);
+        PacketEventsSK.loader = new AddonLoader();
         if (!PacketEventsSK.loader.canLoad()) return;
 
         MetricsLoader.loadMetrics(this);

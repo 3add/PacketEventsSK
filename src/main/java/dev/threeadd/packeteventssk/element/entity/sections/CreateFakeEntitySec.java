@@ -46,13 +46,13 @@ import java.util.WeakHashMap;
                 spawn a new fake text display entity at player for players:
                     set fake display content of fake entity to "<RAINBOW>HEYY IM FOLLLOWING YOU"
                     set fake display billboard of fake entity to center
-         
+
                     set fake display teleport interpolation duration of fake entity to 1 second
-         
+
                     loop 5 times:
                         teleport fake entity the fake entity to player
                         wait 1 second
-         
+
                     kill fake entity the fake entity
         """
 )

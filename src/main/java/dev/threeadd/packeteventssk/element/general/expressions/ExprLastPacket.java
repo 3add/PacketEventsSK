@@ -25,7 +25,7 @@ import dev.threeadd.packeteventssk.element.general.section.CreatePacketSec;
                 create a new destroy entities send:
                     add target entity of player to packet entities of the packet
                     send packet the packet to the player
-                
+
                 broadcast "%the last packet%"
         """)
 @Since("1.0.0")

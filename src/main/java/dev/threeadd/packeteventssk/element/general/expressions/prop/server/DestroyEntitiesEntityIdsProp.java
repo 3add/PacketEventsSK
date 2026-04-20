@@ -64,9 +64,7 @@ public class DestroyEntitiesEntityIdsProp extends PacketPropertyExpression<Wrapp
         }
 
         switch (mode) {
-            case SET -> {
-                wrapper.setEntityIds(convertToPrimitiveArray(deltaIds));
-            }
+            case SET -> wrapper.setEntityIds(convertToPrimitiveArray(deltaIds));
 
             case ADD -> {
                 currentIds.addAll(deltaIds);

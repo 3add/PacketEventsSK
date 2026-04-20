@@ -61,7 +61,7 @@ public class Types {
                 on interact entity receive netty processed:
                    if packet entity id of event-packet is not {-interactables::%player's uuid%}:
                       stop
-                      
+
                    send "Welcome %player's name%"
                 """)
                 .since("1.0.0")

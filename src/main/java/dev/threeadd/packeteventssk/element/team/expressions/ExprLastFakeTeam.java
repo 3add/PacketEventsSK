@@ -25,7 +25,7 @@ import dev.threeadd.packeteventssk.element.team.sections.CreateFakeTeamSec;
                 create new fake team named player's name for player:
                     set the fake team color of the fake team to green
                     add player to fake team entities of the fake team
-                
+
                 broadcast "%the last fake team%"
         """)
 @Since("1.0.0")

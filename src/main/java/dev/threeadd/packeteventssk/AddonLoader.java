@@ -16,13 +16,11 @@ public class AddonLoader {
 
     private static final Logger log = LoggerFactory.getLogger(AddonLoader.class);
 
-    private final PacketEventsSK plugin;
-    private final Plugin skriptPlugin;
+  private final Plugin skriptPlugin;
     private SkriptAddon skriptAddon;
 
-    protected AddonLoader(PacketEventsSK plugin) {
-        this.plugin = plugin;
-        this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
+    protected AddonLoader() {
+      this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
     }
 
     protected boolean canLoad() {
