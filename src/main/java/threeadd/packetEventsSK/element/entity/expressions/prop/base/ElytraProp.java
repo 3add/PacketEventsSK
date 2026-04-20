@@ -13,7 +13,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
-@Name("Fake Entity - Elytra Flying State")
+@Name("Fake Entity Property - Elytra Flying State")
 @Description("Represents the fake elytra flying state of a fake entity, this only changes the client side metadata, it doesn't actually make the entity fly")
 @Example("""
         command toggleElytra:
