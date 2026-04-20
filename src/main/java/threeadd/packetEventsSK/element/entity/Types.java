@@ -9,7 +9,7 @@ import me.tofaa.entitylib.wrapper.WrapperEntity;
 @SuppressWarnings("unused")
 public class Types {
 
-    static {
+    public static void register() {
         Classes.registerClass(new ClassInfo<>(WrapperEntity.class, "fakeentity")
                 .user("fake[ -]?entity")
                 .name("Fake Entity - Fake Entity")

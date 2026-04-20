@@ -24,12 +24,6 @@ import threeadd.packetEventsSK.element.entity.sections.CreateFakeEntitySec;
 
 public class EntityModule {
 
-    private static final String BASE_PACKAGE = "threeadd.packetEventsSK.element.entity";
-
-    private static final String[] STATIC_REGISTRATION_CLASSES = {
-            BASE_PACKAGE + ".Types"
-    };
-
     public static void registerAll(SyntaxRegistry registry) {
 
         CreateFakeEntitySec.register(registry);
@@ -82,16 +76,7 @@ public class EntityModule {
 
         SkinProp.register(registry);
 
-        for (String className : STATIC_REGISTRATION_CLASSES) {
-            forceInitialize(className);
-        }
+        Types.register();
     }
 
-    private static void forceInitialize(String className) {
-        try {
-            Class.forName(className, true, EntityModule.class.getClassLoader());
-        } catch (ClassNotFoundException exception) {
-            throw new IllegalStateException("Unable to initialize entity syntax class: " + className, exception);
-        }
-    }
 }

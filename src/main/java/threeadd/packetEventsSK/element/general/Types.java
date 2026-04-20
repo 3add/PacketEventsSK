@@ -21,7 +21,7 @@ import java.util.Locale;
 @SuppressWarnings("unused")
 public class Types {
 
-    static {
+    public static void register() {
         Classes.registerClass(new ClassInfo<>(PacketWrapper.class, "packet")
                 .user("packet")
                 .name("General - Packet")

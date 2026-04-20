@@ -35,8 +35,7 @@ public class EffSendOrReceivePacket extends CustomEffect {
                 SyntaxRegistry.EFFECT,
                 SyntaxInfo.builder(EffSendOrReceivePacket.class)
                         .addPatterns(
-                                "[force] send packet[s] %packet% to %players% [silently]",
-                                "[force] receive packet[s] %packet% from %players% [silently]"
+                                "[:(silently|default)] :(send|receive) packet %packets% (to|from) %player%"
                         )
                         .build()
         );

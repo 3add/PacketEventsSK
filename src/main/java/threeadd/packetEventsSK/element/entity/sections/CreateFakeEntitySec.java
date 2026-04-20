@@ -38,7 +38,7 @@ import java.util.WeakHashMap;
 @SuppressWarnings("unused")
 @Name("Fake Entity - Create Fake Entity")
 @Description("Create a new fake entity from an entity type.")
-@Examples({
+@Examples(
         """
         command test:
             trigger:
@@ -54,7 +54,7 @@ import java.util.WeakHashMap;
          
                     kill fake entity the fake entity
         """
-})
+)
 @Since("1.0.0")
 public class CreateFakeEntitySec extends Section {
 

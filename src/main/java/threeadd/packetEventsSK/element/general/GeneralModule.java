@@ -16,13 +16,6 @@ import threeadd.packetEventsSK.element.general.structures.PacketEventStruct;
 
 public class GeneralModule {
 
-    private static final String BASE_PACKAGE = "threeadd.packetEventsSK.element.general";
-
-    // These classes register syntax through static initializers and must be initialized once.
-    private static final String[] STATIC_REGISTRATION_CLASSES = {
-            BASE_PACKAGE + ".Types"
-    };
-
     public static void registerAll(SyntaxRegistry registry, EventValueRegistry eventValueRegistry) {
 
         CreatePacketSec.register(registry);
@@ -51,18 +44,10 @@ public class GeneralModule {
         EffSendOrReceivePacket.register(registry);
 
         PacketEventStruct.register(registry);
-        PacketEventStruct.registerEventValues(eventValueRegistry); // add this
+        PacketEventStruct.registerEventValues(eventValueRegistry);
 
-        for (String className : STATIC_REGISTRATION_CLASSES) {
-            forceInitialize(className);
-        }
+        Types.register();
+
     }
 
-    private static void forceInitialize(String className) {
-        try {
-            Class.forName(className, true, GeneralModule.class.getClassLoader());
-        } catch (ClassNotFoundException exception) {
-            throw new IllegalStateException("Unable to initialize general syntax class: " + className, exception);
-        }
-    }
 }

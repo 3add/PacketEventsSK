@@ -18,7 +18,7 @@ import threeadd.packetEventsSK.element.general.section.CreatePacketSec;
 
 @Name("General - Last Packet")
 @Description("Represents the last packet created in the current event, this only works inside a create packet section")
-@Examples({
+@Examples(
         """
         command killTargetForMe:
             trigger:
@@ -27,7 +27,7 @@ import threeadd.packetEventsSK.element.general.section.CreatePacketSec;
                     send packet the packet to the player
                 
                 broadcast "%the last packet%"
-        """})
+        """)
 @Since("1.0.0")
 public class ExprLastPacket extends SimpleExpression<PacketWrapper> {
 

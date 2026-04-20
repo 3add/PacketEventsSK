@@ -18,7 +18,7 @@ import threeadd.packetEventsSK.element.entity.sections.CreateFakeEntitySec;
 
 @Name("Fake Entity - Last Fake Entity")
 @Description("Retrieves the last fake entity created in the current event, this only works inside a create fake entity section")
-@Examples({
+@Examples(
         """
         command test:
             trigger:
@@ -34,7 +34,7 @@ import threeadd.packetEventsSK.element.entity.sections.CreateFakeEntitySec;
          
                     kill fake entity the fake entity
         """
-})
+)
 @Since("1.0.0")
 public class ExprLastFakeEntity extends SimpleExpression<WrapperEntity> {
 

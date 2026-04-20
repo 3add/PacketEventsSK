@@ -18,7 +18,7 @@ import threeadd.packetEventsSK.element.team.sections.CreateFakeTeamSec;
 
 @Name("Fake Team - Last Fake Team")
 @Description("Represents the last fake team created in the current event")
-@Examples({
+@Examples(
         """
         command test:
             trigger:
@@ -27,7 +27,7 @@ import threeadd.packetEventsSK.element.team.sections.CreateFakeTeamSec;
                     add player to fake team entities of the fake team
                 
                 broadcast "%the last fake team%"
-        """})
+        """)
 @Since("1.0.0")
 public class ExprLastFakeTeam extends SimpleExpression<FakeTeam> {
 
