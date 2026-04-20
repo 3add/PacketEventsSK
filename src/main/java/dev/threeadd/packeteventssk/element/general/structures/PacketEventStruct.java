@@ -43,7 +43,7 @@ import java.util.Locale;
         on packet chunk data send netty processed:
             cancel packet
         """)
-@Since("INSERT VERSION")
+@Since({"1.0.0", "1.0.1 altered)"})
 public class PacketEventStruct extends Structure {
 
     public static void register(SyntaxRegistry registry) {
