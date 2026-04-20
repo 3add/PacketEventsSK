@@ -35,7 +35,7 @@ Learn more in the **[Wiki](https://github.com/3add/PacketEventsSK/wiki)**.
 The main project.
 
 - [All Contributors](https://github.com/3add/PacketEventsSK/graphs/contributors)
-- 3add
+- [Install Here](https://modrinth.com/plugin/packeteventssk)
 ### PacketEvents
 Packet management library.
 
