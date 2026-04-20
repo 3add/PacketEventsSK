@@ -43,8 +43,8 @@ public class TranslationProp extends MetaPropertyExpression<AbstractDisplayMeta,
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(TranslationProp.class, Vector.class)
                         .addPatterns(
-                                "[the] fake display translation of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display translation"
+                                "[the] fake display translation of %fakeentity%",
+                                "%fakeentity%'s fake display translation"
                         )
                         .build()
         );

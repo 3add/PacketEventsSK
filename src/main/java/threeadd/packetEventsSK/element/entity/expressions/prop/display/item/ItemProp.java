@@ -37,8 +37,8 @@ public class ItemProp extends MetaPropertyExpression<ItemDisplayMeta, ItemType> 
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(ItemProp.class, ItemType.class)
                         .addPatterns(
-                                "[the] fake display item of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display item"
+                                "[the] fake display item of %fakeentity%",
+                                "%fakeentity%'s fake display item"
                         )
                         .build()
         );

@@ -43,8 +43,8 @@ public class ScaleProp extends MetaPropertyExpression<AbstractDisplayMeta, Vecto
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(ScaleProp.class, Vector.class)
                         .addPatterns(
-                                "[the] fake display scale of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display scale"
+                                "[the] fake display scale of %fakeentity%",
+                                "%fakeentity%'s fake display scale"
                         )
                         .build()
         );

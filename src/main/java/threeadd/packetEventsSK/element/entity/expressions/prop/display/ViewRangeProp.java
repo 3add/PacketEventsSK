@@ -32,8 +32,8 @@ public class ViewRangeProp extends MetaPropertyExpression<AbstractDisplayMeta, N
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(ViewRangeProp.class, Number.class)
                         .addPatterns(
-                                "[the] fake display view range of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display view range"
+                                "[the] fake display view range of %fakeentity%",
+                                "%fakeentity%'s fake display view range"
                         )
                         .build()
         );

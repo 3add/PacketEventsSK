@@ -42,8 +42,8 @@ public class TransformInterpolationDurationProp extends MetaPropertyExpression<A
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(TransformInterpolationDurationProp.class, Timespan.class)
                         .addPatterns(
-                                "[the] fake display transform interpolation duration of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display transform interpolation duration"
+                                "[the] fake display transform interpolation duration of %fakeentity%",
+                                "%fakeentity%'s fake display transform interpolation duration"
                         )
                         .build()
         );

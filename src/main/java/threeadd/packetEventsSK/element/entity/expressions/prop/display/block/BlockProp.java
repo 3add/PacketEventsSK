@@ -35,8 +35,8 @@ public class BlockProp extends MetaPropertyExpression<BlockDisplayMeta, BlockDat
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(BlockProp.class, BlockData.class)
                         .addPatterns(
-                                "[the] fake[ ]display[ ]block[ ]data of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake[ ]display[ ]block[ ]data"
+                                "[the] fake[ ]display[ ]block[ ]data of %fakeentity%",
+                                "%fakeentity%'s fake[ ]display[ ]block[ ]data"
                         )
                         .build()
         );

@@ -139,30 +139,6 @@ public class Types {
                 })
         );
 
-        Classes.registerClass(new ClassInfo<>(EntityMeta.class, "fakeentitymeta")
-                .user("fake[ -]?entity[ -]?meta[ -]?data")
-                .name("Fake Entity - Entity Meta Data")
-                .description("The entity meta of a fake entity or outbound packet")
-                .examples() // TODO
-                .since("1.0.0")
-                .parser(new Parser<>() {
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(EntityMeta meta, int flags) {
-                        return "fake entity meta data";
-                    }
-
-                    @Override
-                    public String toVariableNameString(EntityMeta meta) {
-                        return "fakeentitymetadata:" + meta.hashCode();
-                    }
-                })
-        );
-
         Classes.registerClass(new ClassInfo<>(DiggingAction.class, "diggingaction")
                 .user("digging ?action")
                 .name("General - Diggin Action")

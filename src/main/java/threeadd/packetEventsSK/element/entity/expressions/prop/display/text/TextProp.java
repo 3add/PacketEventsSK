@@ -37,8 +37,8 @@ public class TextProp extends MetaPropertyExpression<TextDisplayMeta, Component>
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(TextProp.class, Component.class)
                         .addPatterns(
-                                "[the] fake display (text|content) of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display (text|content)"
+                                "[the] fake display (text|content) of %fakeentity%",
+                                "%fakeentity%'s fake display (text|content)"
                         )
                         .build()
         );

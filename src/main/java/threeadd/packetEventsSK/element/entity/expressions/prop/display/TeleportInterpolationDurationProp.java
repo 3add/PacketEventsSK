@@ -45,8 +45,8 @@ public class TeleportInterpolationDurationProp extends MetaPropertyExpression<Ab
                 SyntaxRegistry.EXPRESSION,
                 DefaultSyntaxInfos.Expression.builder(TeleportInterpolationDurationProp.class, Timespan.class)
                         .addPatterns(
-                                "[the] fake display teleport interpolation duration of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display teleport interpolation duration"
+                                "[the] fake display teleport interpolation duration of %fakeentity%",
+                                "%fakeentity%'s fake display teleport interpolation duration"
                         )
                         .build()
         );

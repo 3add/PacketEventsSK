@@ -39,8 +39,8 @@ public class BillboardProp extends MetaPropertyExpression<AbstractDisplayMeta, D
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(BillboardProp.class, Display.Billboard.class)
                         .addPatterns(
-                                "[the] fake display billboard of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display billboard"
+                                "[the] fake display billboard of %fakeentity%",
+                                "%fakeentity%'s fake display billboard"
                         )
                         .build()
         );

@@ -42,8 +42,8 @@ public class InterpolationDelayProp extends MetaPropertyExpression<AbstractDispl
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(InterpolationDelayProp.class, Timespan.class)
                         .addPatterns(
-                                "[the] fake display interpolation delay of %fakeentity/fakeentitymeta%",
-                                "%fakeentity/fakeentitymeta%'s fake display interpolation delay"
+                                "[the] fake display interpolation delay of %fakeentity%",
+                                "%fakeentity%'s fake display interpolation delay"
                         )
                         .build()
         );
