@@ -18,7 +18,10 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Example("""
         command toggleElytra:
             trigger:
-                set the fake elytra flying state of player's target entity to true
+                spawn new fake player at player for player and store it in {_entity}:
+                    set fake skin of the fake entity to player's skin
+                    set fake elytra flying state of the fake entity to true
+                set the fake elytra flying state of {_entity} to true
         """)
 @Since("1.0.0")
 
