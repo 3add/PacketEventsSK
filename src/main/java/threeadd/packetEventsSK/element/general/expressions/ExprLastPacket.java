@@ -22,7 +22,7 @@ import threeadd.packetEventsSK.element.general.section.CreatePacketSec;
         """
         command killTargetForMe:
             trigger:
-                create a new destroy entities packet:
+                create a new destroy entities send:
                     add target entity of player to packet entities of the packet
                     send packet the packet to the player
                 

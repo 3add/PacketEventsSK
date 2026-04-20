@@ -27,7 +27,7 @@ import java.util.WeakHashMap;
 @Examples("""
         command killTargetForMe:
             trigger:
-                create a new destroy entities packet and store it in {_packet}:
+                create a new destroy entities send and store it in {_packet}:
                     add target entity of player to packet entities of {_packet}
                     send packet {_packet} to the player
         """)
