@@ -1,7 +1,9 @@
 package dev.threeadd.packeteventssk.element.entity;
 
+import dev.threeadd.packeteventssk.element.entity.effect.EffRide;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.base.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.*;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.AttributeProp;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.effect.EffKill;
 import dev.threeadd.packeteventssk.element.entity.effect.EffSpawn;
@@ -42,6 +44,7 @@ public class EntityModule {
         BlockProp.register(registry);
 
         EffKill.register(registry);
+        EffRide.register(registry);
         EffSpawn.register(registry);
         EffTeleport.register(registry);
 
@@ -59,6 +62,8 @@ public class EntityModule {
         SneakingProp.register(registry);
         SprintingProp.register(registry);
         SwimmingProp.register(registry);
+
+        AttributeProp.register(registry);
 
         dev.threeadd.packeteventssk.element.entity.expressions.prop.item.ItemProp.register(registry);
         BackgroundColorProp.register(registry);
