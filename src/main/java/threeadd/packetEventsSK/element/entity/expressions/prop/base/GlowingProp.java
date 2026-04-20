@@ -33,8 +33,8 @@ public class GlowingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(GlowingProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake glow[ing] state of %fakeentity%",
-                                "%fakeentity%'s fake glow[ing] state"
+                                "[the] fake glow[ing] [state] of %fakeentity%",
+                                "%fakeentity%'s fake glow[ing] [state]"
                         )
                         .build()
         );

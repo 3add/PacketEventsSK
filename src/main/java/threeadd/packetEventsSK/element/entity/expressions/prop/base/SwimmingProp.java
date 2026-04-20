@@ -33,8 +33,8 @@ public class SwimmingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(SwimmingProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake swimming state of %fakeentity%",
-                                "%fakeentity%'s fake swimming state"
+                                "[the] fake swim[ming] [state] of %fakeentity%",
+                                "%fakeentity%'s fake swim[ming] [state]"
                         )
                         .build()
         );

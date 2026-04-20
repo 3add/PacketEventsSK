@@ -30,8 +30,8 @@ public class GravityProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(GravityProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake gravity state of %fakeentity%",
-                                "%fakeentity%'s fake gravity state"
+                                "[the] fake gravity [state] of %fakeentity%",
+                                "%fakeentity%'s fake gravity [state]"
                         )
                         .build()
         );

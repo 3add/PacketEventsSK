@@ -43,8 +43,8 @@ public class HeightOrHeightProp extends MetaPropertyExpression<AbstractDisplayMe
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(HeightOrHeightProp.class, Number.class)
                         .addPatterns(
-                                "[the] fake display (height|width) of %fakeentity%",
-                                "%fakeentity%'s fake display (height|width)"
+                                "[the] fake display :(height|width) of %fakeentity%",
+                                "%fakeentity%'s fake display :(height|width)"
                         )
                         .build()
         );

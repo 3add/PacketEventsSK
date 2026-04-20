@@ -36,8 +36,8 @@ public class ItemProp
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(ItemProp.class, org.bukkit.inventory.ItemStack.class)
                         .addPatterns(
-                                "[the] fake item stack of %fakeentity%",
-                                "%fakeentity%'s fake item stack"
+                                "[the] fake item[ ][stack] of %fakeentity%",
+                                "%fakeentity%'s fake item[ ][stack]"
                         )
                         .build()
         );

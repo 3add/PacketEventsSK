@@ -44,8 +44,8 @@ public class RotationProp extends MetaPropertyExpression<AbstractDisplayMeta, Qu
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(RotationProp.class, Quaternionf.class)
                         .addPatterns(
-                                "[the] fake display (left|right) rotation of %fakeentity%",
-                                "%fakeentity%'s fake display (left|right) rotation"
+                                "[the] fake display :(left|right)[ ]rotation of %fakeentity%",
+                                "%fakeentity%'s fake display :(left|right)[ ]rotation"
                         )
                         .build()
         );

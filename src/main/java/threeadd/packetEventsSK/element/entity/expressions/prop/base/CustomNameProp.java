@@ -35,8 +35,8 @@ public class CustomNameProp extends MetaPropertyExpression<EntityMeta, String> {
                  SyntaxRegistry.EXPRESSION,
                  SyntaxInfo.Expression.builder(CustomNameProp.class, String.class)
                          .addPatterns(
-                                 "[the] fake custom name of %fakeentity%",
-                                 "%fakeentity%'s fake custom name"
+                                 "[the] fake custom[ ]name of %fakeentity%",
+                                 "%fakeentity%'s fake custom[ ]name"
                          )
                          .build()
          );

@@ -33,8 +33,8 @@ public class SneakingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(SneakingProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake sneaking state of %fakeentity%",
-                                "%fakeentity%'s fake sneaking state"
+                                "[the] fake sneaking [state] of %fakeentity%",
+                                "%fakeentity%'s fake sneaking [state]"
                         )
                         .build()
         );

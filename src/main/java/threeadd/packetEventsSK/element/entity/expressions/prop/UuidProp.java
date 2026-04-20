@@ -38,8 +38,8 @@ public class UuidProp extends CustomPropertyExpression<WrapperEntity, UUID> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(UuidProp.class, UUID.class)
                         .addPatterns(
-                                "[the] uuid of %fakeentity%",
-                                "%fakeentity%'s uuid"
+                                "[the] fake uuid of %fakeentity%",
+                                "%fakeentity%'s fake uuid"
                         )
                         .build()
         );

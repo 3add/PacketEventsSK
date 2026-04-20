@@ -36,8 +36,8 @@ public class BackgroundColorProp extends MetaPropertyExpression<TextDisplayMeta,
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(BackgroundColorProp.class, Color.class)
                         .addPatterns(
-                                "[the] fake display background color of %fakeentity%",
-                                "%fakeentity%'s fake display background color"
+                                "[the] fake display[ ]background[ ]color of %fakeentity%",
+                                "%fakeentity%'s fake display[ ]background[ ]color"
                         )
                         .build()
         );

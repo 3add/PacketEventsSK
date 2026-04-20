@@ -15,7 +15,7 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Name("Fake Text Display Entity - Display Text Shadowed")
 @Description("""
         Represents the shadowed state of a Text Display Entity.
-        See [Display Entity Data](https://minecraft.wiki/w/Display#Entity_data ) on McWiki for more details.
+        See [Display Entity Data](https://minecraft.wiki/w/Display#Entity_data) on McWiki for more details.
         """)
 @Example("""
         command display <text>:
@@ -35,8 +35,8 @@ public class TextShadowedProp extends MetaPropertyExpression<TextDisplayMeta, Bo
                 SyntaxInfo.Expression.builder(TextShadowedProp.class, Boolean.class)
                         .supplier(TextShadowedProp::new)
                         .addPatterns(
-                                "[the] fake display text shadowed [state] of %fakeentity%",
-                                "%fakeentity%'s fake display text shadowed [state]"
+                                "[the] fake display[ ](text|content)[ ]shadowed [state] of %fakeentity%",
+                                "%fakeentity%'s fake display[ ](text|content)[ ]shadowed [state]"
                         )
                         .build()
         );

@@ -30,8 +30,8 @@ public class FireProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(FireProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake fire state of %fakeentity%",
-                                "%fakeentity%'s fake fire state"
+                                "[the] fake [on][ ]fire [state] of %fakeentity%",
+                                "%fakeentity%'s fake [on][ ]fire [state]"
                         )
                         .build()
         );

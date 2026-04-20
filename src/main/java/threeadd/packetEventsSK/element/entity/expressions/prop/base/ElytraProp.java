@@ -29,8 +29,8 @@ public class ElytraProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                SyntaxRegistry.EXPRESSION,
                SyntaxInfo.Expression.builder(ElytraProp.class, Boolean.class)
                        .addPatterns(
-                               "[the] fake elytra flying state of %fakeentity%",
-                               "%fakeentity%'s fake elytra flying state"
+                               "[the] fake elytra[ ][fly[ing]] [state] of %fakeentity%",
+                               "%fakeentity%'s fake elytra[ ][fly[ing]] [state]"
                        )
                        .build()
        );

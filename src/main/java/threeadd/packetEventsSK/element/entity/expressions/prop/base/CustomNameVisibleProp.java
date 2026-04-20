@@ -32,8 +32,8 @@ public class CustomNameVisibleProp extends MetaPropertyExpression<EntityMeta, Bo
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(CustomNameVisibleProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake custom name visible state of %fakeentity%",
-                                "%fakeentity%'s fake custom name visible state"
+                                "[the] fake custom[ ]name visible [state] of %fakeentity%",
+                                "%fakeentity%'s fake custom[ ]name visible [state]"
                         )
                         .build()
         );

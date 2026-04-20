@@ -33,8 +33,8 @@ public class SilentProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(SilentProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake silent state of %fakeentity%",
-                                "%fakeentity%'s fake silent state"
+                                "[the] fake silent [state] of %fakeentity%",
+                                "%fakeentity%'s fake silent [state]"
                         )
                         .build()
         );

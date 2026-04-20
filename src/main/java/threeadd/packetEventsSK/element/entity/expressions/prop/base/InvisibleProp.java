@@ -33,8 +33,8 @@ public class InvisibleProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(InvisibleProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake invisible state of %fakeentity%",
-                                "%fakeentity%'s fake invisible state"
+                                "[the] fake invisible [state] of %fakeentity%",
+                                "%fakeentity%'s fake invisible [state]"
                         )
                         .build()
         );

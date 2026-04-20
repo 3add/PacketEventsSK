@@ -33,8 +33,8 @@ public class SprintingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(SprintingProp.class, Boolean.class)
                         .addPatterns(
-                                "[the] fake sprinting state of %fakeentity%",
-                                "%fakeentity%'s fake sprinting state"
+                                "[the] fake sprinting [state] of %fakeentity%",
+                                "%fakeentity%'s fake sprinting [state]"
                         )
                         .build()
         );
