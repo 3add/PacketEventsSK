@@ -5,13 +5,14 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -37,8 +38,15 @@ import java.util.UUID;
 @Since("1.0.0")
 public class FakeTeamReceiversProp extends CustomPropertyExpression<FakeTeam, Player> {
 
-    static {
-        PropertyExpression.register(FakeTeamReceiversProp.class, Player.class, "fake[ ]team[ ]viewers", "faketeam");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(FakeTeamReceiversProp.class, Player.class)
+                        .addPatterns("%faketeam%'s fake[ ]team viewers",
+                                "fake[ ]team viewers of %faketeam%")
+                        .build()
+        );
+
     }
 
     @SuppressWarnings("unused")

@@ -1,10 +1,12 @@
 package threeadd.packetEventsSK.element.entity.api;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.lang.SkriptParser;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
@@ -13,7 +15,6 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-// supports both WrapperEntity and EntityMeta
 public abstract class MetaPropertyExpression<Meta extends EntityMeta, Return> extends CustomPropertyExpression<Object, Return> {
 
     private final EnumSet<ChangeMode> changeModes;
@@ -36,19 +37,21 @@ public abstract class MetaPropertyExpression<Meta extends EntityMeta, Return> ex
     @Override
     protected final Return getProperty(Object input) {
         Meta meta = resolveMeta(input);
-
-        if (meta == null)
-            return null;
-
+        if (meta == null) return null;
         return get(meta);
     }
 
     @Override
     public Class<?>[] acceptChange(ChangeMode mode) {
-        if (changeModes.contains(mode))
-            return new Class[] { returnType };
+        if (!changeModes.contains(mode))
+            return null;
 
-        return null;
+        // Component expressions also accept String for MiniMessage parsing
+        if (returnType == Component.class) {
+            return new Class[] { Component.class, String.class };
+        }
+
+        return new Class[] { returnType };
     }
 
     @Override
@@ -56,6 +59,10 @@ public abstract class MetaPropertyExpression<Meta extends EntityMeta, Return> ex
         Object input = getValueOrNull(0, Object.class, event);
         switch (input) {
             case WrapperEntity entity -> {
+                if (!entityMetaClass.isInstance(entity.getEntityMeta())) {
+                    Skript.error("Cannot use this property on this entity type. Expected " + entityMetaClass.getSimpleName() + " but got " + entity.getEntityMeta().getClass().getSimpleName());
+                    return;
+                }
                 entity.consumeEntityMeta(entityMetaClass, m -> change(m, mode, delta));
                 entity.refresh();
             }
@@ -66,8 +73,8 @@ public abstract class MetaPropertyExpression<Meta extends EntityMeta, Return> ex
 
                     if (event instanceof PacketTriggerEvent triggerEvent) {
                         WrapperPlayServerEntityMetadata wrapper = (WrapperPlayServerEntityMetadata) triggerEvent.getWrapper();
-                        wrapper.setEntityMetadata(meta); // update the metadata of the wrapper itself
-                        triggerEvent.setModified(true); // set modified to be marked for re-encode
+                        wrapper.setEntityMetadata(meta);
+                        triggerEvent.setModified(true);
                     }
                 }
             }

@@ -5,12 +5,13 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta.BillboardConstraints;
 import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -33,9 +34,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class BillboardProp extends MetaPropertyExpression<AbstractDisplayMeta, Display.Billboard> {
 
-    static {
-        PropertyExpression.register(BillboardProp.class, Display.Billboard.class,
-                "fake[ ]display[ ]billboard", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(BillboardProp.class, Display.Billboard.class)
+                        .addPatterns(
+                                "[the] fake display billboard of %fakeentity%",
+                                "%fakeentity%'s fake display billboard"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

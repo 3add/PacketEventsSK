@@ -4,11 +4,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -30,8 +31,16 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class IdProp extends CustomPropertyExpression<WrapperEntity, Integer> {
 
-    static {
-        PropertyExpression.register(IdProp.class, Integer.class, "fake[ ]entity[ ]id", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(IdProp.class, Integer.class)
+                        .addPatterns(
+                                "[the] (protocol|packet|fake) [entity][ ]id of %fakeentity%",
+                                "%fakeentity%'s (protocol|packet|fake) [entity][ ]id"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

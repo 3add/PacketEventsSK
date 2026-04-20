@@ -5,12 +5,13 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
 
@@ -37,9 +38,16 @@ import threeadd.packetEventsSK.util.ConversionUtil;
 @Since("1.0.0")
 public class InteractEntityEntityProp extends PacketPropertyExpression<WrapperPlayClientInteractEntity, Entity> {
 
-    static {
-        PropertyExpression.register(InteractEntityEntityProp.class, Entity.class,
-                "packet[ ]entity", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(InteractEntityEntityProp.class, Entity.class)
+                        .addPatterns(
+                                "[the] packet entity of %packet%",
+                                "%packet%'[s] packet entity of %entity%"
+                                )
+                        .build()
+        );
     }
 
     public InteractEntityEntityProp() {

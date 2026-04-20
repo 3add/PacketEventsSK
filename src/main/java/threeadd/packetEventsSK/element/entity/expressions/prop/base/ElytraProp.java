@@ -5,27 +5,38 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
-@Name("Fake Entity Property - Custom Name Visible State")
-@Description("If the custom name of a fake entity is visible by other entities.")
+@Name("Fake Entity Property - Elytra Flying State")
+@Description("Represents the fake elytra flying state of a fake entity, this only changes the client side metadata, it doesn't actually make the entity fly")
 @Example("""
-        command spawnFlyingDutchMan:
+        command toggleElytra:
             trigger:
-                spawn new fake player at player for player:
+                spawn new fake player at player for player and store it in {_entity}:
                     set fake skin of the fake entity to player's skin
                     set fake elytra flying state of the fake entity to true
+                set the fake elytra flying state of {_entity} to true
         """)
 @Since("1.0.0")
+
 public class ElytraProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(ElytraProp.class, Boolean.class, "fake[ ]elytra[ ][flying][ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+       registry.register(
+               SyntaxRegistry.EXPRESSION,
+               SyntaxInfo.Expression.builder(ElytraProp.class, Boolean.class)
+                       .addPatterns(
+                               "[the] fake elytra[ ][fly[ing]] [state] of %fakeentity%",
+                               "%fakeentity%'s fake elytra[ ][fly[ing]] [state]"
+                       )
+                       .build()
+       );
     }
 
     @SuppressWarnings("unused")

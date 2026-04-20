@@ -2,13 +2,19 @@ package threeadd.packetEventsSK.element.entity.sections;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.EntityUtils;
+import ch.njol.skript.classes.Changer;
+import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.entity.EntityType;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.Section;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.util.Direction;
+import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
@@ -20,79 +26,117 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import threeadd.packetEventsSK.util.section.ReturningSection;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity - Create Fake Entity")
 @Description("Create a new fake entity from an entity type.")
-@Examples("""
+@Examples(
+        """
         command test:
             trigger:
                 spawn a new fake text display entity at player for players:
-                    set fake display content of fake entity to minimessage from "Hello"
+                    set fake display content of fake entity to "<RAINBOW>HEYY IM FOLLLOWING YOU"
                     set fake display billboard of fake entity to center
-
+         
                     set fake display teleport interpolation duration of fake entity to 1 second
-
+         
                     loop 5 times:
                         teleport fake entity the fake entity to player
                         wait 1 second
-
+         
                     kill fake entity the fake entity
-        """)
+        """
+)
 @Since("1.0.0")
-public class CreateFakeEntitySec extends ReturningSection<WrapperEntity> {
+public class CreateFakeEntitySec extends Section {
 
     private static final Logger log = LoggerFactory.getLogger(CreateFakeEntitySec.class);
+    private static final WeakHashMap<Event, WrapperEntity> lastEntities = new WeakHashMap<>();
 
-    public static class FakeEntityBuilder extends ReturningSection.LastBuilderExpression<WrapperEntity, CreateFakeEntitySec> {}
-
-    static {
-        register(
-                CreateFakeEntitySec.class,
-                WrapperEntity.class,
-                FakeEntityBuilder.class,
-                new String[]{
-                        "[the] fake[ ]entity [builder]"
-                },
-                "(make|create|spawn) [a] [new] fake %entitytype% [entity] [%-direction% %-location%] [for %-players%]"
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.SECTION,
+                SyntaxInfo.builder(CreateFakeEntitySec.class)
+                        .supplier(CreateFakeEntitySec::new)
+                        .addPatterns("(make|create|spawn) [a] [new] fake %entitytype% [entity] [%-direction% %-location%] [for %-players%] [and store (it|the result) in %-objects%]:")
+                        .build()
         );
     }
 
-    public CreateFakeEntitySec() {
-        super(WrapperEntity.class);
+    public static WrapperEntity getLastEntity(Event event) {
+        return lastEntities.get(event);
     }
 
     private Expression<EntityType> entityTypeExpr;
-    private @Nullable Expression<Location> locationExpr = null;
-    private @Nullable Expression<Player> playerExpr = null;
+    private @Nullable Expression<Location> locationExpr;
+    private @Nullable Expression<Player> playerExpr;
+    private @Nullable Expression<Object> storeExpr;
 
     @SuppressWarnings("unchecked")
     @Override
-    protected boolean initialize() {
-        this.entityTypeExpr = (Expression<EntityType>) exprs[0];
+    public boolean init(Expression<?>[] expressions,
+                        int matchedPattern,
+                        Kleenean isDelayed,
+                        SkriptParser.ParseResult parseResult,
+                        @Nullable SectionNode sectionNode,
+                        @Nullable List<TriggerItem> triggerItems) {
 
-        if (exprs[1] != null) {
-            if (exprs[2] == null) {
+        this.entityTypeExpr = (Expression<EntityType>) expressions[0];
+
+        if (expressions[1] != null) {
+            if (expressions[2] == null) {
                 Skript.error("Invalid Direction Location");
                 return false;
             }
-
-            this.locationExpr = Direction.combine((Expression<Direction>) exprs[1], (Expression<Location>) exprs[2]);
+            this.locationExpr = Direction.combine(
+                    (Expression<Direction>) expressions[1],
+                    (Expression<Location>) expressions[2]
+            );
         }
 
-        if (exprs[3] != null)
-            this.playerExpr = (Expression<Player>) exprs[3];
+        if (expressions[3] != null) {
+            this.playerExpr = (Expression<Player>) expressions[3];
+        }
 
+        if (expressions[4] != null) {
+            this.storeExpr = (Expression<Object>) expressions[4];
+            if (!Changer.ChangerUtils.acceptsChange(storeExpr, Changer.ChangeMode.SET, WrapperEntity.class)) {
+                Skript.error(storeExpr.toString(null, Skript.debug()) + " cannot be set to store a fake entity");
+                return false;
+            }
+        }
+
+        if (sectionNode != null) {
+            loadOptionalCode(sectionNode);
+        }
         return true;
     }
 
     @Override
-    public WrapperEntity createNewValue(@NotNull Event event) {
+    protected TriggerItem walk(@NotNull Event event) {
+        WrapperEntity entity = createEntity(event);
+        if (entity == null) {
+            return getNext();
+        }
+
+        lastEntities.put(event, entity);
+
+        if (storeExpr != null) {
+            storeExpr.change(event, new Object[]{entity}, Changer.ChangeMode.SET);
+        }
+
+        return walk(event, true);
+    }
+
+    private @Nullable WrapperEntity createEntity(@NotNull Event event) {
         EntityType type = entityTypeExpr.getSingle(event);
         if (type == null) return null;
 
@@ -104,9 +148,9 @@ public class CreateFakeEntitySec extends ReturningSection<WrapperEntity> {
         int entityId = EntityLib.getPlatform().getEntityIdProvider().provide(uuid, packetEventsType);
 
         WrapperEntity entity;
-        if (packetEventsType != EntityTypes.PLAYER)
+        if (packetEventsType != EntityTypes.PLAYER) {
             entity = new WrapperEntity(entityId, uuid, packetEventsType);
-        else {
+        } else {
             UserProfile profile = new UserProfile(uuid, "test");
             entity = new WrapperPlayer(profile, entityId);
         }
@@ -114,19 +158,21 @@ public class CreateFakeEntitySec extends ReturningSection<WrapperEntity> {
         if (locationExpr != null) {
             Location location = locationExpr.getSingle(event);
             if (location == null) return null;
-
             entity.spawn(SpigotConversionUtil.fromBukkitLocation(location));
         }
 
         if (playerExpr != null) {
             Player[] players = playerExpr.getArray(event);
-            for (Player player : players)
+            for (Player player : players) {
                 entity.addViewer(player.getUniqueId());
+            }
         }
 
         return entity;
     }
 
     @Override
-    public String toString(Event e, boolean debug) { return "create fake entity"; }
+    public String toString(@Nullable Event event, boolean debug) {
+        return "create fake entity";
+    }
 }

@@ -5,11 +5,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.util.Timespan;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -27,8 +28,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class FrozenTimeProp extends MetaPropertyExpression<EntityMeta, Timespan> {
 
-    static {
-        PropertyExpression.register(FrozenTimeProp.class, Timespan.class, "fake[ ]frozen[ ]time", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(FrozenTimeProp.class, Timespan.class)
+                        .addPatterns(
+                                "[the] fake frozen time of %fakeentity%",
+                                "%fakeentity%'s fake frozen time"
+                        )
+                        .build()
+        );
     }
 
     public FrozenTimeProp() {

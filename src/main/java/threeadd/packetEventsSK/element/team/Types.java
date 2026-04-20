@@ -7,7 +7,7 @@ import ch.njol.skript.registrations.Classes;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 
 public class Types {
-    static {
+    public static void register() {
         Classes.registerClass(new ClassInfo<>(FakeTeam.class, "faketeam")
                 .user("fake[ -]?team")
                 .name("Fake Team - Fake Team")

@@ -5,11 +5,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
@@ -37,9 +38,16 @@ public class HeightOrHeightProp extends MetaPropertyExpression<AbstractDisplayMe
 
     private static final Logger log = LoggerFactory.getLogger(HeightOrHeightProp.class);
 
-    static {
-        PropertyExpression.register(HeightOrHeightProp.class, Number.class,
-                "fake[ ]display[ ]:(height|width)", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(HeightOrHeightProp.class, Number.class)
+                        .addPatterns(
+                                "[the] fake display :(height|width) of %fakeentity%",
+                                "%fakeentity%'s fake display :(height|width)"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

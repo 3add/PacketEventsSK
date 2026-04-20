@@ -5,10 +5,11 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
 import org.bukkit.entity.Entity;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 import threeadd.packetEventsSK.util.ConversionUtil;
 
@@ -33,9 +34,16 @@ import java.util.Objects;
 @Since("1.0.0")
 public class DestroyEntitiesEntitiesProp extends PacketPropertyExpression<WrapperPlayServerDestroyEntities, Entity> {
 
-    static {
-        PropertyExpression.register(DestroyEntitiesEntitiesProp.class, Entity.class,
-                "packet[ ]entities", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(DestroyEntitiesEntitiesProp.class, Entity.class)
+                        .addPatterns(
+                                "[the] packet entities of %packet%",
+                                "%packet%'[s] packet entities"
+                        )
+                        .build()
+        );
     }
 
     public DestroyEntitiesEntitiesProp() {

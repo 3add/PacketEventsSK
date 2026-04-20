@@ -1,14 +1,14 @@
 package threeadd.packetEventsSK.element.team.expressions;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.element.team.api.FakeTeamRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomExpression;
@@ -27,15 +27,20 @@ import threeadd.packetEventsSK.util.expressions.CustomExpression;
                 send "Deleted the %arg-1% team"
         """)
 @Since("1.0.0")
-public class FakeTeamWithNameExpr extends CustomExpression<FakeTeam> {
+public class ExprFakeTeamWithName extends CustomExpression<FakeTeam> {
 
-    static {
-        Skript.registerExpression(FakeTeamWithNameExpr.class, FakeTeam.class, ExpressionType.SIMPLE,
-                "fake[ ]team (named|with name) %string%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(ExprFakeTeamWithName.class, FakeTeam.class)
+                        .addPatterns("fake[ ]team (named|with name) %string%")
+                        .build()
+        );
+
     }
 
     @SuppressWarnings("unused")
-    public FakeTeamWithNameExpr() {
+    public ExprFakeTeamWithName() {
         super(FakeTeam.class, true);
     }
 

@@ -12,6 +12,8 @@ import ch.njol.skript.util.AsyncEffect;
 import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.element.entity.api.skin.Skins;
 
@@ -32,12 +34,18 @@ import threeadd.packetEventsSK.element.entity.api.skin.Skins;
                 set displayed skin of player to {_skin} for player
         """)
 @Since("1.0.0")
-public class FetchSkinEff extends AsyncEffect {
+public class EffFetchSkin extends AsyncEffect {
 
-    static {
-        Skript.registerEffect(FetchSkinEff.class,
-                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
-                "set %-~objects% to skin (from|of) player named %string%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffFetchSkin.class)
+                        .addPatterns(
+                                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
+                                "set %-~objects% to skin (from|of) player named %string%"
+                        )
+                        .build()
+        );
     }
 
     private Expression<String> nameExpr;

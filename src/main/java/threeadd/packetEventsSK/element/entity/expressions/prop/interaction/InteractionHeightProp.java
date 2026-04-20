@@ -5,10 +5,11 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.meta.other.InteractionMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -34,8 +35,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class InteractionHeightProp extends MetaPropertyExpression<InteractionMeta, Number> {
 
-    static {
-        PropertyExpression.register(InteractionHeightProp.class, Number.class, "fake[ ]interaction[ ]:(height|width)", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(InteractionHeightProp.class, Number.class)
+                        .addPatterns(
+                                "[the] fake interaction :(height|width) of %fakeentity%",
+                                "%fakeentity%'s fake interaction :(height|width)"
+                        )
+                        .build()
+        );
     }
 
     public InteractionHeightProp() {

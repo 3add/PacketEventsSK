@@ -5,7 +5,6 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
 import ch.njol.skript.util.ColorRGB;
@@ -14,6 +13,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -31,8 +32,15 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class FakeTeamColorProp extends CustomPropertyExpression<FakeTeam, Color> {
 
-    static {
-        PropertyExpression.register(FakeTeamColorProp.class, Color.class, "fake[ ]team[ ]color", "faketeam");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(FakeTeamColorProp.class, Color.class)
+                        .addPatterns("%faketeam%'s fake[ ]team colo[u]r",
+                                    "fake[ ]team colo[u]r of %faketeam%"
+                                )
+                        .build()
+        );
     }
 
     public FakeTeamColorProp() {

@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import java.util.List;
 
 public abstract class CustomExpression<Return> extends SimpleExpression<Return> {

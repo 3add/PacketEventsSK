@@ -4,11 +4,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.ConversionUtil;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -33,8 +34,16 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class LocationProp extends CustomPropertyExpression<WrapperEntity, Vector> {
 
-    static {
-        PropertyExpression.register(LocationProp.class, Vector.class, "fake[ ]entity[ ]location", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+               SyntaxInfo.Expression.builder(LocationProp.class, Vector.class)
+                        .addPatterns(
+                                "[the] fake entity location of %fakeentity%",
+                                "%fakeentity%'s fake entity location"
+                        )
+                        .build()
+        );
     }
 
     public LocationProp() {

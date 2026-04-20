@@ -5,12 +5,13 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.projectile.ItemEntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -30,8 +31,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 public class ItemProp
         extends MetaPropertyExpression<ItemEntityMeta, org.bukkit.inventory.ItemStack> {
 
-    static {
-        PropertyExpression.register(ItemProp.class, org.bukkit.inventory.ItemStack.class, "fake[ ]item[ ]stack", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(ItemProp.class, org.bukkit.inventory.ItemStack.class)
+                        .addPatterns(
+                                "[the] fake item[ ][stack] of %fakeentity%",
+                                "%fakeentity%'s fake item[ ][stack]"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

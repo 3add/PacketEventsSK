@@ -11,12 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.config.Config;
 import threeadd.packetEventsSK.config.Configurable;
+import threeadd.packetEventsSK.element.general.api.PacketEventListener;
 import threeadd.packetEventsSK.element.simple.api.ChatSessionListener;
+import threeadd.packetEventsSK.element.simple.api.GlowingEntityListener;
 import threeadd.packetEventsSK.element.simple.api.PlayerSkinListener;
 import threeadd.packetEventsSK.util.UserManager;
 import threeadd.packetEventsSK.util.registry.PlayerSkinRegistry;
-import threeadd.packetEventsSK.element.simple.api.GlowingEntityListener;
-import threeadd.packetEventsSK.element.general.api.PacketEventListener;
 
 @SuppressWarnings("unused")
 public final class PacketEventsSK extends JavaPlugin {

@@ -5,13 +5,14 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerGameTestHighlightPos;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -30,9 +31,16 @@ import threeadd.packetEventsSK.element.general.api.PacketPropertyExpression;
 @Since("1.0.0")
 public class GameTestHighlightPosAbsBlockProp extends PacketPropertyExpression<WrapperPlayServerGameTestHighlightPos, Vector> {
 
-    static {
-        PropertyExpression.register(GameTestHighlightPosAbsBlockProp.class, Vector.class,
-                "packet[ ]absolute[ ]block", "packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(GameTestHighlightPosAbsBlockProp.class, Vector.class)
+                        .addPatterns(
+                                "[the] packet absolute[ ]block[ ]pos[ition] of %packet%",
+                                "%packet%'[s] packet absolute[ ]block[ ]pos[ition]"
+                        )
+                        .build()
+        );
     }
 
     public GameTestHighlightPosAbsBlockProp() {

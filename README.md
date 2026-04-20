@@ -36,7 +36,6 @@ For more information on how to use the addon, please checkout it's wiki
 
 ## Credits
 - [PacketEvents](https://github.com/retrooper/packetevents) (Packet management), [Install Here](https://modrinth.com/plugin/packetevents)
-- [SkBee](https://github.com/ShaneBeee/SkBee) (Text Components), [Install Here](https://modrinth.com/plugin/skbee)
 - [EntityLib](https://github.com/Tofaa2/EntityLib) (Fake Entity management, Metadata Wrappers) [Included]
 
 Join [the discord](https://discord.gg/CzQ863nxDB) for community help or get in touch with contributors

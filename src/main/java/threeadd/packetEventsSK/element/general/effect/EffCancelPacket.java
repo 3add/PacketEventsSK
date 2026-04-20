@@ -8,10 +8,12 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import threeadd.packetEventsSK.util.effect.CustomEffect;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.PacketEventParserData;
 import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.ProcessWay;
+import threeadd.packetEventsSK.util.effect.CustomEffect;
 
 @SuppressWarnings("unused")
 @Name("General - Cancel Packet")
@@ -27,18 +29,28 @@ import threeadd.packetEventsSK.element.general.structures.PacketEventStruct.Proc
             send "You can't view my chunks 3add!"
         """)
 @Since("1.0.0")
-public class CancelPacketEff extends CustomEffect {
+public class EffCancelPacket extends CustomEffect {
 
-    static {
-        Skript.registerEffect(CancelPacketEff.class,
-                "cancel [the] packet");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffCancelPacket.class)
+                        .supplier(EffCancelPacket::new)
+                        .addPatterns("cancel [the] packet")
+                        .build()
+        );
     }
 
     @Override
     protected boolean initialize(SkriptParser.ParseResult parseResult) {
+        PacketEventParserData data = getParser().getData(PacketEventParserData.class);
+        if (data == null) {
+            Skript.error("Can't cancel packets outside of packet events.");
+            return false;
+        }
 
-        ProcessWay way = getParser().getData(PacketEventParserData.class).getProcessWay();
-        if (way != null && !way.equals(ProcessWay.NETTY)) {
+        ProcessWay way = data.getProcessWay();
+        if (way != ProcessWay.NETTY) {
             Skript.error("Can't cancel packets outside of netty processed packet events, this is because they have probably already been processed on the netty thread.");
             return false;
         }

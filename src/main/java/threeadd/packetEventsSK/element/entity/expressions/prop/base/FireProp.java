@@ -5,10 +5,11 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -24,8 +25,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class FireProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(FireProp.class, Boolean.class, "fake[ ][on][ ]fire[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(FireProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake [on][ ]fire [state] of %fakeentity%",
+                                "%fakeentity%'s fake [on][ ]fire [state]"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

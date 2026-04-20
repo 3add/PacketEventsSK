@@ -5,11 +5,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.util.Timespan;
 import ch.njol.skript.util.Timespan.TimePeriod;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -39,9 +40,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class TeleportInterpolationDurationProp extends MetaPropertyExpression<AbstractDisplayMeta, Timespan> {
 
-    static {
-        PropertyExpression.register(TeleportInterpolationDurationProp.class, Timespan.class,
-                "fake[ ]display[ ]teleport[ation][ ]interpolation[ ]duration", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(TeleportInterpolationDurationProp.class, Timespan.class)
+                        .addPatterns(
+                                "[the] fake display teleport interpolation duration of %fakeentity%",
+                                "%fakeentity%'s fake display teleport interpolation duration"
+                        )
+                        .build()
+        );
     }
 
     public TeleportInterpolationDurationProp() {

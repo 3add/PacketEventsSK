@@ -1,6 +1,5 @@
 package threeadd.packetEventsSK.element.entity.effect;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
@@ -11,6 +10,8 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 
 import java.util.List;
@@ -31,11 +32,15 @@ import java.util.List;
                     kill fake entity {_entity}
         """)
 @Since("1.0.0")
-public class SpawnEff extends CustomEffect {
+public class EffSpawn extends CustomEffect {
 
-    static {
-        Skript.registerEffect(SpawnEff.class,
-                "spawn fake[ ]entit(y|ies) %fakeentities% at %location%");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffSpawn.class)
+                        .addPatterns("spawn fake[ ]entit(y|ies) %fakeentities% at %location%")
+                        .build()
+        );
     }
 
     @Override

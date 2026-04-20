@@ -13,13 +13,20 @@ import ch.njol.skript.lang.Trigger;
 import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.lang.util.SimpleEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValue;
+import org.skriptlang.skript.bukkit.lang.eventvalue.EventValueRegistry;
 import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.script.Script;
 import org.skriptlang.skript.lang.structure.Structure;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.PacketEventsSK;
 import threeadd.packetEventsSK.element.general.api.PacketEventRegistry;
 import threeadd.packetEventsSK.element.general.api.PacketEventRegistry.ListenerData;
@@ -30,18 +37,36 @@ import java.util.Locale;
 @Name("General - On Packet")
 @Description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
 @Example("""
-        on interact entity receive netty processed:
-           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-              stop
+        on packet interact entity receive netty processed:
+            cancel packet
         
-           send "Welcome %player's name%"
+        on packet chunk data send netty processed:
+            cancel packet
         """)
-@Since("1.0.0")
+@Since("INSERT VERSION")
 public class PacketEventStruct extends Structure {
 
-    static {
-        Skript.registerStructure(PacketEventStruct.class, "[on] [packet] %packettype% [:(sync|async|netty) processed]");
+    public static void register(SyntaxRegistry registry) {
         ParserInstance.registerData(PacketEventParserData.class, PacketEventParserData::new);
+
+        registry.register(
+                SyntaxRegistry.STRUCTURE,
+                SyntaxInfo.Structure.builder(PacketEventStruct.class)
+                        .supplier(PacketEventStruct::new)
+                        .addPatterns("[on] [packet] %packettype% [:(sync|async|netty) processed]")
+                        .nodeType(DefaultSyntaxInfos.Structure.NodeType.SECTION)
+                        .build()
+        );
+    }
+
+    public static void registerEventValues(EventValueRegistry eventValueRegistry) {
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, Player.class)
+                .getter(event -> (Player) event.getEvent().getPlayer())
+                .build());
+
+        eventValueRegistry.register(EventValue.builder(PacketTriggerEvent.class, PacketWrapper.class)
+                .getter(PacketTriggerEvent::getWrapper)
+                .build());
     }
 
     private ProcessWay processWay = ProcessWay.NETTY;

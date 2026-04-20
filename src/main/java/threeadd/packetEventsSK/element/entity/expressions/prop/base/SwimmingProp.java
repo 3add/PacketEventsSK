@@ -5,10 +5,11 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -27,8 +28,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class SwimmingProp extends MetaPropertyExpression<EntityMeta, Boolean> {
 
-    static {
-        PropertyExpression.register(SwimmingProp.class, Boolean.class, "fake[ ]swimming[ ][state]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(SwimmingProp.class, Boolean.class)
+                        .addPatterns(
+                                "[the] fake swim[ming] [state] of %fakeentity%",
+                                "%fakeentity%'s fake swim[ming] [state]"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

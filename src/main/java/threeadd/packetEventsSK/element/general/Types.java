@@ -4,27 +4,24 @@ import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import ch.njol.skript.registrations.EventValues;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import me.tofaa.entitylib.meta.EntityMeta;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import threeadd.packetEventsSK.element.entity.api.skin.Skin;
 import threeadd.packetEventsSK.util.DebugUtil;
-import threeadd.packetEventsSK.element.general.api.PacketTriggerEvent;
 import threeadd.packetEventsSK.util.registry.PacketTypeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class Types {
-    static {
-        EventValues.registerEventValue(PacketTriggerEvent.class, Player.class, event -> event.getEvent().getPlayer());
-        EventValues.registerEventValue(PacketTriggerEvent.class, PacketWrapper.class, PacketTriggerEvent::getWrapper);
 
+    public static void register() {
         Classes.registerClass(new ClassInfo<>(PacketWrapper.class, "packet")
                 .user("packet")
                 .name("General - Packet")
@@ -62,18 +59,28 @@ public class Types {
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. chunk data send)")
                 .examples("""
-                        on interact entity receive netty processed:
-                           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-                              stop
-                        F
-                           send "Welcome %player's name%"
-                        """)
+                on interact entity receive netty processed:
+                   if packet entity id of event-packet is not {-interactables::%player's uuid%}:
+                      stop
+                      
+                   send "Welcome %player's name%"
+                """)
                 .since("1.0.0")
+                .supplier(() -> {
+                    List<PacketTypeCommon> all = new ArrayList<>();
+                    all.addAll(PacketTypeRegistry.getAllSendPackets());
+                    all.addAll(PacketTypeRegistry.getAllReceivePackets());
+                    return all.iterator();
+                })
                 .parser(new Parser<>() {
 
                     @Override
                     public @Nullable PacketTypeCommon parse(String input, ParseContext context) {
                         input = input.trim();
+                        if (input.toLowerCase(Locale.ENGLISH).endsWith(" packet")) {
+                            input = input.substring(0, input.length() - 7).trim();
+                        }
+
                         boolean isSend;
                         String name;
 
@@ -128,30 +135,6 @@ public class Types {
                     @Override
                     public String toVariableNameString(Skin skin) {
                         return "skin:" + skin.hashCode();
-                    }
-                })
-        );
-
-        Classes.registerClass(new ClassInfo<>(EntityMeta.class, "fakeentitymeta")
-                .user("fake[ -]?entity[ -]?meta[ -]?data")
-                .name("Fake Entity - Entity Meta Data")
-                .description("The entity meta of a fake entity or outbound packet")
-                .examples() // TODO
-                .since("1.0.0")
-                .parser(new Parser<>() {
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(EntityMeta meta, int flags) {
-                        return "fake entity meta data";
-                    }
-
-                    @Override
-                    public String toVariableNameString(EntityMeta meta) {
-                        return "fakeentitymetadata:" + meta.hashCode();
                     }
                 })
         );

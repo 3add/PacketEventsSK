@@ -6,11 +6,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -28,11 +29,19 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
                     kill fake entity the fake entity
         """)
 @Since("1.0.0")
+
 public class ItemProp extends MetaPropertyExpression<ItemDisplayMeta, ItemType> {
 
-    static {
-        PropertyExpression.register(ItemProp.class, ItemType.class,
-                "fake[ ]display[ ]item[ ][type]", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(ItemProp.class, ItemType.class)
+                        .addPatterns(
+                                "[the] fake display[ ]item[ ][type] of %fakeentity%",
+                                "%fakeentity%'s fake display[ ]item[ ][type]"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

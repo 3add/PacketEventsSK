@@ -1,22 +1,16 @@
 package threeadd.packetEventsSK;
 
-// Highly "inspired" by https://github.com/ShaneBeee/SkBee/blob/838805d592a090b60b9ce25ae1497380747fbb81/src/main/java/com/shanebeestudios/skbee/AddonLoader.java
-
 import ch.njol.skript.Skript;
-import ch.njol.skript.SkriptAddon;
-import com.shanebeestudios.skbee.SkBee;
-import com.shanebeestudios.skbee.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.skriptlang.skript.addon.SkriptAddon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import threeadd.packetEventsSK.util.registry.element.ElementCollection;
 import threeadd.packetEventsSK.util.registry.element.ElementRegistry;
-
-import java.io.IOException;
 
 public class AddonLoader {
 
@@ -25,8 +19,6 @@ public class AddonLoader {
     private final PacketEventsSK plugin;
     private final Plugin skriptPlugin;
     private SkriptAddon skriptAddon;
-
-    public Boolean HAS_SKBEE_COMPONENT = false;
 
     protected AddonLoader(PacketEventsSK plugin) {
         this.plugin = plugin;
@@ -39,18 +31,7 @@ public class AddonLoader {
             return false;
         }
 
-        this.skriptAddon = Skript.registerAddon(plugin);
-
-        Plugin skBeePlugin = Bukkit.getPluginManager().getPlugin("SkBee");
-        if (skBeePlugin != null && skBeePlugin.isEnabled() && skBeePlugin instanceof SkBee skBee) {
-            Config skBeeConfig = skBee.getPluginConfig();
-            if (skBeeConfig.ELEMENTS_TEXT_COMPONENT) {
-                HAS_SKBEE_COMPONENT = true;
-                logElementStatus("SkBee Text Components", true);
-            }
-        } else {
-            logElementStatus("SkBee Text Components", false);
-        }
+        this.skriptAddon = Skript.instance().registerAddon(PacketEventsSK.class, "PacketEventsSK");
 
         if (!Skript.isAcceptRegistrations()) {
             log.error("Skript is no longer accepting registrations, PacketEventsSK can no longer load");
@@ -70,11 +51,11 @@ public class AddonLoader {
 
     private void loadElement(ElementCollection element) {
         try {
-            skriptAddon.loadClasses(element.getClass().getPackageName());
+            skriptAddon.loadModules(element);
             logElementStatus(element.identifier(), true);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logElementStatus(element.identifier(), false);
-            log.error("Something went wrong loading {} ", element, e);
+            log.error("Something went wrong loading {}", element.identifier(), e);
         }
     }
 

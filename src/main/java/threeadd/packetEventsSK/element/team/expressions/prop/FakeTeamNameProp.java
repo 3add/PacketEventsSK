@@ -4,9 +4,10 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.team.api.FakeTeam;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -24,8 +25,16 @@ import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 @Since("1.0.0")
 public class FakeTeamNameProp extends CustomPropertyExpression<FakeTeam, String> {
 
-    static {
-        PropertyExpression.register(FakeTeamNameProp.class, String.class, "fake[ ]team[ ]name", "faketeam");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(FakeTeamNameProp.class, String.class)
+                        .addPatterns("%faketeam%'s fake[ ]team name",
+                                "fake[ ]team name of %faketeam%"
+                                )
+                        .build()
+        );
+
     }
 
     public FakeTeamNameProp() {

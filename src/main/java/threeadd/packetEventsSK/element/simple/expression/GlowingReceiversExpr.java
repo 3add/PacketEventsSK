@@ -5,7 +5,6 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Bukkit;
@@ -13,6 +12,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.simple.api.GlowingEntityManager;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
@@ -33,9 +34,13 @@ import java.util.UUID;
 @Since("1.0.0")
 public class GlowingReceiversExpr extends CustomPropertyExpression<Entity, Player> {
 
-    static {
-        PropertyExpression.register(GlowingReceiversExpr.class, Player.class,
-                "[the] glow[ing][ ][entity][ ]viewers", "entity");
+    public static void register(SyntaxRegistry syntaxRegistry) {
+        syntaxRegistry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(GlowingReceiversExpr.class, Player.class)
+                        .addPatterns("[the] glow[ing] [entity][ ]viewers of %entities%")
+                        .build()
+        );
     }
 
     public GlowingReceiversExpr() {

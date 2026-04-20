@@ -5,7 +5,6 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.coll.CollectionUtils;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
@@ -13,9 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.util.expressions.CustomPropertyExpression;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity - Fake Entity Viewers")
@@ -37,8 +41,16 @@ import java.util.*;
 @Since("1.0.0")
 public class FakeEntityViewersProp extends CustomPropertyExpression<WrapperEntity, Player> {
 
-    static {
-        PropertyExpression.register(FakeEntityViewersProp.class, Player.class, "fake[ ]entity[ ]viewers", "fakeentity");
+    public static void register(SyntaxRegistry registry) {
+       registry.register(
+               SyntaxRegistry.EXPRESSION,
+               SyntaxInfo.Expression.builder(FakeEntityViewersProp.class, Player.class)
+                       .addPatterns(
+                               "[the] fake entity viewers of %fakeentity%",
+                               "%fakeentity%'s fake entity viewers"
+                       )
+                       .build()
+       );
     }
 
     @SuppressWarnings("unused")

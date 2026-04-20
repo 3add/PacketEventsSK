@@ -1,6 +1,5 @@
 package threeadd.packetEventsSK.element.simple.effects;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
@@ -11,6 +10,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.simple.api.GlowingEntityManager;
 import threeadd.packetEventsSK.util.effect.CustomEffect;
 
@@ -33,11 +34,15 @@ import java.util.stream.Collectors;
                 set glow state of player to true for player
         """)
 @Since("1.0.0")
-public class GlowEff extends CustomEffect {
+public class EffGlow extends CustomEffect {
 
-    static {
-        Skript.registerEffect(GlowEff.class,
-                "set glow[ing] [state] of %entities% [to] %boolean% [for %-players%]");
+    public static void register(SyntaxRegistry syntaxRegistry) {
+        syntaxRegistry.register(
+                SyntaxRegistry.EFFECT,
+                SyntaxInfo.builder(EffGlow.class)
+                        .addPatterns("set glow[ing] [state] of %entities% [to] %boolean% [for %-players%]")
+                        .build()
+        );
     }
 
     @Override

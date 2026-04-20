@@ -5,15 +5,15 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.BlockDisplayMeta;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
-@SuppressWarnings("unused")
 @Name("Fake Block Display Entity - Display Block Data")
 @Description("""
         Represents the block data of a Block Display Entity.
@@ -30,9 +30,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class BlockProp extends MetaPropertyExpression<BlockDisplayMeta, BlockData> {
 
-    static {
-        PropertyExpression.register(BlockProp.class, BlockData.class,
-                "fake[ ]display[ ]block[ ]data", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(BlockProp.class, BlockData.class)
+                        .addPatterns(
+                                "[the] fake display[ ]block[ ]data of %fakeentity%",
+                                "%fakeentity%'s fake display[ ]block[ ]data"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")

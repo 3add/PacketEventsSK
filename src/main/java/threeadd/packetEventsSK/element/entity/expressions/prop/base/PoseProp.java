@@ -5,12 +5,13 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.PropertyExpression;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.registration.SyntaxInfo;
+import org.skriptlang.skript.registration.SyntaxRegistry;
 import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
@@ -29,8 +30,16 @@ import threeadd.packetEventsSK.element.entity.api.MetaPropertyExpression;
 @Since("1.0.0")
 public class PoseProp extends MetaPropertyExpression<EntityMeta, Pose> {
 
-    static {
-        PropertyExpression.register(PoseProp.class, Pose.class, "fake[ ]pose", "fakeentity/fakeentitymeta");
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                SyntaxInfo.Expression.builder(PoseProp.class, Pose.class)
+                        .addPatterns(
+                                "[the] fake pose of %fakeentity%",
+                                "%fakeentity%'s fake pose"
+                        )
+                        .build()
+        );
     }
 
     @SuppressWarnings("unused")
