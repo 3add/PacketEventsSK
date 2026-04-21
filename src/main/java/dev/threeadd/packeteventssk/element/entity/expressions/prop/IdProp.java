@@ -36,8 +36,8 @@ public class IdProp extends CustomPropertyExpression<WrapperEntity, Integer> {
                 SyntaxRegistry.EXPRESSION,
                 SyntaxInfo.Expression.builder(IdProp.class, Integer.class)
                         .addPatterns(
-                                "[the] (protocol|packet|fake) [entity][ ]id of %fakeentity%",
-                                "%fakeentity%'s (protocol|packet|fake) [entity][ ]id"
+                                "[the] fake [entity][ ]id of %fakeentity%",
+                                "%fakeentity%'s fake [entity][ ]id"
                         )
                         .build()
         );
