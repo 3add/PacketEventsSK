@@ -1,5 +1,5 @@
 name: PacketEventsSK
-version: '1.0'
+version: '1.0.1'
 main: dev.threeadd.packeteventssk.PacketEventsSK
 api-version: '1.21'
 authors: [3add, retrooper and contributors (packetevents)]
