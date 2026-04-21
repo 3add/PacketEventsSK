@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.simple.api.GlowingEntityManager;
+import dev.threeadd.packeteventssk.element.simple.api.glow.GlowingEntityManager;
 import dev.threeadd.packeteventssk.util.effect.CustomEffect;
 
 import java.util.ArrayList;
