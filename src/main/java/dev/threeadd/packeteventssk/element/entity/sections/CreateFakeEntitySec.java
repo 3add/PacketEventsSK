@@ -9,10 +9,7 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.entity.EntityType;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.Section;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.lang.*;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
@@ -57,7 +54,7 @@ import java.util.WeakHashMap;
         """
 )
 @Since("1.0.0")
-public class CreateFakeEntitySec extends Section {
+public class CreateFakeEntitySec extends EffectSection {
 
     private static final Logger log = LoggerFactory.getLogger(CreateFakeEntitySec.class);
     private static final WeakHashMap<Event, WrapperEntity> lastEntities = new WeakHashMap<>();

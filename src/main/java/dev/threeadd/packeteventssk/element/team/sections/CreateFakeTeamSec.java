@@ -7,10 +7,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.Section;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.lang.*;
 import ch.njol.util.Kleenean;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -34,7 +31,7 @@ import java.util.WeakHashMap;
                     add player to {_team}'s fake team entities
         """)
 @Since("1.0.0")
-public class CreateFakeTeamSec extends Section {
+public class CreateFakeTeamSec extends EffectSection {
 
     private static final WeakHashMap<Event, FakeTeam> lastTeams = new WeakHashMap<>();
 

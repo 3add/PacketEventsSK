@@ -1,6 +1,8 @@
 package dev.threeadd.packeteventssk.element.entity;
 
 import dev.threeadd.packeteventssk.element.entity.effect.EffRide;
+import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntities;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.base.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.AttributeProp;
@@ -11,10 +13,6 @@ import dev.threeadd.packeteventssk.element.entity.effect.EffTeleport;
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityWithId;
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityWithUuid;
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprLastFakeEntity;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.FakeEntityViewersProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.IdProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.LocationProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.UuidProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.block.BlockProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.item.ItemProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.BackgroundColorProp;
@@ -30,11 +28,13 @@ public class EntityModule {
 
         CreateFakeEntitySec.register(registry);
 
+        ExprFakeEntities.register(registry);
         ExprLastFakeEntity.register(registry);
         ExprFakeEntityWithId.register(registry);
         ExprFakeEntityWithUuid.register(registry);
 
         FakeEntityViewersProp.register(registry);
+        FakeEntitiesProp.register(registry);
         IdProp.register(registry);
         LocationProp.register(registry);
         UuidProp.register(registry);

@@ -32,7 +32,6 @@ import dev.threeadd.packeteventssk.util.expressions.CustomExpression;
 @Since("1.0.0")
 public class ExprFakeEntityWithId extends CustomExpression<WrapperEntity> {
 
-
     public static void register(SyntaxRegistry registry) {
         registry.register(
                 SyntaxRegistry.EXPRESSION,

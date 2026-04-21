@@ -32,7 +32,7 @@ import java.util.WeakHashMap;
                     send packet {_packet} to the player
         """)
 @Since("1.0.0")
-public class CreatePacketSec extends Section {
+public class CreatePacketSec extends EffectSection {
 
     private static final WeakHashMap<Event, PacketWrapper<?>> lastPackets = new WeakHashMap<>();
 
