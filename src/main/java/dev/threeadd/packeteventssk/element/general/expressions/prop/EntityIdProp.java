@@ -1,0 +1,52 @@
+package dev.threeadd.packeteventssk.element.general.expressions.prop;
+
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Example;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.SkriptParser;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.skriptlang.skript.registration.DefaultSyntaxInfos;
+import org.skriptlang.skript.registration.SyntaxRegistry;
+import dev.threeadd.packeteventssk.util.expressions.CustomPropertyExpression;
+
+@SuppressWarnings("unused")
+@Name("General - Entity Id of Entity")
+@Description("Gets the entity id of an entity on the server")
+@Example("""
+        command killTargetForMe:
+            trigger:
+                create a new destroy entities send packet:
+                    add (entity id of target entity of player) to packet entity ids of the packet
+                    send packet the packet to the player
+        """)
+@Since("1.0.0")
+public class EntityIdProp extends CustomPropertyExpression<Entity, Integer> {
+
+    public static void register(SyntaxRegistry registry) {
+        registry.register(
+                SyntaxRegistry.EXPRESSION,
+                DefaultSyntaxInfos.Expression.builder(EntityIdProp.class, Integer.class)
+                        .addPatterns(
+                                "(protocol|packet) [entity][ ]id of %entity%",
+                                "%entity%'s (protocol|packet) [entity][ ]id"
+                        )
+                        .build()
+        );
+    }
+
+    public EntityIdProp() {
+        super(Integer.class, Entity.class, true);
+    }
+
+    @Override
+    protected boolean initialize(SkriptParser.ParseResult parseResult) {
+        return true;
+    }
+
+    @Override
+    protected Integer getOne(Event event) {
+        return getValue(0, Entity.class, event).getEntityId();
+    }
+}

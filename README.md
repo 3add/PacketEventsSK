@@ -1,42 +1,60 @@
-## PacketEventsSK
-PacketEventsSK is a skript addon that adds packet related features to Skript.
-### Requirements
-PacketEventsSK requires a 1.18+ bukkit server and [packetevents](https://modrinth.com/plugin/packetevents) a seperate plugin to be installed.
-All packets that require a Text Component require [SkBee](https://modrinth.com/plugin/skbee) to be installed as well (you can use their expressions to work with text components)
+<!--suppress HtmlDeprecatedAttribute --> 
+<div align="center">
+  <h2>PacketEventsSK</h2>
+  <h3>PacketEventsSK is a skript addon that adds packet related features to Skript.</h3>
+  
+  <a href="https://discord.gg/CzQ863nxDB"><img src="https://img.shields.io/discord/1459606994389307463?color=5562e9&logo=discord&logoColor=white&style=for-the-badge"></a>
+  <img src="https://img.shields.io/github/license/3add/PacketEventsSK?style=for-the-badge&logo=github">
+  <a href="https://bstats.org/plugin/bukkit/PacketEventsSK/28798"><img src="https://img.shields.io/bstats/servers/28798?style=for-the-badge"></a>
+  <a href="https://modrinth.com/plugin/packeteventssk"><img src="https://img.shields.io/modrinth/dt/packeteventssk?style=for-the-badge&logo=modrinth&logoColor=white&label=downloads"></a>
+    
+  <a href="https://skdocs.org/?addon=PacketEventsSK">
+    <img src="https://camo.githubusercontent.com/1623c33b83fe153048358ded38409eb55182c29a98158e78b1aeca2ad9575e32/687474703a2f2f736b646f63732e6f72672f76696577646f63732e706e67" alt="SkDocs">
+  </a>
+  
+  <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
+    <img src="http://skripthub.net/static/addon/ViewTheDocsButton.png" alt="SkriptHubViewTheDocs">
+  </a>
+</a>
+</div>
 
+## Requirements
+PacketEventsSK requires the following to run:
+
+- **Minecraft 1.18+** Paper-compatible server  
+- **[PacketEvents](https://modrinth.com/plugin/packetevents)** installed as a separate paper plugin
+
+> [!CAUTION]
+> PacketEventsSK officially supports only the latest stable:
+> - **Paper 1.21.11**
+> - **Skript 2.15.0**
+>
+> Older versions may work, but are not supported.
 ## Features
-Here's a list of some of it's key features, more available on the wiki.
-### Entities
-```applescript
-command test:
-    trigger:
-        create new fake block display entity at player for players:
-            set fake display block data of the fake entity to dirt[]
-            wait 2 seconds
-            kill fake entity the fake entity
-```
-### Listening to packets
-Packet Listeners can listen to both incomming and outgoing packets. 
+PacketEventsSK adds advanced packet functionality to Skript, including:
 
-They are processed asynchrounsly and thus **YOU CAN'T ACCESS THE MAIN BUKKIT API THROUGH NETTY PROCESSED STRUCTURES**, 
-(basically just means that any expression accessing something minecraft related [except if provided by this addon] might cause errors)
+- Fake entity creation and manipulation  
+- Incoming and outgoing packet listeners  
+- Access to all PacketEvents packet types  
+- Netty processed packet handling  
+- Metadata wrappers and packet utilities  
 
-If you want to access the bukkit api, process the packet synchrounsly though be aware, not processing on the netty threads removes the ability to cancel or modify the packets received/sent
-
-Every single packet in packetevents can be listened to, for a list see [this](https://github.com/retrooper/packetevents/blob/a3dc1118f87b7bd1404203ec3b6f3b302c59b2b3/api/src/main/java/com/github/retrooper/packetevents/protocol/packettype/PacketType.java), consider that u have to define a side (send [sent by client, `PacketType.x.Server` in paceketevents] or receive [sent by client, `PacketType.x.Client` in paceketevents])
-```applescript
-on interact entity receive netty processed:
-   if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-      stop
- 
-   send "Welcome %player's name%"
-```
-
-For more information on how to use the addon, please checkout it's wiki
-
+Learn more in the **[Wiki](https://github.com/3add/PacketEventsSK/wiki)**.
 ## Credits
-- [PacketEvents](https://github.com/retrooper/packetevents) (Packet management), [Install Here](https://modrinth.com/plugin/packetevents)
-- [SkBee](https://github.com/ShaneBeee/SkBee) (Text Components), [Install Here](https://modrinth.com/plugin/skbee)
-- [EntityLib](https://github.com/Tofaa2/EntityLib) (Fake Entity management, Metadata Wrappers) [Included]
+### PacketEventsSK
+The main project.
 
-Join [the discord](https://discord.gg/CzQ863nxDB) for community help or get in touch with contributors
+- [All Contributors](https://github.com/3add/PacketEventsSK/graphs/contributors)
+- [Install Here](https://modrinth.com/plugin/packeteventssk)
+### PacketEvents
+Packet management library.
+
+- [Github Repository](https://github.com/retrooper/packetevents)
+- [Install Here](https://modrinth.com/plugin/packetevents)
+### EntityLib
+Fake entity management and metadata wrappers.
+
+- [Github Repository](https://github.com/Tofaa2/EntityLib)
+- **Included with PacketEventsSK**
+## Support
+Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
