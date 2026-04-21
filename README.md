@@ -15,7 +15,6 @@
   <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
     <img src="http://skripthub.net/static/addon/ViewTheDocsButton.png" alt="SkriptHubViewTheDocs">
   </a>
-</a>
 </div>
 
 ## Requirements
