@@ -1,0 +1,6 @@
+test "FirePropTest":
+    create new fake player entity at test location for {_viewers::*} and store it in {_e}:
+        set the fake on fire state of the fake entity to false
+    assert {_e} is set with "fake entity should have been created"
+    set fake fire of {_e} to true
+    assert fake fire of {_e} is true with "fire state should have been set"
