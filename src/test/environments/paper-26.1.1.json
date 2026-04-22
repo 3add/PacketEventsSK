@@ -1,0 +1,29 @@
+{
+  "name": "paper-26.1.1",
+  "resources": [
+    {"source": "server.properties.generic", "target": "server.properties"}
+  ],
+  "paperDownloads": [
+    {
+      "version": "26.1.1",
+      "target": "paperclip.jar"
+    }
+  ],
+  "skriptDownloads": [
+    {
+      "version": "2.15.0",
+      "target": "plugins/Skript.jar"
+    }
+  ],
+  "downloads": [
+    {
+      "source": "https://github.com/retrooper/packetevents/releases/download/v2.12.1/packetevents-spigot-2.12.1.jar",
+      "target": "plugins/packetevents-spigot-2.12.1.jar"
+    }
+  ],
+  "packetEventsSKTarget": "plugins/PacketEventsSK.jar",
+  "commandLine": [
+    "-Dcom.mojang.eula.agree=true",
+    "-jar", "paperclip.jar", "--nogui"
+  ]
+}

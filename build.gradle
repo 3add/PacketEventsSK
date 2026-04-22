@@ -8,29 +8,34 @@ plugins {
 group = 'threeadd'
 version = '1.0.1'
 
+configurations {
+    testShadow
+    testImplementation.extendsFrom testShadow
+}
+
 repositories {
     mavenCentral()
 
-    maven { // paper (obv)
+    maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
 
-    maven { // skript
+    maven {
         url = 'https://repo.skriptlang.org/releases'
     }
 
-    maven { // SkBee
+    maven {
         name = "jitpack"
         url = "https://jitpack.io"
     }
 
-    maven { // packetevents
+    maven {
         name = "code-mc"
         url = "https://repo.codemc.io/repository/maven-releases/"
     }
 
-    maven { // EntityLib
+    maven {
         name = "tofaa-pvp-hub"
         url = "https://maven.pvphub.me/tofaa"
     }
@@ -46,6 +51,11 @@ dependencies {
 
     implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
+
+    testShadow 'junit:junit:4.13.2'
+    testShadow 'com.google.code.gson:gson:2.11.0'
+    testShadow 'com.google.guava:guava:32.1.2-jre'
+    testImplementation 'org.jetbrains:annotations:24.0.0'
 }
 
 build {
@@ -60,9 +70,9 @@ shadowJar {
 }
 
 tasks {
-  runServer {
-    minecraftVersion("1.21")
-  }
+    runServer {
+        minecraftVersion("1.21")
+    }
 }
 
 def targetJavaVersion = 21
@@ -90,4 +100,45 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+def java25 = 25
+
+tasks.register('testJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    dependsOn(compileTestJava)
+    archiveFileName = project.name + '-JUnit.jar'
+    from sourceSets.test.output, sourceSets.main.output
+    from {
+        project.configurations.testShadow.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    relocate("me.tofaa.entitylib", "threeadd.packeteventssk.entitylib")
+    relocate("org.bstats", "threeadd.packeteventssk.metrics")
+}
+
+tasks.register('JUnitTest25', JavaExec) {
+    description = 'Runs Skript tests on Paper 26.1.2 with Java 25.'
+    dependsOn testJar
+    group = 'execution'
+
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(java25)
+    }
+
+    classpath = files([
+            testJar.archiveFile,
+            sourceSets.main.runtimeClasspath
+    ])
+
+    mainClass = 'dev.threeadd.packeteventssk.test.platform.PlatformMain'
+
+    args = [
+            'build/test_runners',
+            'src/test/scripts',
+            'src/test/resources/runner_data',
+            'src/test/environments/paper-26.1.1.json',
+            'null',
+            '-1'
+    ]
 }
