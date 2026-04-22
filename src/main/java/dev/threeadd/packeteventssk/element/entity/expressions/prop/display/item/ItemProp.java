@@ -2,10 +2,7 @@ package dev.threeadd.packeteventssk.element.entity.expressions.prop.display.item
 
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import org.bukkit.event.Event;
@@ -15,6 +12,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
+@DocumentationId("DisplayItemProp")
 @Name("Fake Item Display Entity - Display Item Type")
 @Description("""
         Represents the display ItemType of an Item/Block Display Entity
@@ -29,7 +27,6 @@ import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
                     kill fake entity the fake entity
         """)
 @Since("1.0.0")
-
 public class ItemProp extends MetaPropertyExpression<ItemDisplayMeta, ItemType> {
 
     public static void register(SyntaxRegistry registry) {

@@ -1,10 +1,7 @@
 package dev.threeadd.packeteventssk.element.entity.expressions.prop.item;
 
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.projectile.ItemEntityMeta;
@@ -15,6 +12,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
+@DocumentationId("DroppedItemProp")
 @Name("Fake Dropped Item Entity - Item Stack")
 @Description("Represents the item stack held within a dropped item.")
 @Example("""
