@@ -37,12 +37,12 @@ public class EffMakeSee extends CustomEffect {
     protected void execute(Event event) {
         List<Player> players = getValues(0, Player.class, event);
         List<Location> locations = getValues(1, Location.class, event);
-        BlockData blockdata = getValue(2, BlockData.class, event);
+        BlockData blockData = getValue(2, BlockData.class, event);
 
         Map<Vector3i, BlockData> map = new HashMap<>();
         for (Location location : locations) {
             Vector3i vec = new Vector3i(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            map.put(vec, blockdata);
+            map.put(vec, blockData);
         }
 
         for (Player player : players) {
