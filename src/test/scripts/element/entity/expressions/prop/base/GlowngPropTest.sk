@@ -1,0 +1,6 @@
+test "GlowngPropTest":
+    create new fake player entity at test location for {_viewers::*} and store it in {_e}:
+        set fake glowing state of {_e} to false
+    assert {_e} is set with "fake entity should have been created"
+    set the fake glowing state of {_e} to true
+    assert fake glowing state of {_e} is true with "fake glowing state should be true"

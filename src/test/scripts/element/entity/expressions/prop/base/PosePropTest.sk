@@ -1,0 +1,5 @@
+test "PosePropTest":
+    create new fake player entity at test location for {_viewers::*} and store it in {_e}
+    assert {_e} is set with "fake entity should have been created"
+    set fake pose of {_e} to sleeping pose
+    assert fake pose of {_e} is set with "fake pose state should be sleeping pose"

@@ -1,0 +1,8 @@
+test "HeightOrHeightProp":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+        set fake display height of the fake entity to 11
+        set fake display width of the fake entity to 11
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display height of {_e} is 11 with "Height expression should return the height of the fake display"
+    assert fake display width of {_e} is 11 with "Width expression should return the width of the fake display"

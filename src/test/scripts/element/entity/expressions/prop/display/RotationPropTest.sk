@@ -1,0 +1,9 @@
+test "RotationPropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    set {_e} to the fake entity
+    set fake display left rotation of {_e} to quaternion(2, 1, 1, 1)
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display left rotation of {_e} is quaternion(2, 1, 1, 1) with "Fake display left rotation should be set to (2, 1, 1, 1)"
+    set fake display right rotation of {_e} to quaternion(3, 1, 1, 1)
+    assert fake display right rotation of {_e} is quaternion(3, 1, 1, 1) with "Fake display right rotation should be set to (3, 1, 1, 1)"

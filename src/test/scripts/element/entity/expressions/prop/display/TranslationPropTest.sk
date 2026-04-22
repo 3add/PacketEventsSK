@@ -1,0 +1,7 @@
+test "TranslationPropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    set {_e} to the fake entity
+    set fake display translation of {_e} to vector(0.5, 0.5, 0.5)
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display translation of {_e} is vector(0.5, 0.5, 0.5) with "Fake display translation should be set to (0.5, 0.5, 0.5)"

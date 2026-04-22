@@ -1,0 +1,7 @@
+test "ViewRangePropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+        set fake display view range of the fake entity to 10
+    set {_e} to the fake entity
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display view range of {_e} is 10 with "Fake display view range should be set to 10"

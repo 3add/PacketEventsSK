@@ -1,0 +1,7 @@
+test "InterpolationDelayProp":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    set {_e} to the fake entity
+    set fake display interpolation delay of {_e} to 1 seconds
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display interpolation delay of {_e} is 1 seconds with "Interpolation delay expression should return the interpolation delay of the fake display"
