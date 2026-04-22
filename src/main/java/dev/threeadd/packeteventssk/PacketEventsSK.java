@@ -2,6 +2,7 @@ package dev.threeadd.packeteventssk;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import dev.threeadd.packeteventssk.element.simple.api.block.FakeBlockListener;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
@@ -12,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import dev.threeadd.packeteventssk.config.Config;
 import dev.threeadd.packeteventssk.config.Configurable;
 import dev.threeadd.packeteventssk.element.general.api.PacketEventListener;
-import dev.threeadd.packeteventssk.element.simple.api.ChatSessionListener;
-import dev.threeadd.packeteventssk.element.simple.api.GlowingEntityListener;
-import dev.threeadd.packeteventssk.element.simple.api.PlayerSkinListener;
+import dev.threeadd.packeteventssk.element.simple.api.skin.ChatSessionListener;
+import dev.threeadd.packeteventssk.element.simple.api.glow.GlowingEntityListener;
+import dev.threeadd.packeteventssk.element.simple.api.skin.PlayerSkinListener;
 import dev.threeadd.packeteventssk.util.UserManager;
 import dev.threeadd.packeteventssk.util.registry.PlayerSkinRegistry;
 
@@ -40,6 +41,7 @@ public final class PacketEventsSK extends JavaPlugin {
         PacketEvents.getAPI().getEventManager().registerListener(new PacketEventListener(), PacketListenerPriority.NORMAL);
 
         if (getConfiguration().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {
+            PacketEvents.getAPI().getEventManager().registerListener(new FakeBlockListener(), PacketListenerPriority.NORMAL);
             PacketEvents.getAPI().getEventManager().registerListener(new GlowingEntityListener(), PacketListenerPriority.NORMAL);
             PacketEvents.getAPI().getEventManager().registerListener(new ChatSessionListener(), PacketListenerPriority.NORMAL);
             PacketEvents.getAPI().getEventManager().registerListener(new PlayerSkinListener(), PacketListenerPriority.NORMAL);

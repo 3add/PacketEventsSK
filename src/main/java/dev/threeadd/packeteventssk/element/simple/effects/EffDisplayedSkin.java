@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
-import dev.threeadd.packeteventssk.element.simple.api.PlayerSkinManager;
+import dev.threeadd.packeteventssk.element.simple.api.skin.PlayerSkinManager;
 import dev.threeadd.packeteventssk.util.effect.CustomEffect;
 
 import java.util.List;

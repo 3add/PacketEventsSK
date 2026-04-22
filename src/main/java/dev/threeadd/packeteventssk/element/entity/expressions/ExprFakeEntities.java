@@ -1,5 +1,6 @@
 package dev.threeadd.packeteventssk.element.entity.expressions;
 
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.SkriptParser;
 import dev.threeadd.packeteventssk.util.expressions.CustomExpression;
 import me.tofaa.entitylib.EntityLib;
@@ -12,6 +13,8 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO docs
+@Since("1.0.1")
 public class ExprFakeEntities extends CustomExpression<WrapperEntity> {
 
   public static void register(SyntaxRegistry registry) {
