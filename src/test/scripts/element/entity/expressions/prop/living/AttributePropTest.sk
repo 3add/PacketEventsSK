@@ -1,0 +1,4 @@
+test "AttributePropTest":
+    create new fake happy ghast entity at test location for players and store it in {_e}:
+        set scale fake attribute of the fake entity to 2
+    assert {_e} is set with "Fake item display entity should be created"

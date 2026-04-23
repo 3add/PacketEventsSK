@@ -80,7 +80,5 @@ public class EntityModule {
         ViewRangeProp.register(registry);
 
         SkinProp.register(registry);
-
-        Types.register();
     }
 }
