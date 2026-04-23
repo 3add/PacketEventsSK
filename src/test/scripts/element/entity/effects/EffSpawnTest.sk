@@ -1,0 +1,4 @@
+test "EffSpawnTest":
+    create new fake dropped item entity at test location for {_viewers::*} and store it in {_e}:
+        set fake item stack of the fake entity to dirt
+    assert {_e} is set with "fake entity should have been created"

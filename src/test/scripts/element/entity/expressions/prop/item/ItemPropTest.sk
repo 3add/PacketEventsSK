@@ -1,0 +1,6 @@
+test "ItemPropTest":
+    create new fake dropped item entity at test location for players and store it in {_e}:
+        set fake item stack of the fake entity to dirt
+        set fake gravity state of the fake entity to false
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake item stack of {_e} is dirt with "Fake item stack should be set to dirt"

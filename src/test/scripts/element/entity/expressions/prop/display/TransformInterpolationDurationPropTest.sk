@@ -1,0 +1,7 @@
+test "TransformInterpolationDurationPropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    set {_e} to the fake entity
+    set fake display transform interpolation duration of {_e} to 0.5 seconds
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display transform interpolation duration of {_e} is 0.5 seconds with "Fake display transform interpolation duration should be set to 0.5 seconds"

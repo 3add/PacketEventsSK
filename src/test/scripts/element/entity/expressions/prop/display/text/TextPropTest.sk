@@ -1,0 +1,7 @@
+test "TextPropTest":
+    create new fake text display entity at test location for players and store it in {_e}:
+        set fake display text of the fake entity to "Hello <rainbow>World"
+        set fake display text shadowed state of the fake entity to true
+        set fake display background color of the fake entity to red
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display text of {_e} is "Hello <rainbow>World" with "Fake display text should be 'Hello <rainbow>World'"

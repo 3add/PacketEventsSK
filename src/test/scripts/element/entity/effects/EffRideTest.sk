@@ -1,0 +1,10 @@
+test "EffRideTest":
+    set {_origin} to test location
+    set {_loc} to test location~vector(0,2,0)
+    create new fake dropped item entity at {_origin} for {_viewers::*} and store it in {_e}:
+        set fake item stack of the fake entity to dirt
+    create new fake dropped item entity at {_loc} for {_viewers::*} and store it in {_e2}:
+        set fake item stack of the fake entity to dirt
+    assert {_e} is set with "fake entity should have been created"
+    make fake entity {_e} ride {_e2}
+    assert y-coordinate of fake entity location of {_e} is y-coordinate of {_origin} with "fake entity been moved"

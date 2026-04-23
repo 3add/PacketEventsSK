@@ -1,0 +1,6 @@
+test "FrozenTimePropTest":
+    create new fake player entity at test location for {_viewers::*} and store it in {_e}:
+        set fake frozen time of the fake entity to 1 second
+    assert {_e} is set with "fake entity should have been created"
+    set the fake frozen time of {_e} to 3 years
+    assert the fake frozen time of {_e} is 3 years with "fake frozen time should have been updated"

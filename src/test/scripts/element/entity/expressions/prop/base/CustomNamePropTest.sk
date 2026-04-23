@@ -1,0 +1,6 @@
+test "CustomNamePropTest":
+    create new fake cow entity at test location for {_viewers::*} and store it in {_e}:
+        set the fake custom name of the fake entity to "initial name"
+    assert {_e} is set with "fake entity should have been created"
+    set fake custom name of {_e} to "test"
+    assert fake custom name of {_e} is "test" with "custom name should have been set"

@@ -4,7 +4,9 @@ import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
+import dev.threeadd.packeteventssk.util.registry.EnumWrapper;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.entity.Pose;
 
 @SuppressWarnings("unused")
 public class Types {
@@ -38,5 +40,26 @@ public class Types {
                     }
                 })
         );
+
+        if (Classes.getExactClassInfo(Pose.class) == null) {
+            EnumWrapper<Pose> POSE_ENUM = new EnumWrapper<>(Pose.class, null, "pose");
+            Classes.registerClass(POSE_ENUM.getClassInfo("pose")
+                    .user("poses?")
+                    .name("Pose")
+                    .description("The pose of an entity (standing, sleeping, swimming, etc)")
+                    .examples("""
+                            command sleepify <integer>:
+                                trigger:
+                                    set {_entity} to fake entity with id arg-1
+                                    if {_entity} is not set:
+                                        send "Couldn't find that entity"
+                                        stop
+                            
+                                    set fake pose of {_entity} to sleeping pose
+                                    send "Entity is now sleeping!"
+                            """)
+                    .since("INSERT VERSION")
+            );
+        }
     }
 }
