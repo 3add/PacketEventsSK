@@ -1,0 +1,5 @@
+test "ItemPropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display item of {_e} is dirt with "Fake item display entity should have correct item"

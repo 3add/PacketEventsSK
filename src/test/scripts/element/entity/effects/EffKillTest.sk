@@ -1,0 +1,6 @@
+test "EffKill":
+    create new fake dropped item entity at test location for {_viewers::*} and store it in {_e}:
+        set fake item stack of the fake entity to dirt
+    assert {_e} is set with "fake entity should have been created"
+    kill fake entity {_e}
+    assert size of fake entity viewers of {_e} is 0 with "fake entity have died"

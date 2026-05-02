@@ -1,0 +1,6 @@
+test "ElytraPropTest":
+    create new fake player entity at test location for {_viewers::*} and store it in {_e}:
+        set the fake elytra flying state of the fake entity to false
+    assert {_e} is set with "fake entity should have been created"
+    set fake elytra fly of {_e} to true
+    assert fake elytra fly of {_e} is true with "elytra flying state should have been set"

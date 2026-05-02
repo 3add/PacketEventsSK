@@ -1,0 +1,5 @@
+test "ExprLastFakeEntity":
+    create new fake player entity at test location for players and store it in {_e}
+    assert {_e} is set with "Fake item display entity should be created"
+    set {_e2} to last fake entity
+    assert {_e2} is {_e} with "Syntax should be correct"

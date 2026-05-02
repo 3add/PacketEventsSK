@@ -1,0 +1,7 @@
+test "EffTeleportTest":
+    set {_loc} to test location~vector(0,2,0)
+    create new fake dropped item entity at test location for {_viewers::*} and store it in {_e}:
+        set fake item stack of the fake entity to dirt
+    assert {_e} is set with "fake entity should have been created"
+    teleport fake entity {_e} to {_loc}
+    assert y-coordinate of fake entity location of {_e} is y-coordinate of {_loc} with "fake entity been teleported"

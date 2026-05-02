@@ -1,0 +1,4 @@
+test "FakeEntityViewersPropTest":
+    create new fake player entity at test location for players and store it in {_e}
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake entity viewers of {_e} isn't set with "Syntax should be correct"

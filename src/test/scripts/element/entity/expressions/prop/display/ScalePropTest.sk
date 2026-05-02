@@ -1,0 +1,7 @@
+test "ScalePropTest":
+    create new fake item display entity at test location for players and store it in {_e}:
+        set fake display item of the fake entity to dirt
+    set {_e} to the fake entity
+    set fake display scale of {_e} to vector(2, 3, 4)
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake display scale of {_e} is vector(2, 3, 4) with "Fake display scale should be set to (2, 3, 4)"

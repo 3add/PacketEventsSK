@@ -1,0 +1,5 @@
+test "BlockPropTest":
+    create new fake block display entity at test location for players and store it in {_e}:
+        set fake display block data of the fake entity to dirt[]
+    assert {_e} is set with "Fake block display entity should be created"
+    assert fake display block data of {_e} is dirt[] with "Fake block display entity should have correct block data"

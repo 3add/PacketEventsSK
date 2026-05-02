@@ -1,0 +1,7 @@
+test "InteractionHeightPropTest":
+    create new fake interaction entity at test location for players and store it in {_e}:
+        set fake interaction width of the fake entity to 2
+        set fake interaction height of the fake entity to 2
+    assert {_e} is set with "Fake item display entity should be created"
+    assert fake interaction height of {_e} is 2 with "Fake interaction height should be set to 2"
+    assert fake interaction width of {_e} is 2 with "Fake interaction width should be set to 2"

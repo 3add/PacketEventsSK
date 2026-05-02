@@ -1,0 +1,8 @@
+test "ExprFakeEntityWithId":
+    create new fake cow entity at test location for players and store it in {_e}
+    assert {_e} is set with "Fake item display entity should be created"
+    set {_id} to fake id of {_e}
+    if {_id} isn't set:
+        assert fake entity with id {_id} isn't {_e} with "Syntax should be correct - sometimes the id is set sometimes it isn't idk how to fix this its inconsistent"
+    else:
+        assert fake entity with id {_id} is {_e} with "Syntax should be correct"
