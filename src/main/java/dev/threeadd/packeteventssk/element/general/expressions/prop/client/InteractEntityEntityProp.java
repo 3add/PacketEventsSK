@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketPropertyExpression;
+import dev.threeadd.packeteventssk.api.general.PacketPropertyExpression;
 import dev.threeadd.packeteventssk.util.ConversionUtil;
 
 @SuppressWarnings("unused")

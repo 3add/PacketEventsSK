@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.team.api.FakeTeam;
+import dev.threeadd.packeteventssk.api.team.FakeTeam;
 import dev.threeadd.packeteventssk.util.expressions.CustomPropertyExpression;
 
 @SuppressWarnings("unused")

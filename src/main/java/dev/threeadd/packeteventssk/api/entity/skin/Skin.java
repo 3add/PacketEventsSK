@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.entity.api.skin;
+package dev.threeadd.packeteventssk.api.entity.skin;
 
 import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.google.common.base.Preconditions;

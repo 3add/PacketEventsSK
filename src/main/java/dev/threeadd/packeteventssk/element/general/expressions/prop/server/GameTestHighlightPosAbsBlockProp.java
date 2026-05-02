@@ -13,7 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketPropertyExpression;
+import dev.threeadd.packeteventssk.api.general.PacketPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("General - Game Test Highlight Pos Packet - Absolute Block")

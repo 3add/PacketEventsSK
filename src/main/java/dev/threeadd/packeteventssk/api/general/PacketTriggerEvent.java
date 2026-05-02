@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.api;
+package dev.threeadd.packeteventssk.api.general;
 
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;

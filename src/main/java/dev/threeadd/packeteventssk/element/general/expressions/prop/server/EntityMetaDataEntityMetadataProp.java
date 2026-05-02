@@ -15,7 +15,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketPropertyExpression;
+import dev.threeadd.packeteventssk.api.general.PacketPropertyExpression;
 
 @Name("General - Entity Metadata Packet - Entity Metadata")
 @Description("Used to get the entity metadata of an entity metadata packet. This is represented as an EntityMeta object, which is a custom class that contains all the metadata of an entity. This is NOT thread safe, and should only be used in a synchronous context.")

@@ -10,7 +10,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDe
 import org.bukkit.entity.Entity;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketPropertyExpression;
+import dev.threeadd.packeteventssk.api.general.PacketPropertyExpression;
 import dev.threeadd.packeteventssk.util.ConversionUtil;
 
 import java.util.ArrayList;

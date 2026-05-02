@@ -28,9 +28,9 @@ import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.PacketEventsSK;
-import dev.threeadd.packeteventssk.element.general.api.PacketEventRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketEventRegistry.ListenerData;
-import dev.threeadd.packeteventssk.element.general.api.PacketTriggerEvent;
+import dev.threeadd.packeteventssk.api.general.PacketEventRegistry;
+import dev.threeadd.packeteventssk.api.general.PacketEventRegistry.ListenerData;
+import dev.threeadd.packeteventssk.api.general.PacketTriggerEvent;
 
 import java.util.Locale;
 

@@ -9,7 +9,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
+import dev.threeadd.packeteventssk.api.entity.skin.Skin;
 import dev.threeadd.packeteventssk.util.DebugUtil;
 import dev.threeadd.packeteventssk.util.registry.PacketTypeRegistry;
 

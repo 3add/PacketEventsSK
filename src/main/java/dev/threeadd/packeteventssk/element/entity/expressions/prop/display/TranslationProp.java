@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
+import dev.threeadd.packeteventssk.api.entity.MetaPropertyExpression;
 import dev.threeadd.packeteventssk.util.ConversionUtil;
 
 @SuppressWarnings("unused")

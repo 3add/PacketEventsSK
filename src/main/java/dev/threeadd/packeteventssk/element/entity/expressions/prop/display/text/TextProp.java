@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.bukkit.text.TextComponentParser;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
+import dev.threeadd.packeteventssk.api.entity.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Text Display Entity - Display Text")

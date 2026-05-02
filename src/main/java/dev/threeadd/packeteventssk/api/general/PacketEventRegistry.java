@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.api;
+package dev.threeadd.packeteventssk.api.general;
 
 import ch.njol.skript.lang.Trigger;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;

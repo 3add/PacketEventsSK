@@ -13,7 +13,7 @@ import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
+import dev.threeadd.packeteventssk.api.entity.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Display Entity - Display Width/Height")

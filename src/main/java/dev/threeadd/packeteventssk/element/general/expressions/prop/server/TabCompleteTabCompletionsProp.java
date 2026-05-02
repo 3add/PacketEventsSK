@@ -11,7 +11,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTa
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketPropertyExpression;
+import dev.threeadd.packeteventssk.api.general.PacketPropertyExpression;
 
 import java.util.ArrayList;
 import java.util.List;

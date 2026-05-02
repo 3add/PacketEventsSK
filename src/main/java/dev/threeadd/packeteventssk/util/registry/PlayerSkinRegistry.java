@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import dev.threeadd.packeteventssk.PacketEventsSK;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
+import dev.threeadd.packeteventssk.api.entity.skin.Skin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class PlayerSkinRegistry implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event)  {
         skins.remove(event.getPlayer().getUniqueId());
     }
 

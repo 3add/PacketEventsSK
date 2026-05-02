@@ -4,7 +4,7 @@ import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import dev.threeadd.packeteventssk.element.team.api.FakeTeam;
+import dev.threeadd.packeteventssk.api.team.FakeTeam;
 
 public class Types {
     public static void register() {

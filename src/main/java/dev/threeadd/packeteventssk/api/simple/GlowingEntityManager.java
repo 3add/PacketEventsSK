@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.simple.api;
+package dev.threeadd.packeteventssk.api.simple;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;

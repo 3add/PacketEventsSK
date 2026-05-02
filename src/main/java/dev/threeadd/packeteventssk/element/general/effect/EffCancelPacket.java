@@ -10,7 +10,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketTriggerEvent;
+import dev.threeadd.packeteventssk.api.general.PacketTriggerEvent;
 import dev.threeadd.packeteventssk.element.general.structures.PacketEventStruct.PacketEventParserData;
 import dev.threeadd.packeteventssk.element.general.structures.PacketEventStruct.ProcessWay;
 import dev.threeadd.packeteventssk.util.effect.CustomEffect;

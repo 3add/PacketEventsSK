@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.team.api;
+package dev.threeadd.packeteventssk.api.team;
 
 import org.jetbrains.annotations.Nullable;
 import dev.threeadd.packeteventssk.util.registry.Registry;

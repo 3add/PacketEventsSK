@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.api;
+package dev.threeadd.packeteventssk.api.general;
 
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.jetbrains.annotations.NotNull;
-import dev.threeadd.packeteventssk.element.general.api.PacketEventRegistry.RegisteredListener;
+import dev.threeadd.packeteventssk.api.general.PacketEventRegistry.RegisteredListener;
 import dev.threeadd.packeteventssk.element.general.structures.PacketEventStruct.ProcessWay;
 import dev.threeadd.packeteventssk.util.registry.EventPacketMapper;
 

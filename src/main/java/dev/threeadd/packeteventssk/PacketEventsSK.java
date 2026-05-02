@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dev.threeadd.packeteventssk.config.Config;
 import dev.threeadd.packeteventssk.config.Configurable;
-import dev.threeadd.packeteventssk.element.general.api.PacketEventListener;
-import dev.threeadd.packeteventssk.element.simple.api.ChatSessionListener;
-import dev.threeadd.packeteventssk.element.simple.api.GlowingEntityListener;
-import dev.threeadd.packeteventssk.element.simple.api.PlayerSkinListener;
+import dev.threeadd.packeteventssk.api.general.PacketEventListener;
+import dev.threeadd.packeteventssk.api.simple.ChatSessionListener;
+import dev.threeadd.packeteventssk.api.simple.GlowingEntityListener;
+import dev.threeadd.packeteventssk.api.simple.PlayerSkinListener;
 import dev.threeadd.packeteventssk.util.UserManager;
 import dev.threeadd.packeteventssk.util.registry.PlayerSkinRegistry;
 

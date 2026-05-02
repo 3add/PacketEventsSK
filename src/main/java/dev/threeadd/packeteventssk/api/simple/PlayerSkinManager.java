@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.simple.api;
+package dev.threeadd.packeteventssk.api.simple;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
@@ -19,8 +19,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skins;
+import dev.threeadd.packeteventssk.api.entity.skin.Skin;
+import dev.threeadd.packeteventssk.api.entity.skin.Skins;
 import dev.threeadd.packeteventssk.util.ConversionUtil;
 
 import java.util.*;

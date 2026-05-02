@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.team.api.FakeTeam;
+import dev.threeadd.packeteventssk.api.team.FakeTeam;
 
 import java.util.List;
 import java.util.WeakHashMap;

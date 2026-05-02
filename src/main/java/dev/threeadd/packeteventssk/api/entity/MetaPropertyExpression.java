@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.entity.api;
+package dev.threeadd.packeteventssk.api.entity;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -9,7 +9,7 @@ import me.tofaa.entitylib.wrapper.WrapperEntity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.element.general.api.PacketTriggerEvent;
+import dev.threeadd.packeteventssk.api.general.PacketTriggerEvent;
 import dev.threeadd.packeteventssk.util.expressions.CustomPropertyExpression;
 
 import java.util.Arrays;

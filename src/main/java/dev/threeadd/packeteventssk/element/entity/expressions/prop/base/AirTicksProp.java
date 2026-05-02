@@ -9,7 +9,7 @@ import ch.njol.skript.util.Timespan;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.element.entity.api.MetaPropertyExpression;
+import dev.threeadd.packeteventssk.api.entity.MetaPropertyExpression;
 
 @SuppressWarnings("unused")
 @Name("Fake Entity Property - Frozen Time")

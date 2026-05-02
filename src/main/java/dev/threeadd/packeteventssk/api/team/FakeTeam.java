@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.team.api;
+package dev.threeadd.packeteventssk.api.team;
 
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams;

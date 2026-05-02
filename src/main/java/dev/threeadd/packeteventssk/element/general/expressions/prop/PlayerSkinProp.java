@@ -11,7 +11,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.DefaultSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
+import dev.threeadd.packeteventssk.api.entity.skin.Skin;
 import dev.threeadd.packeteventssk.util.expressions.CustomPropertyExpression;
 import dev.threeadd.packeteventssk.util.registry.PlayerSkinRegistry;
 

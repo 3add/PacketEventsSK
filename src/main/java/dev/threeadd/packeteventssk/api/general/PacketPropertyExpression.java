@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.api;
+package dev.threeadd.packeteventssk.api.general;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
