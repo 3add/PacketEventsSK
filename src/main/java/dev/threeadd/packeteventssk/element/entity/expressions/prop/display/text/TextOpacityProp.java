@@ -6,6 +6,7 @@ import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
@@ -55,6 +56,11 @@ public class TextOpacityProp extends MetaPropertyExpression<TextDisplayMeta, Byt
     protected void change(TextDisplayMeta meta, Changer.ChangeMode mode, Object[] delta) {
         byte newValue = getDeltaValue(delta, Byte.class);
         meta.setTextOpacity(newValue);
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "text opacity of fake entity";
     }
 }
 

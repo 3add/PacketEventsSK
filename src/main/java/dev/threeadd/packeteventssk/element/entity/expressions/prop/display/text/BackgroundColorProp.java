@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.util.Color;
 import ch.njol.skript.util.ColorRGB;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
@@ -56,5 +57,10 @@ public class BackgroundColorProp extends MetaPropertyExpression<TextDisplayMeta,
     protected void change(TextDisplayMeta meta, Changer.ChangeMode mode, Object[] delta) {
         Color newColor = getDeltaValue(delta, Color.class);
         meta.setBackgroundColor(newColor.asARGB());
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "background color of fake entity";
     }
 }

@@ -5,6 +5,7 @@ import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntities;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.base.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.*;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.TextAlignProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.AttributeProp;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.effect.EffKill;
@@ -66,9 +67,15 @@ public class EntityModule {
         AttributeProp.register(registry);
 
         dev.threeadd.packeteventssk.element.entity.expressions.prop.item.ItemProp.register(registry);
+
         BackgroundColorProp.register(registry);
+        TextAlignProp.register(registry);
+        TextAlignProp.register(registry);
         TextProp.register(registry);
         TextShadowedProp.register(registry);
+        TextShadowedProp.register(registry);
+
+
         BillboardProp.register(registry);
         HeightOrHeightProp.register(registry);
         InterpolationDelayProp.register(registry);

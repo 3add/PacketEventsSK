@@ -6,6 +6,7 @@ import ch.njol.skript.doc.Example;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import me.tofaa.entitylib.meta.display.TextDisplayMeta;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxRegistry;
@@ -55,5 +56,10 @@ public class TextLineWidthProp extends MetaPropertyExpression<TextDisplayMeta, I
     protected void change(TextDisplayMeta meta, Changer.ChangeMode mode, Object[] delta) {
         int newValue = getDeltaValue(delta, Integer.class);
         meta.setLineWidth(newValue);
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "text line width of fake entity";
     }
 }
