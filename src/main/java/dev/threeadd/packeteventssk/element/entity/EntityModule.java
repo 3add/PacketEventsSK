@@ -5,7 +5,7 @@ import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntities;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.base.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.*;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.TextAlignProp;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.AttributeProp;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 import dev.threeadd.packeteventssk.element.entity.effect.EffKill;
@@ -16,9 +16,6 @@ import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityWith
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprLastFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.block.BlockProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.item.ItemProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.BackgroundColorProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.TextProp;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.display.text.TextShadowedProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.interaction.InteractionHeightProp;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.player.SkinProp;
 import dev.threeadd.packeteventssk.element.entity.sections.CreateFakeEntitySec;
@@ -70,13 +67,15 @@ public class EntityModule {
 
         BackgroundColorProp.register(registry);
         TextAlignProp.register(registry);
-        TextAlignProp.register(registry);
+        TextLineWidthProp.register(registry);
+        TextOpacityProp.register(registry);
         TextProp.register(registry);
         TextShadowedProp.register(registry);
-        TextShadowedProp.register(registry);
+        TextSeeThroughProp.register(registry);
 
 
         BillboardProp.register(registry);
+        BrightnessProp.register(registry);
         HeightOrHeightProp.register(registry);
         InterpolationDelayProp.register(registry);
         RotationProp.register(registry);
