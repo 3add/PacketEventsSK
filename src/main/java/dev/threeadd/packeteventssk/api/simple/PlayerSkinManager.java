@@ -18,10 +18,10 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.entity.SkinUtil;
+import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.api.entity.skin.Skin;
-import dev.threeadd.packeteventssk.api.entity.skin.Skins;
-import dev.threeadd.packeteventssk.util.ConversionUtil;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ public class PlayerSkinManager {
     public static void setGlobalSkin(UUID targetId, Skin skin) {
         if (targetId == null || skin == null) return;
 
-        if (skin.equals(Skins.getPlayer(Bukkit.getPlayer(targetId)))) {
+        if (skin.equals(SkinUtil.getPlayer(Bukkit.getPlayer(targetId)))) {
             // no need to save if it's the default skin
             globalSkinMap.remove(targetId);
         }

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'threeadd'
-version = '1.0.1'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
@@ -20,7 +20,7 @@ repositories {
         url = 'https://repo.skriptlang.org/releases'
     }
 
-    maven { // SkBee
+    maven { // SkriptRegistration (SKR)
         name = "jitpack"
         url = "https://jitpack.io"
     }
@@ -44,6 +44,7 @@ dependencies {
         transitive = false
     }
 
+    implementation("com.github.ShaneBeee:SkriptRegistration:1.2.0")
     implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 }
@@ -55,8 +56,9 @@ build {
 shadowJar {
     archiveFileName = project.name + "-" + project.version + ".jar"
 
-    relocate("me.tofaa.entitylib", "threeadd.packeteventssk.entitylib")
-    relocate("org.bstats", "threeadd.packeteventssk.metrics")
+    relocate("me.tofaa.entitylib", "dev.threeadd.packeteventssk.entitylib")
+    relocate("org.bstats", "dev.threeadd.packeteventssk.metrics")
+    relocate("com.github.shanebee.skr", "dev.threeadd.packeteventssk.skr")
 }
 
 tasks {

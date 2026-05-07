@@ -1,27 +1,24 @@
 package dev.threeadd.packeteventssk.element.general;
 
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
-import ch.njol.skript.registrations.Classes;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.general.PacketTypeRegistry;
+import dev.threeadd.packeteventssk.api.util.DebugUtil;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.api.entity.skin.Skin;
-import dev.threeadd.packeteventssk.util.DebugUtil;
-import dev.threeadd.packeteventssk.util.registry.PacketTypeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings("unused")
 public class Types {
 
-    public static void register() {
-        Classes.registerClass(new ClassInfo<>(PacketWrapper.class, "packet")
+    public static void register(Registration reg) {
+        reg.newType(PacketWrapper.class, "packet")
                 .user("packet")
                 .name("General - Packet")
                 .description("A packet sent by the client or server")
@@ -49,21 +46,20 @@ public class Types {
                     public String toVariableNameString(PacketWrapper<?> packet) {
                         return "packet:" + packet.hashCode();
                     }
-
                 })
-        );
+                .register();
 
-        Classes.registerClass(new ClassInfo<>(PacketTypeCommon.class, "packettype")
+        reg.newType(PacketTypeCommon.class, "packettype")
                 .user("packet ?type")
                 .name("General - Packet Type")
-                .description("Represents a specific type of packet (e.g. chunk data send)")
+                .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
                 .examples("""
-                on interact entity receive netty processed:
-                   if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-                      stop
-
-                   send "Welcome %player's name%"
-                """)
+                        on interact entity receive netty processed:
+                           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
+                              stop
+                        
+                           send "Welcome %player's name%"
+                        """)
                 .since("1.0.0")
                 .supplier(() -> {
                     List<PacketTypeCommon> all = new ArrayList<>();
@@ -77,38 +73,41 @@ public class Types {
                     public @Nullable PacketTypeCommon parse(String input, ParseContext context) {
                         input = input.trim();
                         if (input.toLowerCase(Locale.ENGLISH).endsWith(" packet")) {
-                            input = input.substring(0, input.length() - 7).trim();
+                            input = input.substring(0, input.length() - " packet".length())
+                                    .trim()
+                                    .toLowerCase(Locale.ENGLISH);
                         }
 
-                        boolean isSend;
+                        boolean isClientBound;
                         String name;
 
-                        if (input.toLowerCase(Locale.ENGLISH).endsWith(" send")) {
-                            isSend = true;
-                            name = input.substring(0, input.length() - 5);
-                        } else if (input.toLowerCase(Locale.ENGLISH).endsWith(" receive")) {
-                            isSend = false;
-                            name = input.substring(0, input.length() - 8);
+                        if (input.startsWith("clientbound ")) {
+                            isClientBound = true;
+                            name = input.substring("clientbound ".length());
+                        } else if (input.startsWith("serverbound ")) {
+                            isClientBound = false;
+                            name = input.substring("serverbound ".length());
                         } else {
                             return null;
                         }
 
-                        return PacketTypeRegistry.getPacket(name, isSend);
+                        return PacketTypeRegistry.getPacket(name, isClientBound);
                     }
 
                     @Override
                     public String toString(PacketTypeCommon type, int flags) {
-                        return type.getName() + (type.getSide().equals(PacketSide.SERVER) ? " send" : " receive");
+                        return (type.getSide().equals(PacketSide.SERVER) ? "clientbound" : "serverbound")
+                                + " " + type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ");
                     }
 
                     @Override
                     public String toVariableNameString(PacketTypeCommon type) {
-                        return type.getName();
+                        return "packettype:" + type.getName();
                     }
                 })
-        );
+                .register();
 
-        Classes.registerClass(new ClassInfo<>(Skin.class, "skin")
+        reg.newType(Skin.class, "skin")
                 .user("skin")
                 .name("Skin")
                 .description("A player skin (texture property list)")
@@ -136,39 +135,6 @@ public class Types {
                         return "skin:" + skin.hashCode();
                     }
                 })
-        );
-
-        Classes.registerClass(new ClassInfo<>(DiggingAction.class, "diggingaction")
-                .user("digging ?action")
-                .name("General - Diggin Action")
-                .description("An action in a digging packet")
-                .examples("""
-                        
-                        """) // TODO example
-                .since("1.0.0")
-                .parser(new Parser<>() {
-
-                    @Override
-                    public @Nullable DiggingAction parse(String s, ParseContext context) {
-
-                        for (DiggingAction value : DiggingAction.values()) {
-                            if (value.name().equalsIgnoreCase(s))
-                                return value;
-                        }
-
-                        return null;
-                    }
-
-                    @Override
-                    public String toString(DiggingAction diggingAction, int flags) {
-                        return "digging action " + diggingAction;
-                    }
-
-                    @Override
-                    public String toVariableNameString(DiggingAction diggingAction) {
-                        return "diggingactiion:" + diggingAction.hashCode();
-                    }
-                })
-        );
+                .register();
     }
 }

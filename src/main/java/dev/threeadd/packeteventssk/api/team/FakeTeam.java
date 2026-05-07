@@ -9,7 +9,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTe
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import oshi.annotation.concurrent.Immutable;
-import dev.threeadd.packeteventssk.util.UserManager;
+import dev.threeadd.packeteventssk.api.general.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

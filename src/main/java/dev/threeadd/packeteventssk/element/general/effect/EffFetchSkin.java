@@ -2,50 +2,39 @@ package dev.threeadd.packeteventssk.element.general.effect;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.AsyncEffect;
 import ch.njol.util.Kleenean;
+import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.entity.SkinUtil;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.registration.SyntaxInfo;
-import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.api.entity.skin.Skin;
-import dev.threeadd.packeteventssk.api.entity.skin.Skins;
 
-@SuppressWarnings("unused")
-@Name("General - Fetch Skin")
-@Description("""
-        Used to fetch a player skin.
-        This is processed on an async thread and thus will pause your code until it's been loaded.
-        """)
-@Example("""
-        command changeMySkinForMe <text>:
-            trigger:
-                fetch skin of player named arg-1 and store it in {_skin}
-                if {_skin} isn't set:
-                    send "Couldn't find a skin!"
-                    stop
-        
-                set displayed skin of player to {_skin} for player
-        """)
-@Since("1.0.0")
 public class EffFetchSkin extends AsyncEffect {
 
-    public static void register(SyntaxRegistry registry) {
-        registry.register(
-                SyntaxRegistry.EFFECT,
-                SyntaxInfo.builder(EffFetchSkin.class)
-                        .addPatterns(
-                                "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
-                                "set %-~objects% to skin (from|of) player named %string%"
-                        )
-                        .build()
-        );
+    public static void register(Registration reg) {
+        reg.newEffect(EffFetchSkin.class,
+                        "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
+                        "set %-~objects% to skin (from|of) player named %string%")
+                .name("General - Fetch Skin")
+                .description("""
+                        Used to fetch a player skin.
+                        **This is processed on an async thread and thus will pause your code until it's been loaded.**
+                        """)
+                .examples("""
+                        command changeMySkinForMe <text>:
+                            trigger:
+                                fetch skin of player named arg-1 and store it in {_skin}
+                                if {_skin} isn't set:
+                                    send "Couldn't find a skin!"
+                                    stop
+                        
+                                set displayed skin of player to {_skin} for player
+                        """)
+                .since("1.0.0")
+                .register();
     }
 
     private Expression<String> nameExpr;
@@ -75,21 +64,22 @@ public class EffFetchSkin extends AsyncEffect {
 
     @Override
     protected void execute(Event event) {
-
-        String name = nameExpr.getSingle(event);
+        String name = this.nameExpr.getSingle(event);
 
         Skin skin;
         try {
-            skin  = Skins.getOfflinePlayer(name);
+            skin = SkinUtil.getOfflinePlayer(name);
         } catch (IllegalStateException error) {
             return;
         }
 
-        expression.change(event, new Skin[]{skin}, Changer.ChangeMode.SET);
+        this.expression.change(event, new Skin[]{skin}, Changer.ChangeMode.SET);
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "skin from player named " + nameExpr.getSingle(event);
+        String name = this.nameExpr.getSingle(event);
+        String store = this.expression.toString(event, debug);
+        return String.format("skin from player named %s and store it in %s", name, store);
     }
 }
