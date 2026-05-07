@@ -48,7 +48,7 @@ public class EffKillFakeEntity extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String entity = entityExpr.toString(event, debug);
+        String entity = this.entityExpr.toString(event, debug);
         return String.format("kill fake %s", entity);
     }
 }

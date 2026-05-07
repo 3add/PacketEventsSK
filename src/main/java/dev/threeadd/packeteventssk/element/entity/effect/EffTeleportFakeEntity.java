@@ -61,8 +61,8 @@ public class EffTeleportFakeEntity extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String entity = entityExpr.toString(event, debug);
-        String location = locationExpr.toString(event, debug);
+        String entity = this.entityExpr.toString(event, debug);
+        String location = this.locationExpr.toString(event, debug);
         return String.format("teleport fake %s to %s", entity, location);
     }
 }
