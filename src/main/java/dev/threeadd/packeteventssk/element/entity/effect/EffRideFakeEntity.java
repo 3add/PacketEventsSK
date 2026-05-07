@@ -102,9 +102,10 @@ public class EffRideFakeEntity extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return (mount ? "make fake entities " : "remove fake entities ")
-                + passengerExpr.toString(event, debug)
-                + (mount ? " ride " : " as passengers of ")
-                + vehicleExpr.toString(event, debug);
+        String passenger = passengerExpr.toString(event, debug);
+        String vehicle = vehicleExpr.toString(event, debug);
+        String action = mount ? "make fake entities" : "remove fake entities";
+        String relation = mount ? " ride " : " as passengers of ";
+        return String.format("%s %s%s%s", action, passenger, relation, vehicle);
     }
 }
