@@ -20,7 +20,18 @@ public class ExprVisibleFakeEntities extends PropertyExpression<Player, WrapperE
 
     public static void register(Registration reg) {
         reg.newPropertyExpression(ExprVisibleFakeEntities.class, WrapperEntity.class, "[visible] fake[ ]entities", "player")
-                // TODO docs
+                .name("Fake Entity - Visible Fake Entities")
+                .description("Used to get all fake entities viewed by a player")
+                .examples("""
+                        command test:
+                            trigger:
+                                set {_p} to player
+                                create a new fake zombie entity at player for players:
+                                    set fake scale attribute of the fake entity to 2
+                        
+                                    if visible fake entities of {_p} contains the fake entity:
+                                        send "You can see the fake entity!" to {_p}
+                        """)
                 .since("1.0.1")
                 .register();
     }
