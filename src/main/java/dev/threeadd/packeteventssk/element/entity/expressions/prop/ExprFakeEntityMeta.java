@@ -12,7 +12,12 @@ public class ExprFakeEntityMeta extends SimplePropertyExpression<WrapperEntity, 
         reg.newPropertyExpression(ExprFakeEntityMeta.class, EntityMeta.class, "fake [entity] meta", "fakeentity")
                 .name("Fake Entity - Fake Entity Meta")
                 .description("The fake entity meta of a fake entity")
-                // TODO Example
+                .examples("""
+                        command spawn:
+                            trigger:
+                                create a new fake zombie entity at player for players:
+                                    set fake scale attribute of the fake entity to 2
+                        """)
                 .since("1.1.0")
                 .register();
     }

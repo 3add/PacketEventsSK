@@ -47,7 +47,12 @@ public class Types {
                 .user("fake ?entit(y|ies) meta")
                 .name("Fake Entity - Fake Entity Meta")
                 .description("The entity meta of a fake entity, used for modifying the fake entity's metadata (basically any custom property of an entity)")
-                // TODO example
+                .examples("""
+                        command spawn:
+                            trigger:
+                                create a new fake zombie entity at player for players:
+                                    set fake scale attribute of the fake entity to 2
+                        """)
                 .parser(new Parser<>() {
                     @Override
                     public boolean canParse(ParseContext context) {

@@ -14,7 +14,19 @@ public class ExprFakeEntitiesAll extends SimpleExpression<WrapperEntity> {
 
     public static void register(Registration reg) {
         reg.newSimpleExpression(ExprFakeEntitiesAll.class, WrapperEntity.class, "[all] fake[ ]entities")
-                // TODO docs
+                .name("Fake Entity - All Fake Entities")
+                .description("Used to get a list of all fake entities that are viewable by least a single player")
+                .examples("""
+                            command spawn:
+                                trigger:
+                                    create a new fake zombie entity at player for players:
+                                        set fake scale attribute of the fake entity to 2
+
+                            command listfakes:
+                                trigger:
+                                    send "All fake entities: %all fake entities%"
+                        """)
+                .since("1.1.0")
                 .register();
     }
 

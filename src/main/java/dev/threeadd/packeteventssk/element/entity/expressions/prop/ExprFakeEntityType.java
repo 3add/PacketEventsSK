@@ -15,7 +15,13 @@ public class ExprFakeEntityType extends SimplePropertyExpression<WrapperEntity, 
         reg.newPropertyExpression(ExprFakeEntityType.class, (Class) EntityData.class, "fake [entity] type", "fakeentity")
                 .name("Fake Entity - Entity Type")
                 .description("The entity type of a fake entity")
-                //TODO example
+                .examples("""
+                        command spawn:
+                            trigger:
+                                create a new fake zombie entity at player for players:
+                                    if fake entity type of fake entity is zombie:
+                                        broadcast "this is a zombie"
+                        """)
                 .since("1.1.0")
                 .register();
     }
@@ -33,6 +39,6 @@ public class ExprFakeEntityType extends SimplePropertyExpression<WrapperEntity, 
 
     @Override
     protected String getPropertyName() {
-        return "entity type";
+        return "fake entity type";
     }
 }
