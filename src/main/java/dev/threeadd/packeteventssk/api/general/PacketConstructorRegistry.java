@@ -70,7 +70,6 @@ public class PacketConstructorRegistry {
         return REGISTRY.values();
     }
 
-    // ADDED: getter function
     public record PacketField(String name, Class<?> expectedType, boolean isOptional, Function<PacketWrapper<?>, Object> getter) {}
 
     public record PacketDefinition(List<PacketField> fields, Function<PacketValues, PacketWrapper<?>> constructor) {

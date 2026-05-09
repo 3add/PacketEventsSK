@@ -18,35 +18,29 @@ import java.util.List;
 public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field %string%", "packet")
+        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
-                .description("Gets a field's value from a packet by name.")
-                // TODO example
+                .description("Gets a field's value from a packet by a it's name.")
+                //TODO example
                 .since("1.1.0")
                 .register();
     }
 
-    private Expression<String> fieldNameExpr;
+    private String fieldName;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        if (matchedPattern == 0) {
-            this.fieldNameExpr = (Expression<String>) exprs[0];
-            setExpr((Expression<? extends PacketWrapper>) exprs[1]);
-        } else {
-            setExpr((Expression<? extends PacketWrapper>) exprs[0]);
-            this.fieldNameExpr = (Expression<String>) exprs[1];
-        }
+        this.fieldName = parseResult.regexes.getFirst().group().trim();
 
+        setExpr((Expression<? extends PacketWrapper>) exprs[0]);
         return true;
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
     protected Object[] get(Event event, PacketWrapper[] source) {
-        String fieldName = this.fieldNameExpr.getSingle(event);
-        if (fieldName == null) return null;
+        if (this.fieldName == null) return null;
 
         List<Object> results = new ArrayList<>();
 
@@ -60,7 +54,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             PacketConstructorRegistry.PacketField targetField = null;
             for (PacketConstructorRegistry.PacketField field : definition.fields()) {
-                if (field.name().equalsIgnoreCase(fieldName)) {
+                if (field.name().equalsIgnoreCase(this.fieldName)) {
                     targetField = field;
                     break;
                 }
@@ -68,13 +62,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             if (targetField == null || targetField.getter() == null) continue;
 
-            try {
-                Object value = targetField.getter().apply(wrapper);
-                if (value != null) {
-                    results.add(value);
-                }
-            } catch (Exception e) {
-                // Suppress runtime getting errors safely
+            Object value = targetField.getter().apply(wrapper);
+            if (value != null) {
+                results.add(value);
             }
         }
 
@@ -88,8 +78,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String field = fieldNameExpr.toString(event, debug);
-        String wrapper = getExpr().toString(event, debug);
-        return "packet field " + field + " of " + wrapper;
+        String wrapper = getExpr() != null ? getExpr().toString(event, debug) : "packet";
+        return "packet field " + fieldName + " of " + wrapper;
     }
 }

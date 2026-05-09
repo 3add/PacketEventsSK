@@ -95,15 +95,13 @@ public class SecCreatePacket extends Section {
 
             Expression<?> expr = container.getOptional(key, Object.class, false);
 
-            // Handle missing fields
             if (expr == null) {
                 if (!field.isOptional()) {
-                    missingKeys.add(key); // Only flag as missing if it's strictly required
+                    missingKeys.add(key);
                 }
                 continue;
             }
 
-            // Handle type conversion
             if (expr instanceof UnparsedLiteral literal) {
                 expr = literal.getConvertedExpression(expectedType);
                 if (expr == null) {
@@ -122,11 +120,7 @@ public class SecCreatePacket extends Section {
             return false;
         }
 
-        if (hasTypeError) {
-            return false;
-        }
-
-        return true;
+        return !hasTypeError;
     }
 
     @Override
@@ -149,16 +143,16 @@ public class SecCreatePacket extends Section {
             Expression<?> expr = fieldExpressions.get(field.name());
 
             if (expr == null) {
-                continue; // Skip optional missing fields entirely
+                continue;
             }
 
             Object value = expr.getSingle(event);
 
             if (value == null) {
                 if (!field.isOptional()) {
-                    return null; // Required value returned null at runtime
+                    return null;
                 }
-                continue; // Treat null as missing for optional fields
+                continue;
             }
             values.put(field.name(), value);
         }
