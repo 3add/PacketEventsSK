@@ -97,8 +97,4 @@ public class AddonLoader {
         }
         return false;
     }
-
-    public boolean hasSkBeeNBT() {
-        return hasSkBeeNBT;
-    }
 }
