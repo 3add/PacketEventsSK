@@ -127,6 +127,7 @@ public class Types {
                                 create a new fake zombie entity at player for players:
                                     set fake scale attribute of the fake entity to 2
                         """)
+                .since("1.1.0")
                 .parser(new Parser<>() {
                     @Override
                     public boolean canParse(ParseContext context) {
@@ -143,7 +144,6 @@ public class Types {
                         return "entitymeta:" + meta.hashCode();
                     }
                 })
-                .since("1.1.0")
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
@@ -182,8 +182,8 @@ public class Types {
                     .user("sign ?side")
                     .name("General - Sign Side")
                     .description("Represents a side of a sign block (front or back)")
-                    .since("1.1.0")
                     // TODO example
+                    .since("1.1.0")
                     .register();
         } else {
             log.warn("It looks like another addon has sign side registered, you should just be able to use their syntax though.");

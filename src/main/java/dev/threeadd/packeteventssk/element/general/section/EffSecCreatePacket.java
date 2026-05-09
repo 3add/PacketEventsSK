@@ -39,6 +39,7 @@ public class EffSecCreatePacket extends EffectSection {
         reg.newSection(EffSecCreatePacket.class, VALIDATOR, "(make|create) [a] [new] %packettype% [and store (it|the result) in %-objects%]")
                 .name("General - Create Packet")
                 .description("Create a new packet from a packet type. This section is a data block, not an execution block.")
+                // TODO Example
                 .since("1.0.0")
                 .register();
     }
