@@ -20,7 +20,7 @@ repositories {
         url = 'https://repo.skriptlang.org/releases'
     }
 
-    maven { // SkriptRegistration (SKR)
+    maven { // SkriptRegistration (SKR) and SkBee (Skript Implementation of NBT-API)
         name = "jitpack"
         url = "https://jitpack.io"
     }
@@ -43,6 +43,7 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.15.0") {
         transitive = false
     }
+    compileOnly("com.github.ShaneBeee:SkBee:3.22.1")
 
     implementation("com.github.ShaneBeee:SkriptRegistration:1.2.0")
     implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
@@ -67,7 +68,7 @@ tasks {
   }
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

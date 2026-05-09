@@ -6,7 +6,10 @@ import com.github.retrooper.packetevents.resources.ResourceLocation;
 import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.util.adventure.AdventureNbtUtil;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity.InteractAction;
+import com.shanebeestudios.skbee.api.nbt.NBTCompound;
+import com.shanebeestudios.skbee.api.nbt.NBTContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -85,5 +88,16 @@ public class ConversionUtil {
         ResourceLocation key = getWorldKey(location.getWorld());
         Vector3i vector3i = new Vector3i(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         return new WorldBlockPosition(key, vector3i);
+    }
+
+    @SuppressWarnings("deprecation") // this is what nbt uses
+    public static NBTCompound toNbtApiNBTCompound(com.github.retrooper.packetevents.protocol.nbt.NBTCompound peCompound) {
+        String SNBT = AdventureNbtUtil.toString(peCompound);
+        return new NBTContainer(SNBT);
+    }
+
+    public static com.github.retrooper.packetevents.protocol.nbt.NBTCompound toPeNBTCompound(NBTCompound nbtApiCompound) {
+        String SNBT = nbtApiCompound.toString();
+        return (com.github.retrooper.packetevents.protocol.nbt.NBTCompound) AdventureNbtUtil.fromString(SNBT);
     }
 }

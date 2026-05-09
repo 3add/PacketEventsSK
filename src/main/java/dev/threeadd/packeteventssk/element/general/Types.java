@@ -4,6 +4,8 @@ import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
+import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.entity.Skin;
@@ -135,6 +137,36 @@ public class Types {
                     }
                 })
                 .since("1.1.0")
+                .register();
+
+        reg.newType(BlockEntityType.class, "blockentitytype")
+                .user("block ?entity ?type")
+                .name("General - Block Entity Type")
+                .description("Represents a type of block entity (e.g. chest, sign, etc.)")
+                // TODO example
+                .since("1.1.0")
+                .supplier(() -> BlockEntityTypes.values().iterator())
+                .parser(new Parser<>() {
+
+                    @Override
+                    public @Nullable BlockEntityType parse(String input, ParseContext context) {
+                        input = input.trim().replace(" ", "_").toLowerCase(Locale.ENGLISH); // has to be lowercase
+                        if (input.endsWith("_block_entity_type")) {
+                            input = input.substring(0, input.length() - "_block_entity_type".length());
+                        }
+                        return BlockEntityTypes.getByName(input);
+                    }
+
+                    @Override
+                    public String toString(BlockEntityType type, int flags) {
+                        return type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " block entity type";
+                    }
+
+                    @Override
+                    public String toVariableNameString(BlockEntityType type) {
+                        return "blockentitytype:" + type.getName().getKey();
+                    }
+                })
                 .register();
 
         reg.newType(Skin.class, "skin")

@@ -2,6 +2,7 @@ package dev.threeadd.packeteventssk;
 
 import ch.njol.skript.Skript;
 import com.github.shanebeee.skr.Registration;
+import com.shanebeestudios.skbee.api.nbt.NBTApi;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistry;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,8 @@ public class AddonLoader {
 
     private final Plugin skriptPlugin;
     private final Registration registration;
+
+    private boolean hasSkBeeNBT = false;
 
     protected AddonLoader() {
         this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
@@ -42,6 +45,11 @@ public class AddonLoader {
         if (isPlugmanReloaded()) {
             log.error("PacketEventsSK does not support reloading with PlugMan, stuff will break!");
             return false;
+        }
+
+        if (NBTApi.isEnabled()) {
+            log.info("Hooked into SkBee NBT using NBT-API");
+            this.hasSkBeeNBT = true;
         }
 
         SkriptElementRegistry.INSTANCE.register(PacketEventsSK.getInstance().getPluginConfig());
@@ -79,5 +87,9 @@ public class AddonLoader {
                 return true;
         }
         return false;
+    }
+
+    public boolean hasSkBeeNBT() {
+        return hasSkBeeNBT;
     }
 }
