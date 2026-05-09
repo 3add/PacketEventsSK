@@ -11,15 +11,15 @@ public class DebugUtil {
     private static final String INDENT_STEP = "  ";
 
     public static String getDebugString(Object obj) {
-        if (obj == null) return "null";
+        if (obj == null) return "<none>";
 
         StringBuilder output = new StringBuilder();
 
-        output.append(obj.getClass().getSimpleName()).append("\n");
+        output.append(obj.getClass().getSimpleName()).append(":\n");
 
         appendFields(obj, 1, output);
 
-        return output.toString();
+        return output.toString().stripTrailing();
     }
 
     private static void appendFields(Object obj, int depth, StringBuilder output) {
@@ -45,7 +45,7 @@ public class DebugUtil {
                     Object value = method.invoke(obj);
 
                     if (value == null) {
-                        output.append(indent).append(fieldName).append(": null\n");
+                        output.append(indent).append(fieldName).append(": <none>\n");
                         continue;
                     }
 
@@ -60,26 +60,25 @@ public class DebugUtil {
                                 appendMetadataEntry(item, output);
                             }
                         } else {
-                            // This now correctly handles simple lists like List<Integer> (entityIds)
-                            String listContent = list.stream()
-                                    .map(DebugUtil::valueToString)
-                                    .collect(Collectors.joining(", "));
-                            output.append(indent).append(fieldName).append(": [").append(listContent).append("]\n");
+                            if (list.isEmpty()) {
+                                output.append(indent).append(fieldName).append(": <empty list>\n");
+                            } else {
+                                String listContent = list.stream()
+                                        .map(DebugUtil::valueToString)
+                                        .collect(Collectors.joining(", "));
+                                output.append(indent).append(fieldName).append(": [").append(listContent).append("]\n");
+                            }
                         }
 
                     } else if (!isSimpleValue(value)) {
-                        // Because Lists/Maps are now marked as simple values, this block
-                        // only executes for true complex objects (POJOs).
-
                         String valueString = value.toString();
                         boolean badToString = valueString.startsWith(value.getClass().getName() + "@") ||
                                 valueString.equals(value.getClass().getName());
 
                         if (badToString && depth + 1 < MAX_DEPTH) {
                             output.append(indent).append(fieldName).append(":\n");
-                            output.append(indent).append(INDENT_STEP).append("{\n");
-                            appendFields(value, depth + 2, output);
-                            output.append(indent).append(INDENT_STEP).append("}\n");
+                            // Removed the extra { } braces as Skripters usually prefer standard YAML-like indentation
+                            appendFields(value, depth + 1, output);
                         } else {
                             output.append(indent).append(fieldName).append(": ").append(valueToString(value)).append("\n");
                         }
@@ -101,13 +100,19 @@ public class DebugUtil {
         } else if (fieldName.startsWith("is")) {
             fieldName = fieldName.substring(2);
         }
-        if (!fieldName.isEmpty()) {
-            fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+
+        StringBuilder skriptName = new StringBuilder();
+        for (char c : fieldName.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                if (!skriptName.isEmpty()) skriptName.append(" ");
+                skriptName.append(Character.toLowerCase(c));
+            } else {
+                skriptName.append(c);
+            }
         }
-        return fieldName;
+        return skriptName.toString();
     }
 
-    // --- REVISED METHOD ---
     private static boolean isSimpleValue(Object value) {
         Class<?> cls = value.getClass();
 
@@ -117,7 +122,6 @@ public class DebugUtil {
                 value instanceof Boolean ||
                 value instanceof UUID ||
                 cls.isEnum() ||
-                // ADDED: Lists and Maps are simple for the purpose of printing.
                 value instanceof List ||
                 value instanceof Map) {
             return true;
@@ -130,18 +134,22 @@ public class DebugUtil {
                 className.endsWith("EntityDataType") ||
                 className.endsWith("EntityPose") ||
                 className.endsWith("Vector3d") ||
+                className.endsWith("Vector3i") ||
                 className.endsWith("Location") ||
                 className.endsWith("ItemStack") ||
                 className.endsWith("ProtocolVersion") ||
                 className.endsWith("ItemType");
     }
-    // --- END REVISED METHOD ---
 
     private static String valueToString(Object value) {
-        if (value == null) return "null";
+        if (value == null) return "<none>";
 
         if (value instanceof Optional<?> optional) {
-            return optional.map(DebugUtil::valueToString).orElse("Optional.empty");
+            return optional.map(DebugUtil::valueToString).orElse("<none>");
+        }
+
+        if (value instanceof Enum<?>) {
+            return ((Enum<?>) value).name().toLowerCase(Locale.ENGLISH).replace("_", " ");
         }
 
         return value.toString();
@@ -149,7 +157,7 @@ public class DebugUtil {
 
     private static void appendMetadataEntry(Object data, StringBuilder builder) {
         if (data == null) {
-            builder.append("null metadata entry\n");
+            builder.append("<none> metadata entry\n");
             return;
         }
 
@@ -170,7 +178,7 @@ public class DebugUtil {
             }
 
             builder.append("[").append(index).append(": ")
-                    .append(typeString).append("=")
+                    .append(typeString.toLowerCase(Locale.ENGLISH)).append(" = ")
                     .append(valueToString(value))
                     .append("]\n");
 
