@@ -20,8 +20,6 @@ public class AddonLoader {
     private final Plugin skriptPlugin;
     private final Registration registration;
 
-    private boolean hasSkBeeNBT = false;
-
     protected AddonLoader() {
         this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
         this.registration = new Registration("PacketEventsSK", false);
@@ -52,7 +50,6 @@ public class AddonLoader {
             boolean enabled = (boolean) nbtApiClass.getMethod("isEnabled").invoke(null);
             if (enabled) {
                 log.info("Hooked into SkBee NBT using NBT-API");
-                this.hasSkBeeNBT = true;
                 SkBeePacketRegistrations.register();
             }
         } catch (ClassNotFoundException ignored) {
