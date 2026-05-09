@@ -56,9 +56,9 @@ public class AddonLoader {
                 SkBeePacketRegistrations.register();
             }
         } catch (ClassNotFoundException ignored) {
-            // SkBee is not installed; NBT support will be unavailable
+            log.warn("SkBee not found, PacketEventsSK elements depending on NBT will not be registered");
         } catch (Exception e) {
-            log.warn("Failed to hook into SkBee NBT", e);
+            log.error("Failed to hook into SkBee NBT", e);
         }
 
         SkriptElementRegistry.INSTANCE.register(PacketEventsSK.getInstance().getPluginConfig());
