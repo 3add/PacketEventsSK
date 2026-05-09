@@ -2,23 +2,30 @@ package dev.threeadd.packeteventssk.element.general;
 
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
+import ch.njol.skript.registrations.Classes;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
+import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
+import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class Types {
+
+    private static final Logger log = LoggerFactory.getLogger(Types.class);
 
     public static void register(Registration reg) {
         reg.newType(PacketWrapper.class, "packet")
@@ -168,6 +175,19 @@ public class Types {
                     }
                 })
                 .register();
+
+        if (Classes.getExactClassInfo(Side.class) == null && Classes.getClassInfoNoError("signside") == null) {
+            EnumWrapper<Side> SIGN_SIDE_ENUM = new EnumWrapper<>(Side.class);
+            reg.newEnumType(Side.class, SIGN_SIDE_ENUM, "signside")
+                    .user("sign ?side")
+                    .name("General - Sign Side")
+                    .description("Represents a side of a sign block (front or back)")
+                    .since("1.1.0")
+                    // TODO example
+                    .register();
+        } else {
+            log.warn("It looks like another addon has sign side registered, you should just be able to use their syntax though.");
+        }
 
         reg.newType(Skin.class, "skin")
                 .user("skin")
