@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaBillboard extends EntityMetaPropertyExpression<AbstractDisplayMeta, Display.Billboard> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaBillboard.class, Display.Billboard.class, "fake display billboard", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaBillboard.class, Display.Billboard.class, "fake display billboard", "entitymeta")
                 .name("Fake Display Entity - Display Billboard")
                 .description("""
                         Represents the billboard of a Display Entity.

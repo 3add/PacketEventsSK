@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeTextDisplayMetaTextShadowed extends EntityMetaPropertyExpression<TextDisplayMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeTextDisplayMetaTextShadowed.class, Boolean.class, "fake display[ ](text|content)[ ]shadowed [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeTextDisplayMetaTextShadowed.class, Boolean.class, "fake display[ ](text|content)[ ]shadowed [state]", "entitymeta")
                 .name("Fake Text Display Entity - Display Text Shadowed")
                 .description("""
                         Represents the shadowed state of a Text Display Entity.

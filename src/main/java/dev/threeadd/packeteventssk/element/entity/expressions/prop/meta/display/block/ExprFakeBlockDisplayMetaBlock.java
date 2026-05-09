@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeBlockDisplayMetaBlock extends EntityMetaPropertyExpression<BlockDisplayMeta, BlockData> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeBlockDisplayMetaBlock.class, BlockData.class, "fake display[ ]block[ ]data", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeBlockDisplayMetaBlock.class, BlockData.class, "fake display[ ]block[ ]data", "entitymeta")
                 .name("Fake Block Display Entity - Display Block Data")
                 .description("""
                         Represents the block data of a Block Display Entity.

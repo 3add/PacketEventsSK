@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeInterationMetaHeightOrWidth extends EntityMetaPropertyExpression<InteractionMeta, Number> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeInterationMetaHeightOrWidth.class, Number.class, "fake interaction (:(height|width))", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeInterationMetaHeightOrWidth.class, Number.class, "fake interaction (:(height|width))", "entitymeta")
                 .name("Fake Interaction Entity - Interaction Width/Height")
                 .description("Represents the width or height of an interaction entity.")
                 .examples("""

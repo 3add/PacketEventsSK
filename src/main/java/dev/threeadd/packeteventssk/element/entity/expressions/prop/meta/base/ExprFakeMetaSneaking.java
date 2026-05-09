@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeMetaSneaking extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaSneaking.class, Boolean.class, "fake sneaking [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaSneaking.class, Boolean.class, "fake sneaking [state]", "entitymeta")
                 .name("Fake Entity Property - Sneaking State")
                 .description("If the entity is sneaking. (Sneaking is mainly just it's nametag becoming grayer)")
                 .examples("""

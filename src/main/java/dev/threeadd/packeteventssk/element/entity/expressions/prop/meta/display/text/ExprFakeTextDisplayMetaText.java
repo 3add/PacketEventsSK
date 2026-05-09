@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class ExprFakeTextDisplayMetaText extends EntityMetaPropertyExpression<TextDisplayMeta, Component> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeTextDisplayMetaText.class, Component.class, "fake display (text|content)", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeTextDisplayMetaText.class, Component.class, "fake display (text|content)", "entitymeta")
                 .name("Fake Text Display Entity - Display Text")
                 .description("""
                         Represents the display text of a Text Display Entity.

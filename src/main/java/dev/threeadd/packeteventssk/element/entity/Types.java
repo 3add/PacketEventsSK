@@ -42,34 +42,5 @@ public class Types {
                 .register();
 
         Converters.registerConverter(WrapperEntity.class, EntityMeta.class, WrapperEntity::getEntityMeta);
-
-        reg.newType(EntityMeta.class, "fakeentitymeta")
-                .user("fake ?entit(y|ies) meta")
-                .name("Fake Entity - Fake Entity Meta")
-                .description("The entity meta of a fake entity, used for modifying the fake entity's metadata (basically any custom property of an entity)")
-                .examples("""
-                        command spawn:
-                            trigger:
-                                create a new fake zombie entity at player for players:
-                                    set fake scale attribute of the fake entity to 2
-                        """)
-                .parser(new Parser<>() {
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(EntityMeta meta, int flags) {
-                        return "fake entity meta";
-                    }
-
-                    @Override
-                    public String toVariableNameString(EntityMeta meta) {
-                        return "fakeentitymeta:" + meta.hashCode();
-                    }
-                })
-                .since("1.1.0")
-                .register();
     }
 }

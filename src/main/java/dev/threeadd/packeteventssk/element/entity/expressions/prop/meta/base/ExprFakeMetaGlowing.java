@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class ExprFakeMetaGlowing extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaGlowing.class, Boolean.class, "fake glow[ing] [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaGlowing.class, Boolean.class, "fake glow[ing] [state]", "entitymeta")
                 .name("Fake Entity Property - Glowing State")
                 .description("If a fake entity is glowing. (They're outlined, have a wireframe of colored lines)")
                 .examples("""

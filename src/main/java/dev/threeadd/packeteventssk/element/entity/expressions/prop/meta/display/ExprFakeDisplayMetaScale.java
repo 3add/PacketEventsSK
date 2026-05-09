@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaScale extends EntityMetaPropertyExpression<AbstractDisplayMeta, Vector> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaScale.class, Vector.class, "fake display scale", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaScale.class, Vector.class, "fake display scale", "entitymeta")
                 .name("Fake Display Entity - Display Scale")
                 .description("""
                         Represents the transformation scale of a Display Entity.

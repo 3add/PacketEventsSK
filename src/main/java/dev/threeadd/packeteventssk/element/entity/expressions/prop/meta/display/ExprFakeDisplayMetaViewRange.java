@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaViewRange extends EntityMetaPropertyExpression<AbstractDisplayMeta, Number> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaViewRange.class, Number.class, "fake display view[ ]range", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaViewRange.class, Number.class, "fake display view[ ]range", "entitymeta")
                 .name("Fake Display Entity - View Range")
                 .description("""
                         Represents the view range of a Display Entity.

@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaGravity extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaGravity.class, Boolean.class, "fake gravity [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaGravity.class, Boolean.class, "fake gravity [state]", "entitymeta")
                 .description("If a fake entity experiencing gravity. (If they are capable of falling)")
                 .examples("""
                         command flyingItem <itemtype>:

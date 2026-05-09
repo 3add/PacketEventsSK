@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaTranslation extends EntityMetaPropertyExpression<AbstractDisplayMeta, Vector> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaTranslation.class, Vector.class, "fake display translation", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaTranslation.class, Vector.class, "fake display translation", "entitymeta")
                 .name("Fake Display Entity - Translation")
                 .description("""
                         Represents the translation of a Display Entity.

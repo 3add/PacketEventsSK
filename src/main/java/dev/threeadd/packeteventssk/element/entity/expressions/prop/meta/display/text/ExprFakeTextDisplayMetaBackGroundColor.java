@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeTextDisplayMetaBackGroundColor extends EntityMetaPropertyExpression<TextDisplayMeta, Color> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeTextDisplayMetaBackGroundColor.class, Color.class, "fake display[ ]background[ ]color", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeTextDisplayMetaBackGroundColor.class, Color.class, "fake display[ ]background[ ]color", "entitymeta")
                 .name("Fake Text Display Entity - Background Color")
                 .description("""
                         Represents the background color of a Text Display Entity.

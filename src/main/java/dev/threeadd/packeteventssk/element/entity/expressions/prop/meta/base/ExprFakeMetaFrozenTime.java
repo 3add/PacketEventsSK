@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeMetaFrozenTime extends EntityMetaPropertyExpression<EntityMeta, Timespan> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaFrozenTime.class, Timespan.class, "fake frozen time", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaFrozenTime.class, Timespan.class, "fake frozen time", "entitymeta")
                 .name("Fake Entity Property - Frozen Time")
                 .description("The amount of time the entity has been frozen (in powdered snow, makes them shake)")
                 .examples("""

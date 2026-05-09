@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaFire extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaFire.class, Boolean.class, "fake [on][ ]fire [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaFire.class, Boolean.class, "fake [on][ ]fire [state]", "entitymeta")
                 .name("Fake Entity Property - On Fire State")
                 .description("If the entity is on fire. (actively burning)")
                 .examples("""

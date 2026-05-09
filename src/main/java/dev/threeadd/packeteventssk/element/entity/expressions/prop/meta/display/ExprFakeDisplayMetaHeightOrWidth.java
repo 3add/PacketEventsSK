@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaHeightOrWidth extends EntityMetaPropertyExpression<AbstractDisplayMeta, Number> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaHeightOrWidth.class, Number.class, "fake display (:(height|width))", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaHeightOrWidth.class, Number.class, "fake display (:(height|width))", "entitymeta")
                 .name("Fake Display Entity - Display Height/Width")
                 .description("""
                         Represents the height/width of a display entity.

@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaTeleportInterpolationDuration extends EntityMetaPropertyExpression<AbstractDisplayMeta, Timespan> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaTeleportInterpolationDuration.class, Timespan.class, "fake display teleport interpolation duration", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaTeleportInterpolationDuration.class, Timespan.class, "fake display teleport interpolation duration", "entitymeta")
                 .name("Fake Display Entity - Teleport Interpolation Duration")
                 .description("""
                         Represents the teleport interpolation duration of a Display Entity.

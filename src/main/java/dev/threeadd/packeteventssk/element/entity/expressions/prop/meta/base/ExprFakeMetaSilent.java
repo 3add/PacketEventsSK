@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaSilent extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaSilent.class, Boolean.class, "fake silent [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaSilent.class, Boolean.class, "fake silent [state]", "entitymeta")
                 .name("Fake Entity Property - Silent State")
                 .description("If the entity is silent. (A silent entity will not produce sounds)")
                 .examples("""

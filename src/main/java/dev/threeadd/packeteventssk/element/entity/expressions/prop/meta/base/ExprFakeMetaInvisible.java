@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeMetaInvisible extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaInvisible.class, Boolean.class, "fake invisible [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaInvisible.class, Boolean.class, "fake invisible [state]", "entitymeta")
                 .name("Fake Entity Property - Invisible State")
                 .description("If a fake entity is invisible. (If they are visible by other entities)")
                 .examples("""

@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaCustomNameVisible extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaCustomNameVisible.class, Boolean.class, "fake custom[ ]name visible [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaCustomNameVisible.class, Boolean.class, "fake custom[ ]name visible [state]", "entitymeta")
                 .name("Fake Entity Property - Custom Name Visible State")
                 .description("If the custom name of a fake entity is visible by other entities.")
                 .examples("""

@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeMetaCustomName extends EntityMetaPropertyExpression<EntityMeta, Component> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaCustomName.class, Component.class, "fake custom[ ]name", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaCustomName.class, Component.class, "fake custom[ ]name", "entitymeta")
                 .name("Fake Entity Property - Custom Name")
                 .description("A custom name of a fake entity, this does not support colors due to minecraft limitations.")
                 .examples("""

@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaElytra extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaElytra.class, Boolean.class, "fake elytra[ ][fly[ing]] [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaElytra.class, Boolean.class, "fake elytra[ ][fly[ing]] [state]", "entitymeta")
                 .name("Fake Entity Property - Elytra Flying State")
                 .description("Represents the fake elytra flying state of a fake entity, this only changes the client side metadata, it doesn't actually make the entity fly")
                 .examples("""

@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ExprFakeItemMetaItem extends EntityMetaPropertyExpression<ItemEntityMeta, ItemType> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeItemMetaItem.class, ItemType.class, "fake item[ ][type]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeItemMetaItem.class, ItemType.class, "fake item[ ][type]", "entitymeta")
                 .name("Fake Dropped Item Entity - Item Type")
                 .description("Represents the item stack held within a dropped item.")
                 .examples("""

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExprFakeMetaAirTime extends EntityMetaPropertyExpression<EntityMeta, Timespan> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaAirTime.class, Timespan.class, "fake air time", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaAirTime.class, Timespan.class, "fake air time", "entitymeta")
                 .name("Fake Entity Property - Air Time")
                 .description("The amount of time the entity has been in the air")
                 .examples("""

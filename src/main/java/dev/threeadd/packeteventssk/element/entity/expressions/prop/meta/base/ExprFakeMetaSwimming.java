@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ExprFakeMetaSwimming extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaSwimming.class, Boolean.class, "fake swim[ming] [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaSwimming.class, Boolean.class, "fake swim[ming] [state]", "entitymeta")
                 .name("Fake Entity Property - Swimming State")
                 .description("If the entity is swimming.")
                 .examples("""

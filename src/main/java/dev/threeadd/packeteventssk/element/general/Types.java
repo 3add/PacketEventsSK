@@ -9,6 +9,7 @@ import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
+import me.tofaa.entitylib.meta.EntityMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -105,6 +106,35 @@ public class Types {
                         return "packettype:" + type.getName();
                     }
                 })
+                .register();
+
+        reg.newType(EntityMeta.class, "entitymeta")
+                .user("fake ?entit(y|ies) meta")
+                .name("General - Entity Meta")
+                .description("The entity meta of a minecraft entity (this can both represent a fake entity's meta or a real entity's meta, but is mostly used for fake entities since the only use for real entities is for packet intercepting).")
+                .examples("""
+                        command spawn:
+                            trigger:
+                                create a new fake zombie entity at player for players:
+                                    set fake scale attribute of the fake entity to 2
+                        """)
+                .parser(new Parser<>() {
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+                    @Override
+                    public String toString(EntityMeta meta, int flags) {
+                        return "entity meta";
+                    }
+
+                    @Override
+                    public String toVariableNameString(EntityMeta meta) {
+                        return "entitymeta:" + meta.hashCode();
+                    }
+                })
+                .since("1.1.0")
                 .register();
 
         reg.newType(Skin.class, "skin")

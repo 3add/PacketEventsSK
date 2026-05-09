@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class ExprFakeMetaPose extends EntityMetaPropertyExpression<EntityMeta, Pose> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaPose.class, Pose.class, "fake pose", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaPose.class, Pose.class, "fake pose", "entitymeta")
                 .name("Fake Entity Property - Entity Pose")
                 .description("The entity pose of a fake entity (drawing bow, sleeping, etc)")
                 .examples("""

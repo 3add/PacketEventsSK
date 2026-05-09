@@ -20,7 +20,7 @@ import java.util.Arrays;
 public class ExprFakeDisplayMetaLeftOrRightRotation extends EntityMetaPropertyExpression<AbstractDisplayMeta, Quaternionf> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeDisplayMetaLeftOrRightRotation.class, Quaternionf.class, "fake display (:(left|right))[ ]rotation", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeDisplayMetaLeftOrRightRotation.class, Quaternionf.class, "fake display (:(left|right))[ ]rotation", "entitymeta")
                 .name("Fake Display Entity - Display Rotation")
                 .description("""
                         Represents the transformation left/right rotation of a Display Entity.

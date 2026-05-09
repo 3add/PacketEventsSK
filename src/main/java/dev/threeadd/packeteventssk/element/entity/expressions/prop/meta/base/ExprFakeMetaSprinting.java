@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ExprFakeMetaSprinting extends EntityMetaPropertyExpression<EntityMeta, Boolean> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeMetaSprinting.class, Boolean.class, "fake sprinting [state]", "fakeentitymeta")
+        reg.newPropertyExpression(ExprFakeMetaSprinting.class, Boolean.class, "fake sprinting [state]", "entitymeta")
                 .name("Fake Entity Property - Sprinting State")
                 .description("If the entity is sprinting.")
                 .examples("""
