@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SecCreatePacket extends Section {
+public class EffSecCreatePacket extends EffectSection {
 
     private static EntryValidator VALIDATOR;
 
@@ -36,7 +36,7 @@ public class SecCreatePacket extends Section {
         }
         VALIDATOR = builder.build();
 
-        reg.newSection(SecCreatePacket.class, VALIDATOR, "(make|create) [a] [new] %packettype% [and store (it|the result) in %-objects%]")
+        reg.newSection(EffSecCreatePacket.class, VALIDATOR, "(make|create) [a] [new] %packettype% [and store (it|the result) in %-objects%]")
                 .name("General - Create Packet")
                 .description("Create a new packet from a packet type. This section is a data block, not an execution block.")
                 .since("1.0.0")
@@ -76,9 +76,13 @@ public class SecCreatePacket extends Section {
             return false;
         }
 
+        boolean hasRequiredFields = definition.fields().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
-            Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet!");
-            return false;
+            if (hasRequiredFields) {
+                Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet!");
+                return false;
+            }
+            return true;
         }
 
         EntryContainer container = VALIDATOR.validate(sectionNode);
