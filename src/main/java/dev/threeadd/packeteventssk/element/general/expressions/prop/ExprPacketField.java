@@ -1,5 +1,6 @@
 package dev.threeadd.packeteventssk.element.general.expressions.prop;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -8,11 +9,15 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
+import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketDefinition;
+import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketField;
+import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("rawtypes")
 public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
@@ -20,7 +25,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     public static void register(Registration reg) {
         reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
-                .description("Gets a field's value from a packet by a it's name.")
+                .description("Gets a field's value from a packet by its name.")
                 //TODO example
                 .since("1.1.0")
                 .register();
@@ -32,6 +37,36 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         this.fieldName = parseResult.regexes.getFirst().group().trim();
+
+        PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
+
+        if (data.getPacketType() != null) { // for the listening event
+            PacketTypeCommon eventPacketType = data.getPacketType();
+            PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
+
+            if (def == null) {
+                Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
+                return false;
+            }
+
+            if (def.getField(this.fieldName) == null) {
+                Skript.error("The field '" + this.fieldName + "' does not exist in a " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
+                return false;
+            }
+        } else { // more global check
+            boolean isValidField = false;
+            for (PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+                if (def.getField(this.fieldName) != null) {
+                    isValidField = true;
+                    break;
+                }
+            }
+
+            if (!isValidField) {
+                Skript.error("The packet field '" + this.fieldName + "' is not registered or does not exist. Consider checking your spelling.");
+                return false;
+            }
+        }
 
         setExpr((Expression<? extends PacketWrapper>) exprs[0]);
         return true;
@@ -48,17 +83,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PacketConstructorRegistry.PacketDefinition definition = PacketConstructorRegistry.getDefinition(type);
+            PacketDefinition definition = PacketConstructorRegistry.getDefinition(type);
 
             if (definition == null) continue;
 
-            PacketConstructorRegistry.PacketField targetField = null;
-            for (PacketConstructorRegistry.PacketField field : definition.fields()) {
-                if (field.name().equalsIgnoreCase(this.fieldName)) {
-                    targetField = field;
-                    break;
-                }
-            }
+            PacketField<?> targetField = definition.getField(this.fieldName);
 
             if (targetField == null || targetField.getter() == null) continue;
 

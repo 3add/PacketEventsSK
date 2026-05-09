@@ -3,12 +3,13 @@ package dev.threeadd.packeteventssk.api.general;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.util.Vector3d;
-import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerGameTestHighlightPos;
+import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Function;
@@ -18,48 +19,46 @@ public class PacketConstructorRegistry {
     private static final Map<PacketTypeCommon, PacketDefinition> REGISTRY = new HashMap<>();
 
     static {
-        register(PacketType.Play.Server.ENTITY_VELOCITY)
-                .withField("entity id", Number.class, w -> ((WrapperPlayServerEntityVelocity) w).getEntityId())
-                .withField("x", Number.class, w -> ((WrapperPlayServerEntityVelocity) w).getVelocity().getX())
-                .withField("y", Number.class, w -> ((WrapperPlayServerEntityVelocity) w).getVelocity().getY())
-                .withField("z", Number.class, w -> ((WrapperPlayServerEntityVelocity) w).getVelocity().getZ())
-                .construct(values -> new WrapperPlayServerEntityVelocity(
-                        values.get("entity id", Number.class).intValue(),
-                        new Vector3d(values.get("x", Number.class).floatValue(),
-                                values.get("y", Number.class).floatValue(),
-                                values.get("z", Number.class).floatValue())
-                ));
+        // By passing the Wrapper class, Java infers 'w' automatically! No casting needed.
+        builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
+                .requiredField("entity id", Number.class, WrapperPlayServerEntityVelocity::getEntityId)
+                .requiredField("vector", Vector.class, w -> new Vector(w.getVelocity().getX(), w.getVelocity().getY(), w.getVelocity().getZ()))
+                .constructor(values -> {
+                    Vector vec = values.get("vector", Vector.class);
+                    return new WrapperPlayServerEntityVelocity(
+                            values.get("entity id", Number.class).intValue(),
+                            new Vector3d(vec.getX(), vec.getY(), vec.getZ())
+                    );
+                })
+                .build();
 
-        register(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS)
-                .withField("x", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getAbsolutePos().getX())
-                .withField("y", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getAbsolutePos().getY())
-                .withField("z", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getAbsolutePos().getZ())
-                .withOptionalField("relative x", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getRelativePos().getX())
-                .withOptionalField("relative y", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getRelativePos().getY())
-                .withOptionalField("relative z", Number.class, w -> ((WrapperPlayServerGameTestHighlightPos) w).getRelativePos().getZ())
-                .construct(values -> new WrapperPlayServerGameTestHighlightPos(
-                        new Vector3i(values.get("x", Number.class).intValue(),
-                                values.get("y", Number.class).intValue(),
-                                values.get("z", Number.class).intValue()),
-                        new Vector3i(values.getOrElse("relative x", Number.class, 0).intValue(),
-                                values.getOrElse("relative y", Number.class, 0).intValue(),
-                                values.getOrElse("relative z", Number.class, 0).intValue()
-                        )));
-        register(PacketType.Play.Server.ENTITY_METADATA)
-                .withField("entity id",  Number.class, w -> ((WrapperPlayServerEntityMetadata) w).getEntityId())
-                .withField("entity meta", EntityMeta.class, w -> {
-                    WrapperPlayServerEntityMetadata packet = (WrapperPlayServerEntityMetadata) w;
-                    EntityMeta meta = new EntityMeta(packet.getEntityId());
-                    meta.getMetadata().setMetaFromPacket(packet);
+        builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
+                .requiredField("position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getAbsolutePos()))
+                .optionalField("relative position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getRelativePos()))
+                .constructor(values -> new WrapperPlayServerGameTestHighlightPos(
+                        ConversionUtil.toPeVectorI(values.get("position", Vector.class)),
+                        ConversionUtil.toPeVectorI(values.get("relative position", Vector.class)))
+                )
+                .build();
+
+        builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
+                .requiredField("entity id", Number.class, WrapperPlayServerEntityMetadata::getEntityId)
+                .requiredField("entity meta", EntityMeta.class, w -> {
+                    EntityMeta meta = new EntityMeta(w.getEntityId());
+                    meta.getMetadata().setMetaFromPacket(w);
                     return meta;
                 })
-                .construct(values -> new WrapperPlayServerEntityMetadata(values.get("entity id", Number.class).intValue(), values.get("entity meta", EntityMeta.class)));
+                .constructor(values -> new WrapperPlayServerEntityMetadata(
+                        values.get("entity id", Number.class).intValue(),
+                        values.get("entity meta", EntityMeta.class))
+                )
+                .build();
 
         // TODO: Populate more packets
     }
 
-    public static PacketBuilder register(PacketTypeCommon type) {
-        return new PacketBuilder(type);
+    public static <W extends PacketWrapper<?>> PacketBuilder<W> builder(PacketTypeCommon type, Class<W> wrapperClass) {
+        return new PacketBuilder<>(type);
     }
 
     public static PacketDefinition getDefinition(PacketTypeCommon type) {
@@ -70,37 +69,50 @@ public class PacketConstructorRegistry {
         return REGISTRY.values();
     }
 
-    public record PacketField(String name, Class<?> expectedType, boolean isOptional, Function<PacketWrapper<?>, Object> getter) {}
+    public record PacketField<T>(String name, Class<T> expectedType, boolean isOptional, Function<PacketWrapper<?>, T> getter) {}
 
-    public record PacketDefinition(List<PacketField> fields, Function<PacketValues, PacketWrapper<?>> constructor) {
-        public PacketField getField(String name) {
-            for (PacketField field : fields) {
+    public record PacketDefinition(List<PacketField<?>> fields, Function<PacketValues, PacketWrapper<?>> constructor) {
+        public PacketField<?> getField(String name) {
+            for (PacketField<?> field : fields) {
                 if (field.name().equalsIgnoreCase(name)) return field;
             }
             return null;
         }
     }
 
-    public static class PacketBuilder {
+    public static class PacketBuilder<W extends PacketWrapper<?>> {
         private final PacketTypeCommon type;
-        private final List<PacketField> fields = new ArrayList<>();
+        private final List<PacketField<?>> fields = new ArrayList<>();
+        private Function<PacketValues, W> packetConstructor;
 
         public PacketBuilder(PacketTypeCommon type) {
             this.type = type;
         }
 
-        public PacketBuilder withField(String name, Class<?> type, Function<PacketWrapper<?>, Object> getter) {
-            this.fields.add(new PacketField(name, type, false, getter));
+        @SuppressWarnings("unchecked")
+        public <T> PacketBuilder<W> requiredField(String name, Class<T> type, Function<W, T> getter) {
+            this.fields.add(new PacketField<>(name, type, false, (Function<PacketWrapper<?>, T>) getter));
             return this;
         }
 
-        public PacketBuilder withOptionalField(String name, Class<?> type, Function<PacketWrapper<?>, Object> getter) {
-            this.fields.add(new PacketField(name, type, true, getter));
+        @SuppressWarnings("unchecked")
+        public <T> PacketBuilder<W> optionalField(String name, Class<T> type, Function<W, T> getter) {
+            this.fields.add(new PacketField<>(name, type, true, (Function<PacketWrapper<?>, T>) getter));
             return this;
         }
 
-        public void construct(Function<PacketValues, PacketWrapper<?>> constructor) {
-            REGISTRY.put(this.type, new PacketDefinition(this.fields, constructor));
+        public PacketBuilder<W> constructor(Function<PacketValues, W> constructor) {
+            this.packetConstructor = constructor;
+            return this;
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public void build() {
+            if (this.packetConstructor == null) {
+                throw new IllegalStateException("Cannot build packet definition for '" + type.getName() + "' because no constructor was provided.");
+            }
+
+            REGISTRY.put(this.type, new PacketDefinition(this.fields, (Function) this.packetConstructor));
         }
     }
 
