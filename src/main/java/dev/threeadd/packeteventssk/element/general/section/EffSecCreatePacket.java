@@ -30,7 +30,7 @@ public class EffSecCreatePacket extends EffectSection {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
-            for (PacketConstructorRegistry.PacketField field : def.fields()) {
+            for (PacketConstructorRegistry.PacketField<?> field : def.fields()) {
                 builder.addOptionalEntry(field.name(), Object.class);
             }
         }
@@ -93,7 +93,7 @@ public class EffSecCreatePacket extends EffectSection {
         List<String> missingKeys = new ArrayList<>();
         boolean hasTypeError = false;
 
-        for (PacketConstructorRegistry.PacketField field : definition.fields()) {
+        for (PacketConstructorRegistry.PacketField<?> field : definition.fields()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -143,7 +143,7 @@ public class EffSecCreatePacket extends EffectSection {
 
         Map<String, Object> values = new HashMap<>();
 
-        for (PacketConstructorRegistry.PacketField field : definition.fields()) {
+        for (PacketConstructorRegistry.PacketField<?> field : definition.fields()) {
             Expression<?> expr = fieldExpressions.get(field.name());
 
             if (expr == null) {
