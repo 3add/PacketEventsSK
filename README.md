@@ -23,6 +23,7 @@ PacketEventsSK requires the following to run:
 - **Minecraft 1.18+** Paper-compatible server  
 - **[PacketEvents](https://modrinth.com/plugin/packetevents)** installed as a separate paper plugin
 
+Optionally install [SkBee](https://modrinth.com/plugin/skbee/versions) for the NBT Compound hook.
 > [!CAUTION]
 > PacketEventsSK officially supports only the latest stable:
 > - **Paper 1.21.11**
@@ -32,10 +33,10 @@ PacketEventsSK requires the following to run:
 ## Features
 PacketEventsSK adds advanced packet functionality to Skript, including:
 
-- Fake entity creation and manipulation  
-- Incoming and outgoing packet listeners  
-- Access to all PacketEvents packet types  
-- Netty processed packet handling  
+- Fake entity creation and manipulation (includes tracking and metadata management)
+- Interception and modification of incoming and outgoing packets (manipulation and cancellation)
+- SkBee integration for NBT Compound creation and manipulation
+- Access to all PacketEvents packet types
 - Metadata wrappers and packet utilities  
 
 Learn more in the **[Wiki](https://github.com/3add/PacketEventsSK/wiki)**.
@@ -55,5 +56,10 @@ Fake entity management and metadata wrappers.
 
 - [Github Repository](https://github.com/Tofaa2/EntityLib)
 - **Included with PacketEventsSK**
+### SkBee
+NBT Compound hook.
+
+- [Github Repository](https://github.com/ShaneBeee/SkBee)
+- [Install Here](https://modrinth.com/plugin/skbee/versions)
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
