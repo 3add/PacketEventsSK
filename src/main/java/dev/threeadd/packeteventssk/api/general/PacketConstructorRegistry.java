@@ -4,11 +4,12 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerGameTestHighlightPos;
+import com.github.retrooper.packetevents.wrapper.play.server.*;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.sign.Side;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -19,7 +20,6 @@ public class PacketConstructorRegistry {
     private static final Map<PacketTypeCommon, PacketDefinition> REGISTRY = new HashMap<>();
 
     static {
-        // By passing the Wrapper class, Java infers 'w' automatically! No casting needed.
         builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
                 .requiredField("entity id", Number.class, WrapperPlayServerEntityVelocity::getEntityId)
                 .requiredField("vector", Vector.class, w -> new Vector(w.getVelocity().getX(), w.getVelocity().getY(), w.getVelocity().getZ()))
@@ -52,6 +52,28 @@ public class PacketConstructorRegistry {
                         values.get("entity id", Number.class).intValue(),
                         values.get("entity meta", EntityMeta.class))
                 )
+                .build();
+
+        builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
+                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getBlockPosition()))
+                .requiredField("block state", BlockData.class, w -> SpigotConversionUtil.toBukkitBlockData(w.getBlockState()))
+                .constructor(values -> new WrapperPlayServerBlockChange(
+                        ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
+                        SpigotConversionUtil.fromBukkitBlockData(values.get("block state", BlockData.class))
+                ))
+                .build();
+
+        builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
+                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()))
+                .requiredField("sign side", Side.class, w -> w.isFrontText() ? Side.FRONT : Side.BACK)
+                .constructor(values -> new WrapperPlayServerOpenSignEditor(
+                        ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
+                        values.get("sign side", Side.class) == Side.FRONT
+                ))
+                .build();
+
+        builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
+                .constructor(_ -> new WrapperPlayServerCloseWindow())
                 .build();
 
         // TODO: Populate more packets
