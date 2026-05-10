@@ -19,7 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import dev.threeadd.packeteventssk.api.entity.Skin;
-import dev.threeadd.packeteventssk.api.entity.SkinUtil;
+import dev.threeadd.packeteventssk.api.entity.SkinManager;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +35,7 @@ public class PlayerSkinManager {
     public static void setGlobalSkin(UUID targetId, Skin skin) {
         if (targetId == null || skin == null) return;
 
-        if (skin.equals(SkinUtil.getPlayer(Bukkit.getPlayer(targetId)))) {
+        if (skin.equals(SkinManager.getPlayer(Bukkit.getPlayer(targetId)))) {
             // no need to save if it's the default skin
             globalSkinMap.remove(targetId);
         }

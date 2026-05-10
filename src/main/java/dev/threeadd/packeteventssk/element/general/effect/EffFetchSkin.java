@@ -8,7 +8,7 @@ import ch.njol.skript.util.AsyncEffect;
 import ch.njol.util.Kleenean;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.entity.Skin;
-import dev.threeadd.packeteventssk.api.entity.SkinUtil;
+import dev.threeadd.packeteventssk.api.entity.SkinManager;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +68,7 @@ public class EffFetchSkin extends AsyncEffect {
 
         Skin skin;
         try {
-            skin = SkinUtil.getOfflinePlayer(name);
+            skin = SkinManager.getOfflinePlayer(name);
         } catch (IllegalStateException error) {
             return;
         }
