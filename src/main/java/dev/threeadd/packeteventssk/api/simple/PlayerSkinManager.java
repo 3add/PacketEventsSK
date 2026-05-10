@@ -113,7 +113,7 @@ public class PlayerSkinManager {
         List<TextureProperty> properties;
         Skin customSkin = getSkinForViewer(targetId, viewerId);
         if (customSkin !=  null) {
-            properties = customSkin.getProperties();
+            properties = customSkin.properties();
         } else {
             properties = targetUser.getProfile().getTextureProperties();
         }

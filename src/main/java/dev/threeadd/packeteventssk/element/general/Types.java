@@ -209,7 +209,7 @@ public class Types {
 
                     @Override
                     public String toString(Skin skin, int flags) {
-                        return "skin with properties " + skin.getProperties();
+                        return "skin with properties " + skin.properties();
                     }
 
                     @Override

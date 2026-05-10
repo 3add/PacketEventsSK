@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
-public class SkinUtil {
+public class SkinManager {
 
     private static final Cache<String, Skin> skinCache = CacheBuilder.newBuilder()
             .expireAfterAccess(Duration.ofMinutes(5))

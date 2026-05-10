@@ -31,7 +31,7 @@ public class PlayerSkinListener implements PacketListener {
             if (skin == null)
                 continue;
 
-            profile.setTextureProperties(skin.getProperties());
+            profile.setTextureProperties(skin.properties());
         }
     }
 }

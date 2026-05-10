@@ -60,7 +60,7 @@ public class ExprFakePlayerEntitySkin extends SimplePropertyExpression<WrapperEn
 
         for (WrapperEntity entity : entities) {
             if (entity instanceof WrapperPlayer player) {
-                player.setTextureProperties(skin.getProperties());
+                player.setTextureProperties(skin.properties());
             } else {
                 Skript.warning("A packet entity that isn't a player doesn't have a skin.");
             }
