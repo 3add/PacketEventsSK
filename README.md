@@ -29,7 +29,7 @@ Optionally install [SkBee](https://modrinth.com/plugin/skbee/versions) for the N
 > - **Paper 26.1.2**
 > - **Skript 2.15.2**
 >
-> There are many more versions that work but you won't receive support for those.
+> There are many more versions that work, but you won't receive support for those.
 ## Features
 PacketEventsSK adds advanced packet functionality to Skript, including:
 
@@ -49,17 +49,17 @@ The main project.
 ### PacketEvents
 Packet management library.
 
-- [Github Repository](https://github.com/retrooper/packetevents)
+- [GitHub Repository](https://github.com/retrooper/packetevents)
 - [Install Here](https://modrinth.com/plugin/packetevents)
 ### EntityLib
 Fake entity management and metadata wrappers.
 
-- [Github Repository](https://github.com/Tofaa2/EntityLib)
+- [GitHub Repository](https://github.com/Tofaa2/EntityLib)
 - **Included with PacketEventsSK**
 ### SkBee
 NBT Compound hook.
 
-- [Github Repository](https://github.com/ShaneBeee/SkBee)
+- [GitHub Repository](https://github.com/ShaneBeee/SkBee)
 - [Install Here](https://modrinth.com/plugin/skbee/versions)
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)

@@ -85,9 +85,9 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
             }
 
             ProcessType way = switch (event) {
-                case PacketSendOrReceiveEvent.NettyPacketEvent e -> ProcessType.NETTY;
-                case PacketSendOrReceiveEvent.SyncPacketEvent e -> ProcessType.SYNC;
-                case PacketSendOrReceiveEvent.AsyncPacketEvent e -> ProcessType.ASYNC;
+                case PacketSendOrReceiveEvent.NettyPacketEvent _ -> ProcessType.NETTY;
+                case PacketSendOrReceiveEvent.SyncPacketEvent _ -> ProcessType.SYNC;
+                case PacketSendOrReceiveEvent.AsyncPacketEvent _ -> ProcessType.ASYNC;
                 default -> null;
             };
 

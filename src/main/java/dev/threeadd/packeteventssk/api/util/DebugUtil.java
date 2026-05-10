@@ -149,11 +149,6 @@ public class DebugUtil {
             default -> value.toString();
         };
 
-        if (value instanceof Enum<?>) {
-            return ((Enum<?>) value).name().toLowerCase(Locale.ENGLISH).replace("_", " ");
-        }
-
-        return value.toString();
     }
 
     private static void appendMetadataEntry(Object data, StringBuilder builder) {

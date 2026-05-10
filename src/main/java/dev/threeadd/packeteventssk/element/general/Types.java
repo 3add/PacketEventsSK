@@ -156,7 +156,7 @@ public class Types {
                 .parser(new Parser<>() {
 
                     @Override
-                    public @Nullable BlockEntityType parse(String input, ParseContext context) {
+                    public BlockEntityType parse(String input, ParseContext context) {
                         input = input.trim().replace(" ", "_").toLowerCase(Locale.ENGLISH); // has to be lowercase
                         if (input.endsWith("_block_entity_type")) {
                             input = input.substring(0, input.length() - "_block_entity_type".length());
