@@ -6,7 +6,6 @@ import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
@@ -42,8 +41,7 @@ public class ConversionUtil {
     }
 
     public static ResourceLocation getWorldKey(World world) {
-        NamespacedKey worldKey = world.getKey();
-        return new ResourceLocation(worldKey.getNamespace(), worldKey.getKey());
+        return new ResourceLocation(world.getKey().toString());
     }
 
     public static WorldBlockPosition toWorldBlockPosition(Location location) {
