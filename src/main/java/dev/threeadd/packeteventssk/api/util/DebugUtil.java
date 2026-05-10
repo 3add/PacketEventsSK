@@ -142,11 +142,12 @@ public class DebugUtil {
     }
 
     private static String valueToString(Object value) {
-        if (value == null) return "<none>";
-
-        if (value instanceof Optional<?> optional) {
-            return optional.map(DebugUtil::valueToString).orElse("<none>");
-        }
+        return switch (value) {
+            case null -> "<none>";
+            case Optional<?> optional -> optional.map(DebugUtil::valueToString).orElse("<none>");
+            case Enum<?> anEnum -> anEnum.name().toLowerCase(Locale.ENGLISH).replace("_", " ");
+            default -> value.toString();
+        };
 
         if (value instanceof Enum<?>) {
             return ((Enum<?>) value).name().toLowerCase(Locale.ENGLISH).replace("_", " ");

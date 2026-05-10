@@ -30,7 +30,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
-                        on packet interact entity receive netty processed:
+                        on serverbound interact entity packet netty processed:
                             cancel packet
                         """)
                 .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)")
