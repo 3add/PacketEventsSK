@@ -4,12 +4,15 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
+import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ExprFakePlayerEntitySkin extends SimplePropertyExpression<WrapperEntity, Skin> {
 
@@ -53,14 +56,14 @@ public class ExprFakePlayerEntitySkin extends SimplePropertyExpression<WrapperEn
 
     @Override
     public void change(Event event, Object @Nullable [] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || !(delta[0] instanceof Skin skin)) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || !(delta[0] instanceof Skin(List<TextureProperty> properties))) return;
 
         WrapperEntity[] entities = getExpr().getAll(event);
         if (entities == null) return;
 
         for (WrapperEntity entity : entities) {
             if (entity instanceof WrapperPlayer player) {
-                player.setTextureProperties(skin.properties());
+                player.setTextureProperties(properties);
             } else {
                 Skript.warning("A packet entity that isn't a player doesn't have a skin.");
             }
