@@ -10,7 +10,7 @@ import org.bstats.charts.SimplePie;
 
 public class MetricsLoader {
 
-    // Heavily inspired by SkBee's implmenentation of metrics
+    // Heavily inspired by SkBee's implementation of metrics
     // https://github.com/ShaneBeee/SkBee/blob/master/src/main/java/com/shanebeestudios/skbee/SkBee.java#L97
     // as of 10/01/2026
     public static void loadMetrics(PacketEventsSK plugin) { // plugin id: 28798
