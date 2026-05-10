@@ -134,7 +134,7 @@ public class PlayerSkinManager {
         WrapperPlayServerDestroyEntities destroy = new WrapperPlayServerDestroyEntities(targetUser.getEntityId());
 
         PlayerInfo playerInfo = new PlayerInfo(packetProfile, true, target.getPing(),
-                ConversionUtil.toPeGameMode(target.getGameMode()),
+                GameMode.valueOf(target.getGameMode().name()),
                 target.displayName(),
                 ChatSessionListener.getChatSession(target.getUniqueId()));
 
@@ -155,7 +155,7 @@ public class PlayerSkinManager {
     private static void sendSelfUpdate(Player player, User user, UserProfile packetProfile) {
 
         PlayerInfo playerInfo = new PlayerInfo(packetProfile, true, player.getPing(),
-                ConversionUtil.toPeGameMode(player.getGameMode()),
+                GameMode.valueOf(player.getGameMode().name()),
                 player.displayName(),
                 ChatSessionListener.getChatSession(player.getUniqueId()));
 
@@ -167,8 +167,8 @@ public class PlayerSkinManager {
         String worldName = dimensionType.getName().getKey();
         Difficulty difficulty = Difficulty.valueOf(world.getDifficulty().name());
         long hashedSeed = Hashing.sha256().hashLong(world.getSeed()).asLong();
-        GameMode gameMode = ConversionUtil.toPeGameMode(player.getGameMode());
-        @Nullable GameMode prevGameMode = player.getPreviousGameMode() != null ? ConversionUtil.toPeGameMode(player.getPreviousGameMode()) : null;
+        GameMode gameMode = GameMode.valueOf(player.getGameMode().name());
+        @Nullable GameMode prevGameMode = player.getPreviousGameMode() != null ? GameMode.valueOf(player.getPreviousGameMode().name()) : null;
         @Nullable WorldBlockPosition position = player.getLastDeathLocation() != null ? ConversionUtil.toWorldBlockPosition(player.getLastDeathLocation()) : null;
 
         WrapperPlayServerRespawn respawnPacket = new WrapperPlayServerRespawn(
