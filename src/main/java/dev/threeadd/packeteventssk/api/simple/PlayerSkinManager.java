@@ -52,14 +52,14 @@ public class PlayerSkinManager {
     public static void setSkinForViewer(UUID targetId, UUID viewerId, Skin skin) {
         if (targetId == null || viewerId == null || skin == null) return;
 
-        skinMap.computeIfAbsent(targetId, k -> new HashMap<>()).put(viewerId, skin);
+        skinMap.computeIfAbsent(targetId, _ -> new HashMap<>()).put(viewerId, skin);
         updateSkin(targetId, viewerId);
     }
 
     public static void setSkinForViewers(UUID targetId, Collection<UUID> viewers, Skin skin) {
         if (targetId == null || viewers == null || skin == null) return;
 
-        Map<UUID, Skin> targetMap = skinMap.computeIfAbsent(targetId, k -> new HashMap<>());
+        Map<UUID, Skin> targetMap = skinMap.computeIfAbsent(targetId, _ -> new HashMap<>());
         for (UUID viewerId : viewers) {
             targetMap.put(viewerId, skin);
             updateSkin(targetId, viewerId);
