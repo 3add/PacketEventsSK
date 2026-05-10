@@ -1,8 +1,8 @@
 package dev.threeadd.packeteventssk.element.general.section;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.expressions.base.SectionExpression;
 import ch.njol.skript.lang.*;
 import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
@@ -16,16 +16,13 @@ import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-public class EffSecCreatePacket extends EffectSection {
+public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
     private static EntryValidator VALIDATOR;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
@@ -36,16 +33,15 @@ public class EffSecCreatePacket extends EffectSection {
         }
         VALIDATOR = builder.build();
 
-        reg.newSection(EffSecCreatePacket.class, VALIDATOR, "(make|create) [a] [new] %packettype% [and store (it|the result) in %-objects%]")
-                .name("General - Create Packet")
+        reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %packettype%")
+                .name("General - New Packet")
                 .description("Create a new packet from a packet type. This section is a data block, not an execution block.")
                 // TODO Example
-                .since("1.0.0")
+                .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
     }
 
     private Literal<PacketTypeCommon> packetTypeLiteral;
-    private @Nullable Expression<Object> storeExpr;
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
     private PacketConstructorRegistry.PacketDefinition definition;
@@ -59,17 +55,14 @@ public class EffSecCreatePacket extends EffectSection {
                         @Nullable SectionNode sectionNode,
                         @Nullable List<TriggerItem> triggerItems) {
 
-        this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
-
-        if (expressions[1] != null) {
-            this.storeExpr = (Expression<Object>) expressions[1];
-            if (!Changer.ChangerUtils.acceptsChange(this.storeExpr, Changer.ChangeMode.SET, PacketWrapper.class)) {
-                Skript.error("Cannot set to store a packet.");
-                return false;
-            }
+        if (!(expressions[0] instanceof Literal<?>)) {
+            Skript.error("The packet type needs to be a literal");
+            return false;
         }
 
-        PacketTypeCommon type = packetTypeLiteral.getSingle();
+        this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
+
+        PacketTypeCommon type = this.packetTypeLiteral.getSingle();
         this.definition = PacketConstructorRegistry.getDefinition(type);
 
         if (this.definition == null) {
@@ -77,10 +70,10 @@ public class EffSecCreatePacket extends EffectSection {
             return false;
         }
 
-        boolean hasRequiredFields = definition.fields().stream().anyMatch(field -> !field.isOptional());
+        boolean hasRequiredFields = this.definition.fields().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet!");
+                Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet.");
                 return false;
             }
             return true;
@@ -94,7 +87,7 @@ public class EffSecCreatePacket extends EffectSection {
         List<String> missingKeys = new ArrayList<>();
         boolean hasTypeError = false;
 
-        for (PacketConstructorRegistry.PacketField<?> field : definition.fields()) {
+        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -116,7 +109,7 @@ public class EffSecCreatePacket extends EffectSection {
                 }
             }
 
-            fieldExpressions.put(key, expr);
+            this.fieldExpressions.put(key, expr);
         }
 
         if (!missingKeys.isEmpty()) {
@@ -129,23 +122,17 @@ public class EffSecCreatePacket extends EffectSection {
     }
 
     @Override
-    protected TriggerItem walk(@NotNull Event event) {
-        PacketWrapper<?> packet = createPacket(event);
-
-        if (packet != null && this.storeExpr != null) {
-            this.storeExpr.change(event, new Object[]{packet}, Changer.ChangeMode.SET);
-        }
-
-        return getNext();
+    protected PacketWrapper<?> @Nullable [] get(Event event) {
+        return new PacketWrapper[]{createPacket(event)};
     }
 
     private @Nullable PacketWrapper<?> createPacket(@NotNull Event event) {
-        if (definition == null) return null;
+        if (this.definition == null) return null;
 
         Map<String, Object> values = new HashMap<>();
 
-        for (PacketConstructorRegistry.PacketField<?> field : definition.fields()) {
-            Expression<?> expr = fieldExpressions.get(field.name());
+        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
+            Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
                 continue;
@@ -162,14 +149,24 @@ public class EffSecCreatePacket extends EffectSection {
             values.put(field.name(), value);
         }
 
-        return definition.constructor().apply(new PacketConstructorRegistry.PacketValues(values));
+        return this.definition.constructor().apply(new PacketConstructorRegistry.PacketValues(values));
+    }
+
+    @Override
+    public boolean isSingle() {
+        return true;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public Class<? extends PacketWrapper<?>> getReturnType() {
+        return (Class) PacketWrapper.class;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        if (packetTypeLiteral == null) return "create packet section";
         PacketTypeCommon type = this.packetTypeLiteral.getSingle();
         String packetType = (type != null ? type.getName() : "unknown");
-        return String.format("create %s packet", packetType);
+        return String.format("a new %s packet", packetType);
     }
 }
