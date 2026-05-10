@@ -13,7 +13,6 @@ import org.joml.Quaternionf;
 
 public class ConversionUtil {
 
-
     public static Vector toBukkitVector(com.github.retrooper.packetevents.protocol.world.Location location) {
         return new Vector(location.getX(), location.getY(), location.getZ());
     }
