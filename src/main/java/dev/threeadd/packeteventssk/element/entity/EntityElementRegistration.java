@@ -20,6 +20,7 @@ import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.interaction.ExprFakeInterationMetaHeightOrWidth;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.ExprFakeLivingEntityAttribute;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.item.ExprFakeItemMetaItem;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.living.ExprFakeLivingEntityMetaHealth;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.player.ExprFakePlayerEntitySkin;
 import dev.threeadd.packeteventssk.element.entity.sections.EffSecCreateFakeEntity;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
@@ -80,6 +81,8 @@ public class EntityElementRegistration implements SkriptElementRegistration {
         ExprFakeInterationMetaHeightOrWidth.register(reg);
 
         ExprFakeItemMetaItem.register(reg);
+
+        ExprFakeLivingEntityMetaHealth.register(reg);
 
         ExprFakePlayerEntitySkin.register(reg);
 
