@@ -1,6 +1,7 @@
 package dev.threeadd.packeteventssk.element.general.expressions.prop;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 
 @SuppressWarnings("rawtypes")
 public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
@@ -98,6 +100,43 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         }
 
         return results.isEmpty() ? null : results.toArray();
+    }
+
+    @Override
+    public Class<?>[] acceptChange(Changer.ChangeMode mode) {
+        if (mode == Changer.ChangeMode.SET) {
+            return new Class[]{Object.class};
+        }
+        return null;
+    }
+
+    @SuppressWarnings({"unchecked", "UnstableApiUsage"})
+    @Override
+    public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
+
+        Object newValue = delta[0];
+        if (newValue == null) return;
+
+        for (PacketWrapper<?> wrapper : getExpr().getArray(event)) {
+            if (wrapper == null) continue;
+
+            PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
+            PacketDefinition definition = PacketConstructorRegistry.getDefinition(type);
+
+            if (definition == null) continue;
+
+            PacketField<?> targetField = definition.getField(this.fieldName);
+
+            if (targetField == null || targetField.setter() == null) continue;
+
+            if (!targetField.expectedType().isInstance(newValue)) {
+                Skript.warning("Cannot set the packet field '" + this.fieldName + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + targetField.expectedType().getSimpleName());
+                continue;
+            }
+
+            ((BiConsumer<PacketWrapper<?>, Object>) targetField.setter()).accept(wrapper, newValue);
+        }
     }
 
     @Override

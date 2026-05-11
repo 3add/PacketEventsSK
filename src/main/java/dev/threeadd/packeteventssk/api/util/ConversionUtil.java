@@ -3,6 +3,7 @@ package dev.threeadd.packeteventssk.api.util;
 import com.github.retrooper.packetevents.protocol.world.WorldBlockPosition;
 import com.github.retrooper.packetevents.resources.ResourceLocation;
 import com.github.retrooper.packetevents.util.Quaternion4f;
+import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
 import org.bukkit.Location;
@@ -24,8 +25,16 @@ public class ConversionUtil {
         return new Vector(vector3f.x, vector3f.y, vector3f.z);
     }
 
+    public static Vector toBukkitVector(Vector3d vector3d) {
+        return new Vector(vector3d.x, vector3d.y, vector3d.z);
+    }
+
     public static Vector3f toPeVectorF(Vector vector) {
         return new Vector3f((float) vector.getX(), (float) vector.getY(), (float) vector.getZ());
+    }
+
+    public static Vector3d toPeVectorD(Vector vector) {
+        return new Vector3d((float) vector.getX(), (float) vector.getY(), (float) vector.getZ());
     }
 
     public static Vector3i toPeVectorI(Vector vector) {

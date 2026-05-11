@@ -13,6 +13,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class PacketConstructorRegistry {
@@ -21,8 +22,10 @@ public class PacketConstructorRegistry {
 
     static {
         builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
-                .requiredField("entity id", Number.class, WrapperPlayServerEntityVelocity::getEntityId)
-                .requiredField("vector", Vector.class, w -> new Vector(w.getVelocity().getX(), w.getVelocity().getY(), w.getVelocity().getZ()))
+                .requiredField("entity id", Number.class, WrapperPlayServerEntityVelocity::getEntityId,
+                        (w, id) -> w.setEntityId(id.intValue()))
+                .requiredField("vector", Vector.class, w -> ConversionUtil.toBukkitVector(w.getVelocity()),
+                        (w, vector) -> w.setVelocity(ConversionUtil.toPeVectorD(vector)))
                 .constructor(values -> {
                     Vector vec = values.get("vector", Vector.class);
                     return new WrapperPlayServerEntityVelocity(
@@ -33,8 +36,10 @@ public class PacketConstructorRegistry {
                 .build();
 
         builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
-                .requiredField("position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getAbsolutePos()))
-                .optionalField("relative position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getRelativePos()))
+                .requiredField("position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getAbsolutePos()),
+                        (w, vector) -> w.setAbsolutePos(ConversionUtil.toPeVectorI(vector)))
+                .optionalField("relative position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getRelativePos()),
+                        (w, vector) -> w.setRelativePos(ConversionUtil.toPeVectorI(vector)))
                 .constructor(values -> new WrapperPlayServerGameTestHighlightPos(
                         ConversionUtil.toPeVectorI(values.get("position", Vector.class)),
                         ConversionUtil.toPeVectorI(values.get("relative position", Vector.class)))
@@ -42,12 +47,13 @@ public class PacketConstructorRegistry {
                 .build();
 
         builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
-                .requiredField("entity id", Number.class, WrapperPlayServerEntityMetadata::getEntityId)
+                .requiredField("entity id", Number.class, WrapperPlayServerEntityMetadata::getEntityId,
+                        (w, id) -> w.setEntityId(id.intValue()))
                 .requiredField("entity meta", EntityMeta.class, w -> {
                     EntityMeta meta = new EntityMeta(w.getEntityId());
                     meta.getMetadata().setMetaFromPacket(w);
                     return meta;
-                })
+                }, WrapperPlayServerEntityMetadata::setEntityMetadata)
                 .constructor(values -> new WrapperPlayServerEntityMetadata(
                         values.get("entity id", Number.class).intValue(),
                         values.get("entity meta", EntityMeta.class))
@@ -55,8 +61,10 @@ public class PacketConstructorRegistry {
                 .build();
 
         builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
-                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getBlockPosition()))
-                .requiredField("block state", BlockData.class, w -> SpigotConversionUtil.toBukkitBlockData(w.getBlockState()))
+                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getBlockPosition()),
+                        (w, vector) -> w.setBlockPosition(ConversionUtil.toPeVectorI(vector)))
+                .requiredField("block state", BlockData.class, w -> SpigotConversionUtil.toBukkitBlockData(w.getBlockState()),
+                        (w, blockData) -> w.setBlockState(SpigotConversionUtil.fromBukkitBlockData(blockData)))
                 .constructor(values -> new WrapperPlayServerBlockChange(
                         ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
                         SpigotConversionUtil.fromBukkitBlockData(values.get("block state", BlockData.class))
@@ -64,8 +72,10 @@ public class PacketConstructorRegistry {
                 .build();
 
         builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
-                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()))
-                .requiredField("sign side", Side.class, w -> w.isFrontText() ? Side.FRONT : Side.BACK)
+                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
+                        (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)))
+                .requiredField("sign side", Side.class, w -> w.isFrontText() ? Side.FRONT : Side.BACK
+                        , (w, side) -> w.setFrontText(side == Side.FRONT))
                 .constructor(values -> new WrapperPlayServerOpenSignEditor(
                         ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
                         values.get("sign side", Side.class) == Side.FRONT
@@ -91,7 +101,7 @@ public class PacketConstructorRegistry {
         return REGISTRY.values();
     }
 
-    public record PacketField<T>(String name, Class<T> expectedType, boolean isOptional, Function<PacketWrapper<?>, T> getter) {}
+    public record PacketField<T>(String name, Class<T> expectedType, boolean isOptional, Function<PacketWrapper<?>, T> getter, BiConsumer<PacketWrapper<?>, T> setter) {}
 
     public record PacketDefinition(List<PacketField<?>> fields, Function<PacketValues, PacketWrapper<?>> constructor) {
         public PacketField<?> getField(String name) {
@@ -112,14 +122,14 @@ public class PacketConstructorRegistry {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> PacketBuilder<W> requiredField(String name, Class<T> type, Function<W, T> getter) {
-            this.fields.add(new PacketField<>(name, type, false, (Function<PacketWrapper<?>, T>) getter));
+        public <T> PacketBuilder<W> requiredField(String name, Class<T> type, Function<W, T> getter, BiConsumer<W, T> setter) {
+            this.fields.add(new PacketField<>(name, type, false, (Function<PacketWrapper<?>, T>) getter, (BiConsumer<PacketWrapper<?>, T>) setter));
             return this;
         }
 
         @SuppressWarnings("unchecked")
-        public <T> PacketBuilder<W> optionalField(String name, Class<T> type, Function<W, T> getter) {
-            this.fields.add(new PacketField<>(name, type, true, (Function<PacketWrapper<?>, T>) getter));
+        public <T> PacketBuilder<W> optionalField(String name, Class<T> type, Function<W, T> getter, BiConsumer<W, T> setter) {
+            this.fields.add(new PacketField<>(name, type, true, (Function<PacketWrapper<?>, T>) getter, (BiConsumer<PacketWrapper<?>, T>) setter));
             return this;
         }
 
