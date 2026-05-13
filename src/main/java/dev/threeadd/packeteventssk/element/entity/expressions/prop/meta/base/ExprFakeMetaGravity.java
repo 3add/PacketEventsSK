@@ -17,7 +17,7 @@ public class ExprFakeMetaGravity extends EntityMetaPropertyExpression<EntityMeta
 
     public static void register(Registration reg) {
         reg.newPropertyExpression(ExprFakeMetaGravity.class, Boolean.class, "fake gravity [state]", "entitymeta")
-                .description("If a fake entity experiencing gravity. (If they are capable of falling)")
+                .description("If a fake entity is experiencing gravity. (If they are capable of falling)")
                 .examples("""
                         command flyingItem <itemtype>:
                             trigger:
