@@ -54,7 +54,7 @@ public class ExprFakeTeamColor extends SimplePropertyExpression<FakeTeam, Color>
         }
 
         for (FakeTeam team : teams) {
-            team.getScoreBoardInfo().setColor(NamedTextColor.nearestTo(TextColor.color(newColor.asARGB())));
+            team.consumeScoreBoardInfo(info -> info.setColor(NamedTextColor.nearestTo(TextColor.color(newColor.asARGB()))));
         }
     }
 
