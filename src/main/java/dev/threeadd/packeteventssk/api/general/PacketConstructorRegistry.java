@@ -95,6 +95,7 @@ public class PacketConstructorRegistry {
         // TODO: Populate more packets
     }
 
+    // wrapperClass is an essential argument for the lambda methods
     public static <W extends PacketWrapper<?>> PacketBuilder<W> builder(PacketTypeCommon type, Class<W> wrapperClass) {
         return new PacketBuilder<>(type);
     }
