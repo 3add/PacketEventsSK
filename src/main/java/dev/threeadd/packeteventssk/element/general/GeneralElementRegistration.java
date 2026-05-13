@@ -1,6 +1,7 @@
 package dev.threeadd.packeteventssk.element.general;
 
 import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
 import dev.threeadd.packeteventssk.element.general.effect.EffSendOrReceivePacket;
@@ -10,7 +11,6 @@ import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprEntityId
 import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprPacketField;
 import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprPlayerSkin;
 import dev.threeadd.packeteventssk.element.general.section.SecExprNewPacket;
-import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 
 public class GeneralElementRegistration implements SkriptElementRegistration {
 

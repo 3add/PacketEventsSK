@@ -1,6 +1,9 @@
 package dev.threeadd.packeteventssk.api.general;
 
-import com.github.retrooper.packetevents.event.*;
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import dev.threeadd.packeteventssk.PacketEventsSK;
@@ -17,7 +20,7 @@ public class PacketSendOrReceiveListener implements PacketListener {
     private static final Map<PacketTypeCommon, Set<ProcessType>> ACTIVE_LISTENERS = new ConcurrentHashMap<>();
 
     public static void registerListener(PacketTypeCommon type, ProcessType way) {
-        ACTIVE_LISTENERS.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(way);
+        ACTIVE_LISTENERS.computeIfAbsent(type, _ -> ConcurrentHashMap.newKeySet()).add(way);
     }
 
     @Override

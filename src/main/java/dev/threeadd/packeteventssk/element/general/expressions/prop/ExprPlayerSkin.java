@@ -3,10 +3,10 @@ package dev.threeadd.packeteventssk.element.general.expressions.prop;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
 
 public class ExprPlayerSkin extends SimplePropertyExpression<Player, Skin> {
 

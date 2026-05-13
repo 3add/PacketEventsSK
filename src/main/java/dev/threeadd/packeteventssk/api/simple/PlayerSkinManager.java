@@ -14,13 +14,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.*;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChangeGameState.Reason;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate.PlayerInfo;
 import com.google.common.hash.Hashing;
+import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.entity.SkinManager;
+import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import dev.threeadd.packeteventssk.api.entity.Skin;
-import dev.threeadd.packeteventssk.api.entity.SkinManager;
-import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -38,8 +38,7 @@ public class PlayerSkinManager {
         if (skin.equals(SkinManager.getPlayer(Bukkit.getPlayer(targetId)))) {
             // no need to save if it's the default skin
             globalSkinMap.remove(targetId);
-        }
-        else {
+        } else {
             globalSkinMap.put(targetId, skin);
         }
 
@@ -112,7 +111,7 @@ public class PlayerSkinManager {
 
         List<TextureProperty> properties;
         Skin customSkin = getSkinForViewer(targetId, viewerId);
-        if (customSkin !=  null) {
+        if (customSkin != null) {
             properties = customSkin.properties();
         } else {
             properties = targetUser.getProfile().getTextureProperties();

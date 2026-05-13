@@ -6,10 +6,10 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.OptionData;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.ScoreBoardTeamInfo;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams.TeamMode;
+import dev.threeadd.packeteventssk.api.general.UserManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import oshi.annotation.concurrent.Immutable;
-import dev.threeadd.packeteventssk.api.general.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

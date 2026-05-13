@@ -74,7 +74,8 @@ public class ExprFakeMetaFrozenTime extends EntityMetaPropertyExpression<EntityM
         switch (mode) {
             case SET -> meta.setTicksFrozenInPowderedSnow(ticks);
             case ADD -> meta.setTicksFrozenInPowderedSnow((short) (meta.getTicksFrozenInPowderedSnow() + ticks));
-            case REMOVE -> meta.setTicksFrozenInPowderedSnow((short) Math.max(0, meta.getTicksFrozenInPowderedSnow() - ticks));
+            case REMOVE ->
+                    meta.setTicksFrozenInPowderedSnow((short) Math.max(0, meta.getTicksFrozenInPowderedSnow() - ticks));
         }
     }
 

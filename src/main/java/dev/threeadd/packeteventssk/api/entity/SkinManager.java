@@ -37,7 +37,7 @@ public class SkinManager {
         Skin skin = skinCache.getIfPresent(playerName);
         if (skin != null) return skin;
 
-        UUID uuid =  MojangAPIUtil.requestPlayerUUID(playerName);
+        UUID uuid = MojangAPIUtil.requestPlayerUUID(playerName);
         List<TextureProperty> properties = MojangAPIUtil.requestPlayerTextureProperties(uuid);
 
         skin = new Skin(properties);

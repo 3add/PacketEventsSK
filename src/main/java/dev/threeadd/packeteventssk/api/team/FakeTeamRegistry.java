@@ -1,11 +1,13 @@
 package dev.threeadd.packeteventssk.api.team;
 
-import org.jetbrains.annotations.Nullable;
 import dev.threeadd.packeteventssk.api.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
 public class FakeTeamRegistry extends Registry<FakeTeam> {
     public final static FakeTeamRegistry INSTANCE = new FakeTeamRegistry();
-    private FakeTeamRegistry() {}
+
+    private FakeTeamRegistry() {
+    }
 
     public @Nullable FakeTeam getByName(String name) {
         return getRegisteredItems().stream()

@@ -1,11 +1,11 @@
 package dev.threeadd.packeteventssk.config;
 
+import dev.threeadd.packeteventssk.PacketEventsSK;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.threeadd.packeteventssk.PacketEventsSK;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,8 @@ public class Config {
             InputStreamReader is = new InputStreamReader(stream);
             YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(is);
             ConfigurationSection mainSection = newConfig.getConfigurationSection("");
-            if (mainSection == null) throw new IllegalStateException("Couldn't find main section in " + configFile.getName());
+            if (mainSection == null)
+                throw new IllegalStateException("Couldn't find main section in " + configFile.getName());
 
             for (String key : mainSection.getKeys(true)) {
                 if (!config.contains(key)) {

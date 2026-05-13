@@ -1,10 +1,10 @@
 package dev.threeadd.packeteventssk.element.simple;
 
 import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.element.simple.effects.EffDisplayedSkin;
 import dev.threeadd.packeteventssk.element.simple.effects.EffGlow;
 import dev.threeadd.packeteventssk.element.simple.expression.ExprGlowReceivers;
-import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 
 public class SimpleElementRegistration implements SkriptElementRegistration {
 

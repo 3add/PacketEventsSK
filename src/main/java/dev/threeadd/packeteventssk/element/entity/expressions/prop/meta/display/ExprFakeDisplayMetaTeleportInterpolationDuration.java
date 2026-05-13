@@ -85,8 +85,10 @@ public class ExprFakeDisplayMetaTeleportInterpolationDuration extends EntityMeta
 
         switch (mode) {
             case SET -> meta.setPositionRotationInterpolationDuration(ticks);
-            case ADD -> meta.setPositionRotationInterpolationDuration((short) (meta.getPositionRotationInterpolationDuration() + ticks));
-            case REMOVE -> meta.setPositionRotationInterpolationDuration((short) Math.max(0, meta.getPositionRotationInterpolationDuration() - ticks));
+            case ADD ->
+                    meta.setPositionRotationInterpolationDuration((short) (meta.getPositionRotationInterpolationDuration() + ticks));
+            case REMOVE ->
+                    meta.setPositionRotationInterpolationDuration((short) Math.max(0, meta.getPositionRotationInterpolationDuration() - ticks));
         }
     }
 

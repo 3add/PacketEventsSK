@@ -3,7 +3,10 @@ package dev.threeadd.packeteventssk.element.team.sections;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.config.SectionNode;
-import ch.njol.skript.lang.*;
+import ch.njol.skript.lang.EffectSection;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.team.FakeTeam;
@@ -21,9 +24,9 @@ public class EffSecCreateFakeTeam extends EffectSection {
         reg.newSection(EffSecCreateFakeTeam.class, "(make|create) [a] [new] fake[ ]team (with name|named) %string% [for %-players%] [and store (it|the result) in %-objects%]")
                 .name("Fake Team - Create Fake Team")
                 .description("""
-                       Create a new fake team with a name
-                       This creates its own internal event, which means previous event-values will not work.
-                       """)
+                        Create a new fake team with a name
+                        This creates its own internal event, which means previous event-values will not work.
+                        """)
                 .examples("""
                         command glowGreen:
                             trigger:

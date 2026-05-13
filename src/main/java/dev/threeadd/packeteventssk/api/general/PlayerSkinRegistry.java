@@ -2,14 +2,14 @@ package dev.threeadd.packeteventssk.api.general;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.player.User;
+import dev.threeadd.packeteventssk.PacketEventsSK;
+import dev.threeadd.packeteventssk.api.entity.Skin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import dev.threeadd.packeteventssk.PacketEventsSK;
-import dev.threeadd.packeteventssk.api.entity.Skin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class PlayerSkinRegistry implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event)  {
+    public void onQuit(PlayerQuitEvent event) {
         skins.remove(event.getPlayer().getUniqueId());
     }
 

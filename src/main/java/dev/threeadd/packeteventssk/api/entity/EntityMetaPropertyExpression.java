@@ -14,6 +14,7 @@ public abstract class EntityMetaPropertyExpression<Meta extends EntityMeta, Prop
 
     /**
      * The metaclass of type {@link Meta}
+     *
      * @return The metaclass
      */
     protected abstract Class<Meta> getMetaClass();
@@ -25,6 +26,7 @@ public abstract class EntityMetaPropertyExpression<Meta extends EntityMeta, Prop
 
     /**
      * Override to specify a name for this prop (used in {@link EntityMetaPropertyExpression#toString()})
+     *
      * @return The specified name for this prop
      */
     protected abstract String getPropertyName();

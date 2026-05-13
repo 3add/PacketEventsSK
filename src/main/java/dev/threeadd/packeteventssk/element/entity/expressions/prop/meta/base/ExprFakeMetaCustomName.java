@@ -24,7 +24,7 @@ public class ExprFakeMetaCustomName extends EntityMetaPropertyExpression<EntityM
                         command spawnRichCow <text>:
                             trigger:
                                 set {_name} to arg-1
-                
+                        
                                 spawn new fake cow at player for player:
                                     set fake custom name of the fake entity to {_name}
                                     set fake custom name visible state of the fake entity to true

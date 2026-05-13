@@ -20,8 +20,9 @@ public class EntityTracker implements PacketListener {
 
     /**
      * Get the type of entity as viewed by a specific player. This method first checks the cache for the given player and entity id, and if not found, falls back to the global frequency-based method.
+     *
      * @param playerUuid The player uuid of the player viewing the owning entity
-     * @param entityId The entity id of the owning entity
+     * @param entityId   The entity id of the owning entity
      * @return The type of the entity viewed by the player
      */
     public static EntityType getType(UUID playerUuid, int entityId) {
@@ -41,6 +42,7 @@ public class EntityTracker implements PacketListener {
      * This is a best-effort method to determine the entity type when no specific player context is available,
      * but it may be inaccurate if multiple entity types with the same id are viewed by different players.
      * Use {@link EntityTracker#getType(UUID, int)} when possible for more accurate results.
+     *
      * @param entityId The entity id of the owning entity
      * @return The most frequently seen type for this entity id, or {@link EntityTypes#ENTITY} if no clients are viewing it or if there is a tie in frequencies.
      */

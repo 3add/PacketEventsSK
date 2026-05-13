@@ -76,9 +76,7 @@ public class ExprFakeTeamReceivers extends PropertyExpression<FakeTeam, Player> 
 
         if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.REMOVE_ALL) {
             newPlayers = new Player[0];
-        }
-
-        else {
+        } else {
             if (delta == null || delta.length != 1 || !(delta[0] instanceof Player[])) {
                 throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
             }

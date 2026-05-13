@@ -1,6 +1,7 @@
 package dev.threeadd.packeteventssk.element.entity;
 
 import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.element.entity.effect.EffKillFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.effect.EffRideFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.effect.EffSpawnFakeEntity;
@@ -10,6 +11,7 @@ import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityEven
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityFromId;
 import dev.threeadd.packeteventssk.element.entity.expressions.ExprFakeEntityFromUuid;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.*;
+import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.ExprFakeLivingEntityAttribute;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.base.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.*;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.block.ExprFakeBlockDisplayMetaBlock;
@@ -18,12 +20,10 @@ import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.text.ExprFakeTextDisplayMetaText;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.display.text.ExprFakeTextDisplayMetaTextShadowed;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.interaction.ExprFakeInterationMetaHeightOrWidth;
-import dev.threeadd.packeteventssk.element.entity.expressions.prop.living.ExprFakeLivingEntityAttribute;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.item.ExprFakeItemMetaItem;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.meta.living.ExprFakeLivingEntityMetaHealth;
 import dev.threeadd.packeteventssk.element.entity.expressions.prop.player.ExprFakePlayerEntitySkin;
 import dev.threeadd.packeteventssk.element.entity.sections.EffSecCreateFakeEntity;
-import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 
 public class EntityElementRegistration implements SkriptElementRegistration {
 

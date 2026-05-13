@@ -108,7 +108,9 @@ public class PacketConstructorRegistry {
         return REGISTRY.values();
     }
 
-    public record PacketField<T>(String name, Class<T> expectedType, boolean isOptional, Function<PacketWrapper<?>, T> getter, BiConsumer<PacketWrapper<?>, T> setter) {}
+    public record PacketField<T>(String name, Class<T> expectedType, boolean isOptional,
+                                 Function<PacketWrapper<?>, T> getter, BiConsumer<PacketWrapper<?>, T> setter) {
+    }
 
     public record PacketDefinition(List<PacketField<?>> fields, Function<PacketValues, PacketWrapper<?>> constructor) {
         public PacketField<?> getField(String name) {

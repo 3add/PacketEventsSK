@@ -21,7 +21,7 @@ public class ExprFakeEntitiesAll extends SimpleExpression<WrapperEntity> {
                                 trigger:
                                     create a new fake zombie entity at player for players:
                                         set fake scale attribute of the fake entity to 2
-
+                        
                             command listfakes:
                                 trigger:
                                     send "All fake entities: %all fake entities%"

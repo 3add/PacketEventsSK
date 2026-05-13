@@ -56,7 +56,9 @@ public class ExprFakePlayerEntitySkin extends SimplePropertyExpression<WrapperEn
 
     @Override
     public void change(Event event, Object @Nullable [] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || !(delta[0] instanceof Skin(List<TextureProperty> properties))) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || !(delta[0] instanceof Skin(
+                List<TextureProperty> properties
+        ))) return;
 
         WrapperEntity[] entities = getExpr().getAll(event);
         if (entities == null) return;

@@ -35,9 +35,9 @@ public class EffSecCreateFakeEntity extends EffectSection {
         reg.newSection(EffSecCreateFakeEntity.class, "(make|create|spawn) [a] [new] fake %entitytype% [entity] [%-direction% %-location%] [for %-players%] [and store (it|the result) in %-objects%]")
                 .name("Fake Entity - Create Fake Entity")
                 .description("""
-                       Create a new fake entity from an entity type.
-                       This creates its own internal event, which means previous event-values will not work.
-                       """)
+                        Create a new fake entity from an entity type.
+                        This creates its own internal event, which means previous event-values will not work.
+                        """)
                 .examples("""
                         command test:
                             trigger:

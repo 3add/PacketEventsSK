@@ -42,7 +42,7 @@ public class ExprFakeMetaAirTime extends EntityMetaPropertyExpression<EntityMeta
 
     @Override
     protected Timespan @Nullable [] getMetaProp(Event event, EntityMeta meta) {
-        return new Timespan[]{ new Timespan(Timespan.TimePeriod.TICK, meta.getAirTicks()) };
+        return new Timespan[]{new Timespan(Timespan.TimePeriod.TICK, meta.getAirTicks())};
     }
 
     @Override

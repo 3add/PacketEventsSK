@@ -2,10 +2,10 @@ package dev.threeadd.packeteventssk.element.entity.expressions.prop;
 
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 
 public class ExprFakeEntityLocation extends SimplePropertyExpression<WrapperEntity, Vector> {
 
