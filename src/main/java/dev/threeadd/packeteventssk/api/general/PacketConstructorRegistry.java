@@ -150,7 +150,7 @@ public class PacketConstructorRegistry {
                 throw new IllegalStateException("Cannot build packet definition for '" + type.getName() + "' because no constructor was provided.");
             }
 
-            REGISTRY.put(this.type, new PacketDefinition(this.fields, (Function) this.packetConstructor));
+            REGISTRY.put(this.type, new PacketDefinition(Collections.unmodifiableList(this.fields), (Function) this.packetConstructor));
         }
     }
 
