@@ -6,7 +6,6 @@ import dev.threeadd.packeteventssk.config.Configurable;
 import dev.threeadd.packeteventssk.element.entity.EntityElementRegistration;
 import dev.threeadd.packeteventssk.element.general.GeneralElementRegistration;
 import dev.threeadd.packeteventssk.element.simple.SimpleElementRegistration;
-import dev.threeadd.packeteventssk.element.team.TeamElementRegistration;
 
 public class SkriptElementRegistry extends Registry<SkriptElementRegistration> {
 
@@ -26,10 +25,6 @@ public class SkriptElementRegistry extends Registry<SkriptElementRegistration> {
 
         if (config.getConfigValue(Configurable.ELEMENTS_ENTITY)) {
             register(new EntityElementRegistration());
-        }
-
-        if (config.getConfigValue(Configurable.ELEMENTS_TEAM)) {
-            register(new TeamElementRegistration());
         }
     }
 }

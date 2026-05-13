@@ -100,16 +100,16 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
                 continue;
             }
 
-            if (expr instanceof UnparsedLiteral literal) {
-                expr = literal.getConvertedExpression(expectedType);
-                if (expr == null) {
-                    Skript.error("The value for '" + key + "' must be of type " + expectedType.getSimpleName() + ".");
-                    hasTypeError = true;
-                    continue;
-                }
+            Class<?> baseType = expectedType.isArray() ? expectedType.getComponentType() : expectedType;
+            Expression<?> converted = expr.getConvertedExpression(baseType);
+
+            if (converted == null) {
+                Skript.error("The value for '" + key + "' must be of type " + expectedType.getSimpleName() + ".");
+                hasTypeError = true;
+                continue;
             }
 
-            this.fieldExpressions.put(key, expr);
+            this.fieldExpressions.put(key, converted);
         }
 
         if (!missingKeys.isEmpty()) {
@@ -138,7 +138,13 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
                 continue;
             }
 
-            Object value = expr.getSingle(event);
+            Object value;
+            if (field.expectedType().isArray() || !expr.isSingle()) {
+                Object[] array = expr.getArray(event);
+                value = (array == null || array.length == 0) ? null : array;
+            } else {
+                value = expr.getSingle(event);
+            }
 
             if (value == null) {
                 if (!field.isOptional()) {

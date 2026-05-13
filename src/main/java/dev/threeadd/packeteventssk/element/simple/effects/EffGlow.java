@@ -25,7 +25,6 @@ public class EffGlow extends Effect {
                 .description("""
                         Set the glow state of an entity for a set of viewers.
                         Internally everything is handled by the addon. (fully packet based)
-                        To change the color of the glowing you can look into team packets.
                         """)
                 .examples("""
                         command glowMeForMe:

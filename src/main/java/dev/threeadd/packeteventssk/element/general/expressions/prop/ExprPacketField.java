@@ -106,7 +106,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
-            return new Class[]{Object.class};
+            return new Class[]{Object[].class};
         }
         return null;
     }
@@ -115,9 +115,6 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
         if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
-
-        Object newValue = delta[0];
-        if (newValue == null) return;
 
         for (PacketWrapper<?> wrapper : getExpr().getArray(event)) {
             if (wrapper == null) continue;
@@ -131,8 +128,22 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             if (targetField == null || targetField.setter() == null) continue;
 
-            if (!targetField.expectedType().isInstance(newValue)) {
-                Skript.warning("Cannot set the packet field '" + this.fieldName + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + targetField.expectedType().getSimpleName());
+            Object newValue;
+            if (delta.length == 1) {
+                newValue = delta[0];
+            } else {
+                newValue = delta; // array
+            }
+
+            Class<?> expected = targetField.expectedType();
+            boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
+
+            if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
+                isCompatible = true;
+            }
+
+            if (!isCompatible) {
+                Skript.warning("Cannot set the packet field '" + this.fieldName + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 

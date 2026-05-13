@@ -21,9 +21,10 @@ public class EffSendOrReceivePacket extends Effect {
                 .examples("""
                         command killTargetForMe:
                             trigger:
-                                create a new destroy entities send packet:
-                                    add target entity of player to packet entities of the packet
-                                    silently send packet the packet to the player
+                                set {_packet} to a new clientbound destroy entities packet:
+                                    entity ids: protocol id of target entity
+                        
+                                silently send packet {_packet} to the player
                         """)
                 .since("1.0.0")
                 .register();

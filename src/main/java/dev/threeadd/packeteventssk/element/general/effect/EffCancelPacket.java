@@ -24,7 +24,7 @@ public class EffCancelPacket extends Effect {
                         This just means that the packet won't be processed/sent.
                         """)
                 .examples("""
-                        on chunk data send netty processed:
+                        on clientbound chunk data netty processed:
                             if player's name isn't "3add":
                                 stop
                             cancel the packet

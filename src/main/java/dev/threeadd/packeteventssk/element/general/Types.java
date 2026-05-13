@@ -33,11 +33,8 @@ public class Types {
                 .name("General - Packet")
                 .description("A packet sent by the client or server")
                 .examples("""
-                        on interact entity receive netty processed:
-                           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-                              stop
-                        
-                           send "Welcome %player's name%"
+                        on serverbound interact entity packet netty processed:
+                            cancel packet
                         """)
                 .since("1.0.0")
                 .parser(new Parser<PacketWrapper<?>>() {
@@ -63,13 +60,7 @@ public class Types {
                 .user("packet ?type")
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
-                .examples("""
-                        on interact entity receive netty processed:
-                           if packet entity id of event-packet is not {-interactables::%player's uuid%}:
-                              stop
-                        
-                           send "Welcome %player's name%"
-                        """)
+                // TODO example
                 .since("1.0.0")
                 .supplier(() -> {
                     List<PacketTypeCommon> all = new ArrayList<>();

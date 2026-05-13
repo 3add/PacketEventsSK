@@ -92,6 +92,15 @@ public class PacketConstructorRegistry {
                 .constructor(_ -> new WrapperPlayServerCloseWindow())
                 .build();
 
+        builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)
+                .requiredField("entity ids", Number[].class,
+                        w -> Arrays.stream(w.getEntityIds()).boxed().toArray(Number[]::new),
+                        (w, ids) -> w.setEntityIds(Arrays.stream(ids).mapToInt(Number::intValue).toArray()))
+                .constructor(values -> new WrapperPlayServerDestroyEntities(
+                        Arrays.stream(values.get("entity ids", Number[].class)).mapToInt(Number::intValue).toArray()
+                ))
+                .build();
+
         // TODO: Populate more packets
     }
 
