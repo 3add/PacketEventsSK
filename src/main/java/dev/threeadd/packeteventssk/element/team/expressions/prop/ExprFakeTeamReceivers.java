@@ -82,7 +82,7 @@ public class ExprFakeTeamReceivers extends PropertyExpression<FakeTeam, Player> 
             if (delta == null || delta.length != 1 || !(delta[0] instanceof Player[])) {
                 throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
             }
-            
+
             newPlayers = (Player[]) delta[0];
         }
 
