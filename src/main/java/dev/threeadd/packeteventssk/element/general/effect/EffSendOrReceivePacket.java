@@ -1,68 +1,62 @@
 package dev.threeadd.packeteventssk.element.general.effect;
 
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Effect;
+import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.shanebeee.skr.Registration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.registration.SyntaxInfo;
-import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.util.effect.CustomEffect;
 
-import java.util.List;
+public class EffSendOrReceivePacket extends Effect {
 
-@SuppressWarnings("unused")
-@Name("General - Send/Receive Packet")
-@Description("Used to force the server to send or receive a packet [silently].")
-@Example("""
-        command killTargetForMe:
-            trigger:
-                create a new destroy entities send packet:
-                    add target entity of player to packet entities of the packet
-                    send packet the packet to the player
-        """)
-@Since("1.0.0")
-public class EffSendOrReceivePacket extends CustomEffect {
-
-    public static void register(SyntaxRegistry registry) {
-        registry.register(
-                SyntaxRegistry.EFFECT,
-                SyntaxInfo.builder(EffSendOrReceivePacket.class)
-                        .addPatterns(
-                                "[(:(silently|default))] (:(send|receive)) packet %packets% (to|from) %player%"
-                        )
-                        .build()
-        );
+    public static void register(Registration reg) {
+        reg.newEffect(EffSendOrReceivePacket.class, "[(:(silently|default))] (:(send|receive)) packet %packets% (to|from) %players%")
+                .name("General - Send/Receive Packet")
+                .description("Used to force the server to send or receive a packet, optionally silently. (silent means it won't trigger on packet send or receive)")
+                .examples("""
+                        command killTargetForMe:
+                            trigger:
+                                set {_packet} to a new clientbound destroy entities packet:
+                                    entity ids: protocol id of target entity
+                        
+                                silently send packet {_packet} to the player
+                        """)
+                .since("1.0.0")
+                .register();
     }
 
+    private Expression<PacketWrapper<?>> packetWrapperExpr;
+    private Expression<Player> playerExpr;
     private boolean isSilent = false;
     private boolean isSend = true;
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected boolean initialize(SkriptParser.ParseResult parseResult) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        this.packetWrapperExpr = (Expression<PacketWrapper<?>>) expressions[0];
+        this.playerExpr = (Expression<Player>) expressions[1];
 
-        if (parseResult.hasTag("receive"))
+        if (parseResult.hasTag("receive")) {
             isSend = false;
+        }
 
-        if (parseResult.hasTag("silently"))
+        if (parseResult.hasTag("silently")) {
             isSilent = true;
+        }
 
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void execute(Event event) {
-        List<PacketWrapper<?>> packets = getValuesOrNull(0, (Class<PacketWrapper<?>>) (Class<?>) PacketWrapper.class, event);
-        List<Player> targets = getValuesOrNull(1, Player.class, event);
-
-        if (packets == null || targets == null) return;
+        PacketWrapper<?>[] packets = packetWrapperExpr.getAll(event);
+        Player[] targets = playerExpr.getAll(event);
+        if (packets == null || packets.length == 0 || targets == null) return;
 
         for (Player target : targets) {
             User user = PacketEvents.getAPI().getPlayerManager().getUser(target);
@@ -80,8 +74,7 @@ public class EffSendOrReceivePacket extends CustomEffect {
             } else {
                 user.sendPacket(packet);
             }
-        } else
-        if (isSilent) {
+        } else if (isSilent) {
             user.receivePacketSilently(packet);
         } else {
             user.receivePacket(packet);
@@ -90,6 +83,11 @@ public class EffSendOrReceivePacket extends CustomEffect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return (isSend ? "send" : "receive") + " packets " + (isSilent ? "silently" : "not silently");
+        String silentPrefix = isSilent ? "silently " : "";
+        String action = isSend ? "send packet" : "receive packet";
+        String packetName = packetWrapperExpr.toString(event, debug);
+        String direction = isSend ? "to" : "from";
+        String targetPlayers = playerExpr.toString(event, debug);
+        return String.format("%s%s %s %s %s", silentPrefix, action, packetName, direction, targetPlayers);
     }
 }

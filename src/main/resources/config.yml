@@ -1,4 +1,4 @@
-# Welcome to PacketEventsSK v1.0.1
+# Welcome to PacketEventsSK v1.1.0
 
 # If you have any questions, please first refer to the wiki:
 # - https://github.com/3add/PacketEventsSK/wiki
@@ -18,7 +18,3 @@ elements:
   # Entity Elements are defined by using the EntityLib dependency,
   # they contain all "fake" entity building features
   entity: true
-
-  # Team Elements are defined by using the custom FakeTeam api,
-  # they contain all "fake" team building features
-  team: true

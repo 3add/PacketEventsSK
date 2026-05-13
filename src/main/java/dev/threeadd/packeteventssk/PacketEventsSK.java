@@ -2,6 +2,15 @@ package dev.threeadd.packeteventssk;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import dev.threeadd.packeteventssk.api.general.EntityTracker;
+import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveListener;
+import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
+import dev.threeadd.packeteventssk.api.general.UserManager;
+import dev.threeadd.packeteventssk.api.simple.ChatSessionListener;
+import dev.threeadd.packeteventssk.api.simple.GlowingEntityListener;
+import dev.threeadd.packeteventssk.api.simple.PlayerSkinListener;
+import dev.threeadd.packeteventssk.config.Config;
+import dev.threeadd.packeteventssk.config.Configurable;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
@@ -9,39 +18,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.threeadd.packeteventssk.config.Config;
-import dev.threeadd.packeteventssk.config.Configurable;
-import dev.threeadd.packeteventssk.element.general.api.PacketEventListener;
-import dev.threeadd.packeteventssk.element.simple.api.ChatSessionListener;
-import dev.threeadd.packeteventssk.element.simple.api.GlowingEntityListener;
-import dev.threeadd.packeteventssk.element.simple.api.PlayerSkinListener;
-import dev.threeadd.packeteventssk.util.UserManager;
-import dev.threeadd.packeteventssk.util.registry.PlayerSkinRegistry;
 
-@SuppressWarnings("unused")
 public final class PacketEventsSK extends JavaPlugin {
 
     private static final Logger log = LoggerFactory.getLogger(PacketEventsSK.class);
     private static PacketEventsSK instance;
-    private static Config config;
-    private static AddonLoader loader;
-
-    private long start;
+    private Config config;
+    private AddonLoader loader;
 
     @Override
     public void onLoad() {
-        start = System.currentTimeMillis();
-        log.info("Starting PacketEventsSK");
+        long start = System.nanoTime();
+        log.info("Loading PacketEventsSK");
 
-        PacketEventsSK.instance = this;
-        PacketEventsSK.config = new Config(this);
+        instance = this;
+        this.config = new Config(this);
 
         // PE listener
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketEventListener(), PacketListenerPriority.NORMAL);
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketSendOrReceiveListener(), PacketListenerPriority.NORMAL);
+        PacketEvents.getAPI().getEventManager().registerListener(new EntityTracker(), PacketListenerPriority.MONITOR);
 
-        if (getConfiguration().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {
+        if (getPluginConfig().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {
             PacketEvents.getAPI().getEventManager().registerListener(new GlowingEntityListener(), PacketListenerPriority.NORMAL);
-            PacketEvents.getAPI().getEventManager().registerListener(new ChatSessionListener(), PacketListenerPriority.NORMAL);
+            PacketEvents.getAPI().getEventManager().registerListener(new ChatSessionListener(), PacketListenerPriority.MONITOR);
             PacketEvents.getAPI().getEventManager().registerListener(new PlayerSkinListener(), PacketListenerPriority.NORMAL);
         }
 
@@ -53,23 +52,30 @@ public final class PacketEventsSK extends JavaPlugin {
                 .usePlatformLogger();
 
         EntityLib.init(platform, config);
+
+        long end = System.nanoTime();
+        log.info("Finished loading PacketEventsSK v{} in {}ms", getPluginMeta().getVersion(), (end - start) / 1_000_000F);
     }
 
     @Override
     public void onEnable() {
-        PacketEventsSK.loader = new AddonLoader();
-        if (!PacketEventsSK.loader.canLoad()) return;
+        long start = System.nanoTime();
+        log.info("Starting PacketEventsSK");
+
+        this.loader = new AddonLoader();
+        if (!this.loader.canLoad()) return;
 
         MetricsLoader.loadMetrics(this);
 
         // Exclusive to online-mode servers
-        if (Bukkit.getServerConfig().isProxyOnlineMode())
+        if (Bukkit.getServerConfig().isProxyOnlineMode()) {
             getServer().getPluginManager().registerEvents(new PlayerSkinRegistry(), this);
+        }
 
         getServer().getPluginManager().registerEvents(new UserManager(), this);
 
-        float secondsPassed = (float) (System.currentTimeMillis() - start) / 1000;
-        log.info("Finished startup of PacketEventsSK v{} in {}s", getPluginMeta().getVersion(), secondsPassed);
+        long end = System.nanoTime();
+        log.info("Starting up PacketEventsSK v{} in {}ms", getPluginMeta().getVersion(), (end - start) / 1_000_000F);
     }
 
     @Override
@@ -81,11 +87,11 @@ public final class PacketEventsSK extends JavaPlugin {
         return instance;
     }
 
-    public static Config getConfiguration() {
-        return config;
+    public Config getPluginConfig() {
+        return this.config;
     }
 
-    public static AddonLoader getLoader() {
-        return loader;
+    public AddonLoader getLoader() {
+        return this.loader;
     }
 }

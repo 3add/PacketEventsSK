@@ -1,26 +1,32 @@
 package dev.threeadd.packeteventssk;
 
 import ch.njol.skript.Skript;
+import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.general.SkBeePacketRegistrations;
+import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
+import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.skriptlang.skript.addon.SkriptAddon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.threeadd.packeteventssk.util.registry.element.ElementCollection;
-import dev.threeadd.packeteventssk.util.registry.element.ElementRegistry;
 
 public class AddonLoader {
 
     private static final Logger log = LoggerFactory.getLogger(AddonLoader.class);
 
-  private final Plugin skriptPlugin;
-    private SkriptAddon skriptAddon;
+    private final Plugin skriptPlugin;
+    private final Registration registration;
 
     protected AddonLoader() {
-      this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
+        this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
+        this.registration = new Registration("PacketEventsSK", false);
+    }
+
+    public Registration getRegistration() {
+        return registration;
     }
 
     protected boolean canLoad() {
@@ -28,8 +34,6 @@ public class AddonLoader {
             log.error("Skript plugin not found or is disabled, Skript elements cannot load,");
             return false;
         }
-
-        this.skriptAddon = Skript.instance().registerAddon(PacketEventsSK.class, "PacketEventsSK");
 
         if (!Skript.isAcceptRegistrations()) {
             log.error("Skript is no longer accepting registrations, PacketEventsSK can no longer load");
@@ -41,15 +45,29 @@ public class AddonLoader {
             return false;
         }
 
-        ElementRegistry.INSTANCE.register(PacketEventsSK.getConfiguration());
-        ElementRegistry.INSTANCE.getRegisteredItems().forEach(this::loadElement);
+        try {
+            Class<?> nbtApiClass = Class.forName("com.shanebeestudios.skbee.api.nbt.NBTApi");
+            boolean enabled = (boolean) nbtApiClass.getMethod("isEnabled").invoke(null);
+            if (enabled) {
+                log.info("Hooked into SkBee NBT using NBT-API");
+                SkBeePacketRegistrations.register();
+            }
+        } catch (ClassNotFoundException ignored) {
+            log.warn("SkBee not found, PacketEventsSK elements depending on NBT will not be registered");
+        } catch (Exception e) {
+            log.error("Failed to hook into SkBee NBT", e);
+        }
+
+        SkriptElementRegistry.INSTANCE.register(PacketEventsSK.getInstance().getPluginConfig());
+        SkriptElementRegistry.INSTANCE.getRegisteredItems().forEach(this::loadElement);
+        this.registration.finalizeRegistration();
 
         return true;
     }
 
-    private void loadElement(ElementCollection element) {
+    private void loadElement(SkriptElementRegistration element) {
         try {
-            skriptAddon.loadModules(element);
+            element.load(this.registration);
             logElementStatus(element.identifier(), true);
         } catch (Exception e) {
             logElementStatus(element.identifier(), false);
@@ -75,9 +93,5 @@ public class AddonLoader {
                 return true;
         }
         return false;
-    }
-
-    public SkriptAddon getAddon() {
-        return skriptAddon;
     }
 }

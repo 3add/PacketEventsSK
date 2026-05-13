@@ -6,7 +6,6 @@ import java.util.List;
 public class Configurable<T> {
     public static final Configurable<Boolean> ELEMENTS_ENTITY = register("elements.entity", Boolean.class);
     public static final Configurable<Boolean> ELEMENTS_SIMPLE = register("elements.simple", Boolean.class);
-    public static final Configurable<Boolean> ELEMENTS_TEAM = register("elements.team", Boolean.class);
 
     private static List<Configurable<?>> list;
 

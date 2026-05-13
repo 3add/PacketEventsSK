@@ -10,7 +10,7 @@ import org.bstats.charts.SimplePie;
 
 public class MetricsLoader {
 
-    // Heavily inspired by SkBee's implmenentation of metrics
+    // Heavily inspired by SkBee's implementation of metrics
     // https://github.com/ShaneBeee/SkBee/blob/master/src/main/java/com/shanebeestudios/skbee/SkBee.java#L97
     // as of 10/01/2026
     public static void loadMetrics(PacketEventsSK plugin) { // plugin id: 28798
@@ -21,7 +21,7 @@ public class MetricsLoader {
         // Many of these are copied from Skript -> SkriptMetrics.class
         metrics.addCustomChart(new DrilldownPie("plugin_version_drilldown_pie", () -> {
             Version version = new Version(plugin.getPluginMeta().getVersion());
-            Table<String, String, Integer> table = HashBasedTable.create(1,1);
+            Table<String, String, Integer> table = HashBasedTable.create(1, 1);
             table.put(
                     version.getMajor() + "." + version.getMinor(), // upper label
                     version.toString(), // lower label
@@ -31,7 +31,7 @@ public class MetricsLoader {
         }));
         metrics.addCustomChart(new DrilldownPie("skript_version_drilldown_pie", () -> {
             Version version = Skript.getVersion();
-            Table<String, String, Integer> table = HashBasedTable.create(1,1);
+            Table<String, String, Integer> table = HashBasedTable.create(1, 1);
             table.put(
                     version.getMajor() + "." + version.getMinor(), // upper label
                     version.toString(), // lower label
@@ -41,7 +41,7 @@ public class MetricsLoader {
         }));
         metrics.addCustomChart(new DrilldownPie("minecraft_version_drilldown_pie", () -> {
             Version version = Skript.getMinecraftVersion();
-            Table<String, String, Integer> table = HashBasedTable.create(1,1);
+            Table<String, String, Integer> table = HashBasedTable.create(1, 1);
 
             if (version.getMajor() == 1) {
                 // Minecraft 1.x.x versioning

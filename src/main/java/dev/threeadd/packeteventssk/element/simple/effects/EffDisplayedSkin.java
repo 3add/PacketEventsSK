@@ -1,78 +1,84 @@
 package dev.threeadd.packeteventssk.element.simple.effects;
 
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Effect;
+import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.util.Kleenean;
+import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.entity.Skin;
+import dev.threeadd.packeteventssk.api.simple.PlayerSkinManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.registration.SyntaxInfo;
-import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.entity.api.skin.Skin;
-import dev.threeadd.packeteventssk.element.simple.api.PlayerSkinManager;
-import dev.threeadd.packeteventssk.util.effect.CustomEffect;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
-@Name("Simple Skin - Player Displayed SKin")
-@Description("""
-        Set the displayed skin of a player for a set of viewers.
-        Internally everything is handled by the addon.
-        """)
-@Example("""
-        command skinMeNotchForMe:
-            trigger:
-                fetch skin of player named "notch" and store it in {_skin}
-                set displayed skin of player to {_skin} for player
-        """)
-@Since("1.0.0")
-public class EffDisplayedSkin extends CustomEffect {
+public class EffDisplayedSkin extends Effect {
 
-    public static void register(SyntaxRegistry registry) {
-        registry.register(
-                SyntaxRegistry.EFFECT,
-                SyntaxInfo.builder(EffDisplayedSkin.class)
-                        .addPatterns("set displayed skin of %players% to %skin% [for %-players%]")
-                        .build()
-        );
+    public static void register(Registration reg) {
+        reg.newEffect(EffDisplayedSkin.class, "set displayed skin of %players% to %skin% [for %-players%]")
+                .name("Simple Skin - Player Displayed Skin")
+                .description("""
+                        Set the displayed skin of a player for a set of viewers.
+                        Internally everything is handled by the addon (fully packet based).
+                        """)
+                .examples("""
+                        command skinMeNotchForMe:
+                            trigger:
+                                fetch skin of player named "notch" and store it in {_skin}
+                                set displayed skin of player to {_skin} for player
+                        """)
+                .since("1.0.0")
+                .register();
     }
 
+    private Expression<Player> targetExpr;
+    private Expression<Skin> skinExpr;
+    private @Nullable Expression<Player> viewersExpr;
+
+    @SuppressWarnings("unchecked")
     @Override
-    protected boolean initialize(SkriptParser.ParseResult parseResult) {
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        this.targetExpr = (Expression<Player>) expressions[0];
+        this.skinExpr = (Expression<Skin>) expressions[1];
+        this.viewersExpr = (Expression<Player>) expressions[2];
+
         return true;
     }
 
     @Override
     protected void execute(Event event) {
-        List<Player> targets = getValuesOrNull(0, Player.class, event);
-        Skin newSkin = getValueOrNull(1, Skin.class, event);
-        List<Player> viewers = getValuesOrNull(2, Player.class, event);
+        Player[] targets = targetExpr.getAll(event);
+        Skin newSkin = skinExpr.getSingle(event);
 
-        if (targets == null || newSkin == null) return;
+        if (targets == null || targets.length == 0 || newSkin == null) return;
 
-        if (viewers == null || viewers.isEmpty()) {
-            for (Player target : targets)
+        Player[] viewers = viewersExpr != null ? viewersExpr.getAll(event) : new Player[0];
+
+        if (viewers == null || viewers.length == 0) {
+            for (Player target : targets) {
                 PlayerSkinManager.setGlobalSkin(target.getUniqueId(), newSkin);
+            }
+            return;
+        }
 
-        } else {
-            Set<UUID> viewerUuids = viewers.stream()
-                    .map(Player::getUniqueId)
-                    .collect(Collectors.toSet());
+        Set<UUID> viewerUuids = Arrays.stream(viewers)
+                .map(Player::getUniqueId)
+                .collect(Collectors.toSet());
 
-            for (Player target : targets)
-                PlayerSkinManager.setSkinForViewers(target.getUniqueId(), viewerUuids, newSkin);
+        for (Player target : targets) {
+            PlayerSkinManager.setSkinForViewers(target.getUniqueId(), viewerUuids, newSkin);
         }
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "set displayed skin of players to skin for players";
+        String target = targetExpr.toString(event, debug);
+        String skin = skinExpr.toString(event, debug);
+        String viewersPart = viewersExpr != null ? " for " + viewersExpr.toString(event, debug) : "";
+        return String.format("set displayed skin of %s to %s%s", target, skin, viewersPart);
     }
 }
-

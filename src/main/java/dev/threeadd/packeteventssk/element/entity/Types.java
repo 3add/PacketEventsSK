@@ -1,17 +1,19 @@
 package dev.threeadd.packeteventssk.element.entity;
 
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
-import ch.njol.skript.registrations.Classes;
+import com.github.shanebeee.skr.Registration;
+import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.skriptlang.skript.lang.converter.Converters;
 
-@SuppressWarnings("unused")
+import java.util.Locale;
+
 public class Types {
 
-    public static void register() {
-        Classes.registerClass(new ClassInfo<>(WrapperEntity.class, "fakeentity")
-                .user("fake[ -]?entity")
+    public static void register(Registration reg) {
+        reg.newType(WrapperEntity.class, "fakeentity")
+                .user("fake ?entit(y|ies)")
                 .name("Fake Entity - Fake Entity")
                 .description("A fake entity viewable by at least 1 player")
                 .examples("""
@@ -29,14 +31,16 @@ public class Types {
 
                     @Override
                     public String toString(WrapperEntity entity, int flags) {
-                        return entity.getEntityType().getName().getKey() + " fake entity with id " + entity.getEntityId();
+                        return "fake " + entity.getEntityType().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                     }
 
                     @Override
                     public String toVariableNameString(WrapperEntity entity) {
-                        return "fakeentity:" + entity.hashCode();
+                        return "fakeentity:" + entity.getUuid().toString().toLowerCase(Locale.ENGLISH);
                     }
                 })
-        );
+                .register();
+
+        Converters.registerConverter(WrapperEntity.class, EntityMeta.class, WrapperEntity::getEntityMeta);
     }
 }
