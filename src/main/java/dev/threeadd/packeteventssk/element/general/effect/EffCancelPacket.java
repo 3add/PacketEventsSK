@@ -54,7 +54,7 @@ public class EffCancelPacket extends Effect {
 
     @Override
     protected void execute(Event event) {
-        if (event instanceof PacketSendOrReceiveEvent triggerEvent) {
+        if (event instanceof PacketSendOrReceiveEvent.NettyPacketEvent triggerEvent) {
             triggerEvent.setCancelled(true);
         }
     }

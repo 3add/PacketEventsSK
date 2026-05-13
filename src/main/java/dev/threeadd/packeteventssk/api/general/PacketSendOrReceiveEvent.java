@@ -7,11 +7,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jspecify.annotations.NonNull;
 
-public abstract class PacketSendOrReceiveEvent extends Event implements Cancellable {
+public abstract class PacketSendOrReceiveEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private final ProtocolPacketEvent event;
+    protected final ProtocolPacketEvent event;
     private final PacketWrapper<?> wrapper;
     private boolean modified = false;
 
@@ -38,16 +38,6 @@ public abstract class PacketSendOrReceiveEvent extends Event implements Cancella
     }
 
     @Override
-    public boolean isCancelled() {
-        return event.isCancelled();
-    }
-
-    @Override
-    public void setCancelled(boolean state) {
-        event.setCancelled(state);
-    }
-
-    @Override
     public @NonNull HandlerList getHandlers() {
         return HANDLERS;
     }
@@ -56,9 +46,19 @@ public abstract class PacketSendOrReceiveEvent extends Event implements Cancella
         return HANDLERS;
     }
 
-    public static class NettyPacketEvent extends PacketSendOrReceiveEvent {
+    public static class NettyPacketEvent extends PacketSendOrReceiveEvent implements Cancellable {
         public NettyPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper) {
             super(event, wrapper, true);
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return event.isCancelled();
+        }
+
+        @Override
+        public void setCancelled(boolean state) {
+            event.setCancelled(state);
         }
     }
 
