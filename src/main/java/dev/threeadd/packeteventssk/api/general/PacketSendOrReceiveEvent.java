@@ -13,7 +13,6 @@ public abstract class PacketSendOrReceiveEvent extends Event {
 
     protected final ProtocolPacketEvent event;
     private final PacketWrapper<?> wrapper;
-    private boolean modified = false;
 
     public PacketSendOrReceiveEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, boolean isAsync) {
         super(isAsync);
@@ -29,14 +28,6 @@ public abstract class PacketSendOrReceiveEvent extends Event {
         return wrapper;
     }
 
-    public void setModified(boolean modified) {
-        this.modified = modified;
-    }
-
-    public boolean isModified() {
-        return modified;
-    }
-
     @Override
     public @NonNull HandlerList getHandlers() {
         return HANDLERS;
@@ -47,6 +38,8 @@ public abstract class PacketSendOrReceiveEvent extends Event {
     }
 
     public static class NettyPacketEvent extends PacketSendOrReceiveEvent implements Cancellable {
+        private boolean modified = false;
+
         public NettyPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper) {
             super(event, wrapper, true);
         }
@@ -59,6 +52,14 @@ public abstract class PacketSendOrReceiveEvent extends Event {
         @Override
         public void setCancelled(boolean state) {
             event.setCancelled(state);
+        }
+
+        public void setModified(boolean modified) {
+            this.modified = modified;
+        }
+
+        public boolean isModified() {
+            return modified;
         }
     }
 

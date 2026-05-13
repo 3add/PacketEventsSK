@@ -12,6 +12,7 @@ import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketDefinition;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketField;
+import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -136,6 +137,10 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
 
             ((BiConsumer<PacketWrapper<?>, Object>) targetField.setter()).accept(wrapper, newValue);
+
+            if (event instanceof PacketSendOrReceiveEvent.NettyPacketEvent packetEvent) {
+                packetEvent.setModified(true);
+            }
         }
     }
 
