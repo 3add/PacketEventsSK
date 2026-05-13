@@ -58,13 +58,13 @@ public class ExprFakeTeamReceivers extends PropertyExpression<FakeTeam, Player> 
 
     @Override
     public Class<?> @Nullable [] acceptChange(Changer.ChangeMode mode) {
-        if (mode.equals(Changer.ChangeMode.ADD)
-                || mode.equals(Changer.ChangeMode.REMOVE)
-                || mode.equals(Changer.ChangeMode.SET)
-                || mode.equals(Changer.ChangeMode.RESET)
-                || mode == Changer.ChangeMode.REMOVE_ALL)
+        if (mode == Changer.ChangeMode.ADD
+                || mode == Changer.ChangeMode.REMOVE
+                || mode == Changer.ChangeMode.SET
+                || mode == Changer.ChangeMode.RESET
+                || mode == Changer.ChangeMode.REMOVE_ALL) {
             return CollectionUtils.array(Player[].class);
-
+        }
         return null;
     }
 
@@ -72,8 +72,18 @@ public class ExprFakeTeamReceivers extends PropertyExpression<FakeTeam, Player> 
     public void change(Event event, Object @Nullable [] delta, Changer.ChangeMode mode) {
         FakeTeam[] teams = getExpr().getAll(event);
 
-        if (delta == null || delta.length != 1 || !(delta[0] instanceof Player[] newPlayers)) {
-            throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
+        Player[] newPlayers;
+
+        if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.REMOVE_ALL) {
+            newPlayers = new Player[0];
+        }
+
+        else {
+            if (delta == null || delta.length != 1 || !(delta[0] instanceof Player[])) {
+                throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
+            }
+            
+            newPlayers = (Player[]) delta[0];
         }
 
         for (FakeTeam team : teams) {
