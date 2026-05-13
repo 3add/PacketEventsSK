@@ -1,5 +1,6 @@
 package dev.threeadd.packeteventssk.api.general;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.util.Vector3d;
@@ -50,7 +51,12 @@ public class PacketConstructorRegistry {
                 .requiredField("entity id", Number.class, WrapperPlayServerEntityMetadata::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()))
                 .requiredField("entity meta", EntityMeta.class, w -> {
-                    EntityMeta meta = new EntityMeta(w.getEntityId());
+                    EntityType type = EntityTracker.getType(w.getEntityId());
+                    if (type == null) {
+                        throw new IllegalStateException("Failed to find entity type of entity with id " + w.getEntityId());
+                    }
+
+                    EntityMeta meta = EntityMeta.createMeta(w.getEntityId(), type);
                     meta.getMetadata().setMetaFromPacket(w);
                     return meta;
                 }, WrapperPlayServerEntityMetadata::setEntityMetadata)
