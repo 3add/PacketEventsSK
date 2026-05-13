@@ -46,7 +46,7 @@ dependencies {
     implementation("com.github.ShaneBeee:SkriptRegistration:1.2.0")
 
     // EntityLib
-    implementation("io.github.tofaa2:spigot:3.0.3-SNAPSHOT")
+    implementation("io.github.tofaa2:spigot:3.2.3-SNAPSHOT")
 
     // bStats Metrics
     implementation("org.bstats:bstats-bukkit:3.2.1")

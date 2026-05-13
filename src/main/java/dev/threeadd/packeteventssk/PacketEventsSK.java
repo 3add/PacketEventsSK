@@ -38,7 +38,7 @@ public final class PacketEventsSK extends JavaPlugin {
 
         if (getPluginConfig().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {
             PacketEvents.getAPI().getEventManager().registerListener(new GlowingEntityListener(), PacketListenerPriority.NORMAL);
-            PacketEvents.getAPI().getEventManager().registerListener(new ChatSessionListener(), PacketListenerPriority.NORMAL);
+            PacketEvents.getAPI().getEventManager().registerListener(new ChatSessionListener(), PacketListenerPriority.MONITOR);
             PacketEvents.getAPI().getEventManager().registerListener(new PlayerSkinListener(), PacketListenerPriority.NORMAL);
         }
 
