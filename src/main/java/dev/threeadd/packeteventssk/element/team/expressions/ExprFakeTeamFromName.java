@@ -44,7 +44,10 @@ public class ExprFakeTeamFromName extends SimpleExpression<FakeTeam> {
         String name = this.nameExpr.getSingle(event);
         if (name == null) return null;
 
-        return new FakeTeam[]{FakeTeamRegistry.INSTANCE.getByName(name)};
+        FakeTeam team = FakeTeamRegistry.INSTANCE.getByName(name);
+        if (team == null) return null;
+
+        return new FakeTeam[]{team};
     }
 
     @Override
