@@ -50,7 +50,10 @@ public class ExprFakeEntityFromUuid extends SimpleExpression<WrapperEntity> {
         UUID uuid = this.uuidExpr.getSingle(event);
         if (uuid == null) return null;
 
-        return new WrapperEntity[]{EntityLib.getApi().getEntity(uuid)};
+        WrapperEntity entity = EntityLib.getApi().getEntity(uuid);
+        if (entity == null) return null;
+
+        return new WrapperEntity[]{entity};
     }
 
     @Override
