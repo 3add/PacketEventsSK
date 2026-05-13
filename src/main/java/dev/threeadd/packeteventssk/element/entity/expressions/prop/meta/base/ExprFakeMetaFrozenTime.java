@@ -60,18 +60,21 @@ public class ExprFakeMetaFrozenTime extends EntityMetaPropertyExpression<EntityM
 
     @Override
     protected void changeMeta(Event event, EntityMeta meta, Object @Nullable [] delta, Changer.ChangeMode mode) {
-        short ticks;
-        if (delta != null && delta.length == 1 && delta[0] instanceof Timespan timespan) {
-            ticks = (short) timespan.getAs(Timespan.TimePeriod.TICK);
-        } else {
+        if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.REMOVE_ALL) {
+            meta.setTicksFrozenInPowderedSnow((short) 0);
+            return;
+        }
+
+        if (delta == null || delta.length != 1 || !(delta[0] instanceof Timespan timespan)) {
             throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
         }
 
+        short ticks = (short) timespan.getAs(Timespan.TimePeriod.TICK);
+
         switch (mode) {
             case SET -> meta.setTicksFrozenInPowderedSnow(ticks);
-            case ADD -> meta.setTicksFrozenInPowderedSnow((short) (meta.getAirTicks() + ticks));
-            case REMOVE -> meta.setTicksFrozenInPowderedSnow((short) Math.max(0, meta.getAirTicks() - ticks));
-            case RESET, REMOVE_ALL -> meta.setTicksFrozenInPowderedSnow((short) 0);
+            case ADD -> meta.setTicksFrozenInPowderedSnow((short) (meta.getTicksFrozenInPowderedSnow() + ticks));
+            case REMOVE -> meta.setTicksFrozenInPowderedSnow((short) Math.max(0, meta.getTicksFrozenInPowderedSnow() - ticks));
         }
     }
 
