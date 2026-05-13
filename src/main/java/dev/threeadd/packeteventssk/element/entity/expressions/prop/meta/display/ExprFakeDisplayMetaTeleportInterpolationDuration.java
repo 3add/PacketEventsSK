@@ -72,18 +72,21 @@ public class ExprFakeDisplayMetaTeleportInterpolationDuration extends EntityMeta
 
     @Override
     protected void changeMeta(Event event, AbstractDisplayMeta meta, Object @Nullable [] delta, Changer.ChangeMode mode) {
-        short ticks;
-        if (delta != null && delta.length == 1 && delta[0] instanceof Timespan timespan) {
-            ticks = (short) timespan.getAs(Timespan.TimePeriod.TICK);
-        } else {
+        if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.REMOVE_ALL) {
+            meta.setPositionRotationInterpolationDuration((short) 0);
+            return;
+        }
+
+        if (delta == null || delta.length != 1 || !(delta[0] instanceof Timespan timespan)) {
             throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
         }
 
+        short ticks = (short) timespan.getAs(Timespan.TimePeriod.TICK);
+
         switch (mode) {
             case SET -> meta.setPositionRotationInterpolationDuration(ticks);
-            case ADD -> meta.setPositionRotationInterpolationDuration((short) (meta.getAirTicks() + ticks));
-            case REMOVE -> meta.setPositionRotationInterpolationDuration((short) Math.max(0, meta.getAirTicks() - ticks));
-            case RESET, REMOVE_ALL -> meta.setPositionRotationInterpolationDuration((short) 0);
+            case ADD -> meta.setPositionRotationInterpolationDuration((short) (meta.getPositionRotationInterpolationDuration() + ticks));
+            case REMOVE -> meta.setPositionRotationInterpolationDuration((short) Math.max(0, meta.getPositionRotationInterpolationDuration() - ticks));
         }
     }
 
