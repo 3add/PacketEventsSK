@@ -19,7 +19,7 @@ public class ExprFakeMetaInvisible extends EntityMetaPropertyExpression<EntityMe
     public static void register(Registration reg) {
         reg.newPropertyExpression(ExprFakeMetaInvisible.class, Boolean.class, "fake invisible [state]", "entitymeta")
                 .name("Fake Entity Property - Invisible State")
-                .description("If a fake entity is invisible. (If they are visible by other entities)")
+                .description("If a fake entity is not visible. (If they are visible by other entities)")
                 .examples("""
                         command dadify <integer>:
                             trigger:
