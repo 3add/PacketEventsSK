@@ -55,14 +55,16 @@ public class ExprFakeMetaCustomName extends EntityMetaPropertyExpression<EntityM
 
     @Override
     protected void changeMeta(Event event, EntityMeta meta, Object @Nullable [] delta, Changer.ChangeMode mode) {
+        if (mode == Changer.ChangeMode.RESET) {
+            meta.setCustomName(null);
+            return;
+        }
+
         if (delta == null || delta.length != 1 || !(delta[0] instanceof Component customName)) {
             throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
         }
 
-        switch (mode) {
-            case SET -> meta.setCustomName(customName);
-            case RESET -> meta.setCustomName(null);
-        }
+        meta.setCustomName(customName);
     }
 
     @Override
