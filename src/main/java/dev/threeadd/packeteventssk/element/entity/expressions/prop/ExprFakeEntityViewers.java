@@ -51,6 +51,7 @@ public class ExprFakeEntityViewers extends PropertyExpression<WrapperEntity, Pla
         return Arrays.stream(source)
                 .flatMap(entity -> entity.getViewers().stream())
                 .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
                 .toArray(Player[]::new);
     }
 
