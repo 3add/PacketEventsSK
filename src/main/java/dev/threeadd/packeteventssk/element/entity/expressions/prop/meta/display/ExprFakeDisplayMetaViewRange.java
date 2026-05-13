@@ -65,6 +65,11 @@ public class ExprFakeDisplayMetaViewRange extends EntityMetaPropertyExpression<A
 
     @Override
     protected void changeMeta(Event event, AbstractDisplayMeta meta, Object @Nullable [] delta, Changer.ChangeMode mode) {
+        if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.REMOVE_ALL) {
+            meta.setViewRange((short) 0);
+            return;
+        }
+
         if (delta == null || delta.length != 1 || !(delta[0] instanceof Number newValue)) {
             throw new IllegalStateException("Unexpected delta value " + (delta != null ? Arrays.toString(delta) : "none"));
         }
@@ -73,7 +78,6 @@ public class ExprFakeDisplayMetaViewRange extends EntityMetaPropertyExpression<A
             case SET -> meta.setViewRange(newValue.shortValue());
             case ADD -> meta.setViewRange((short) (meta.getViewRange() + newValue.shortValue()));
             case REMOVE -> meta.setViewRange((short) Math.max(0, meta.getViewRange() - newValue.shortValue()));
-            case RESET, REMOVE_ALL -> meta.setViewRange((short) 0);
         }
     }
 
