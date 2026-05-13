@@ -76,6 +76,6 @@ public class ExprFakeMetaFire extends EntityMetaPropertyExpression<EntityMeta, B
 
     @Override
     protected String getPropertyName() {
-        return "fake fire state of";
+        return "fake fire state";
     }
 }
