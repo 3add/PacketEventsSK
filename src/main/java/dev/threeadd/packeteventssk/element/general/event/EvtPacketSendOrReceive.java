@@ -5,6 +5,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.parser.ParserInstance;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
@@ -26,7 +27,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         PacketSendOrReceiveEvent.NettyPacketEvent.class,
                         PacketSendOrReceiveEvent.SyncPacketEvent.class,
                         PacketSendOrReceiveEvent.AsyncPacketEvent.class
-                }, "%packettype% [(:(sync|async|netty)) processed]")
+                }, "%packettype% [(:(sync|async|netty)) processed] [with priority (:(lowest|low|normal|high|highest|monitor))]")
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
@@ -45,8 +46,9 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                 .register();
     }
 
-    private ProcessType processType = ProcessType.NETTY;
     private PacketTypeCommon packetType;
+    private ProcessType processType = ProcessType.NETTY;
+    private PacketListenerPriority priority = PacketListenerPriority.NORMAL;
 
     @Override
     public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
@@ -57,13 +59,18 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
             return false;
         }
 
-        if (parseResult.hasTag("async") || parseResult.hasTag("sync") || parseResult.hasTag("netty")) {
-            this.processType = ProcessType.valueOf(parseResult.tags.getLast().toUpperCase(Locale.ENGLISH));
-        }
-
         this.packetType = packetType;
 
-        PacketSendOrReceiveListener.registerListener(packetType, this.processType);
+        for (String tag : parseResult.tags) {
+            switch (tag) {
+                case "sync", "async", "netty" ->
+                        this.processType = ProcessType.valueOf(tag.toUpperCase(Locale.ENGLISH));
+                case "lowest", "low", "normal", "high", "highest", "monitor" ->
+                        this.priority = PacketListenerPriority.valueOf(tag.toUpperCase(Locale.ENGLISH));
+            }
+        }
+
+        PacketSendOrReceiveListener.registerListener(packetType, this.processType, this.priority);
         return true;
     }
 
@@ -73,6 +80,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
         PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
         data.packetType = this.packetType;
         data.processType = this.processType;
+        data.priority = this.priority;
 
         return super.load();
     }
@@ -81,6 +89,10 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
     public boolean check(Event event) {
         if (event instanceof PacketSendOrReceiveEvent packetEvent) {
             if (packetEvent.getEvent().getPacketType() != this.packetType) {
+                return false;
+            }
+
+            if (packetEvent.getPriority() != this.priority) {
                 return false;
             }
 
@@ -98,14 +110,15 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
 
     @Override
     public boolean canExecuteAsynchronously() {
-        return true;
+        return processType == ProcessType.NETTY || processType == ProcessType.ASYNC;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String packetType = (this.packetType != null ? this.packetType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
         String processType = this.processType.name().toLowerCase(Locale.ENGLISH);
-        return String.format("on %s packet %s processed", packetType, processType);
+        String priorityName = this.priority.name().toLowerCase(Locale.ENGLISH);
+        return String.format("on %s packet %s processed with priority %s", packetType, processType, priorityName);
     }
 
     public enum ProcessType {
@@ -115,8 +128,10 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
     }
 
     public static class PacketSendOrReceiveParserData extends ParserInstance.Data {
-        private @Nullable EvtPacketSendOrReceive.ProcessType processType;
+
         private @Nullable PacketTypeCommon packetType;
+        private @Nullable EvtPacketSendOrReceive.ProcessType processType;
+        private @Nullable PacketListenerPriority priority;
 
         public PacketSendOrReceiveParserData(ParserInstance parserInstance) {
             super(parserInstance);
@@ -128,6 +143,10 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
 
         public @Nullable EvtPacketSendOrReceive.ProcessType getProcessType() {
             return processType;
+        }
+
+        public @Nullable PacketListenerPriority getPriority() {
+            return priority;
         }
     }
 }
