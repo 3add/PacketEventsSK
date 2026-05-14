@@ -60,6 +60,7 @@ public class EffSendOrReceivePacket extends Effect {
 
         for (Player target : targets) {
             User user = PacketEvents.getAPI().getPlayerManager().getUser(target);
+            if (user == null) continue;
 
             for (PacketWrapper<?> packet : packets) {
                 handlePacket(user, packet, isSend, isSilent);
