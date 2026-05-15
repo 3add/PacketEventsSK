@@ -114,7 +114,7 @@ public class PacketSendOrReceiveListener implements PacketListener {
             }
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodError |
                  NoSuchMethodException e) {
-            throw new IllegalStateException("Couldn't create packet for: " + type);
+            throw new IllegalStateException("Couldn't create packet for: " + type, e);
         }
 
         throw new IllegalStateException("Couldn't create packet for: " + type);
