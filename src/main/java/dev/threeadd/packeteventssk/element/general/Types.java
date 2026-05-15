@@ -19,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Types {
@@ -62,7 +60,7 @@ public class Types {
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
                 // TODO example
                 .since("1.0.0")
-                .supplier(PacketTypeRegistry::getAllPacketsIterator)
+                .supplier(() -> PacketTypeRegistry.getAllPackets().iterator())
                 .parser(new Parser<>() {
 
                     @Override

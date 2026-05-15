@@ -12,7 +12,7 @@ public class PacketTypeRegistry {
 
     private static final Map<String, PacketTypeCommon> SEND_PACKETS_BY_NAME = new ConcurrentHashMap<>();
     private static final Map<String, PacketTypeCommon> RECEIVE_PACKETS_BY_NAME = new ConcurrentHashMap<>();
-    private static final Iterator<PacketTypeCommon> PACKETS_ITERATOR;
+    private static final List<PacketTypeCommon> PACKETS;
 
     static {
         BiConsumer<Map<String, PacketTypeCommon>, PacketTypeCommon[]> populateMap = (map, types) -> {
@@ -36,11 +36,11 @@ public class PacketTypeRegistry {
         List<PacketTypeCommon> packets = new ArrayList<>();
         packets.addAll(SEND_PACKETS_BY_NAME.values());
         packets.addAll(RECEIVE_PACKETS_BY_NAME.values());
-        PACKETS_ITERATOR = packets.iterator();
+        PACKETS = List.copyOf(packets);
     }
 
-    public static Iterator<PacketTypeCommon> getAllPacketsIterator() {
-        return PACKETS_ITERATOR;
+    public static List<PacketTypeCommon> getAllPackets() {
+        return PACKETS;
     }
 
     public static @Nullable PacketTypeCommon getPacket(String rawName, boolean isSend) {
