@@ -11,6 +11,7 @@ import dev.threeadd.packeteventssk.api.simple.PlayerSkinListener;
 import dev.threeadd.packeteventssk.api.util.LogUtil;
 import dev.threeadd.packeteventssk.config.Config;
 import dev.threeadd.packeteventssk.config.Configurable;
+import dev.threeadd.packeteventssk.update.UpdateChecker;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
@@ -62,6 +63,8 @@ public final class PacketEventsSK extends JavaPlugin {
         if (!this.loader.canLoad()) return;
 
         MetricsLoader.loadMetrics(this);
+
+        UpdateChecker.enable();
 
         // Exclusive to online-mode servers
         if (Bukkit.getServerConfig().isProxyOnlineMode()) {
