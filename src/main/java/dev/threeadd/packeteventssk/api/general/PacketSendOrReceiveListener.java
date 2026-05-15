@@ -77,6 +77,7 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
         if (ways.contains(ProcessType.SYNC)) {
             Bukkit.getScheduler().runTask(PacketEventsSK.getInstance(), () -> {
+                event.markForReEncode(false);
                 PacketSendOrReceiveEvent.SyncPacketEvent syncEvent = new PacketSendOrReceiveEvent.SyncPacketEvent(event, wrapper, priority);
                 Bukkit.getPluginManager().callEvent(syncEvent);
             });
@@ -84,6 +85,7 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
         if (ways.contains(ProcessType.ASYNC)) {
             Bukkit.getScheduler().runTaskAsynchronously(PacketEventsSK.getInstance(), () -> {
+                event.markForReEncode(false);
                 PacketSendOrReceiveEvent.AsyncPacketEvent asyncEvent = new PacketSendOrReceiveEvent.AsyncPacketEvent(event, wrapper, priority);
                 Bukkit.getPluginManager().callEvent(asyncEvent);
             });
