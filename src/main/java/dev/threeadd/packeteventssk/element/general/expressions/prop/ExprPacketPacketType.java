@@ -12,7 +12,11 @@ public class ExprPacketPacketType extends SimplePropertyExpression<PacketWrapper
         reg.newPropertyExpression(ExprPacketPacketType.class, PacketTypeCommon.class, "packet[ ]type", "packet")
                 .name("General - Packet Type")
                 .description("The packet type of a packet")
-                // TODO example
+                .examples("""
+                        # can be used to see which packets get sent in certain circumstances
+                        on any packet:
+                            send packet type of event-packet to console
+                        """)
                 .since("1.1.1")
                 .register();
     }
