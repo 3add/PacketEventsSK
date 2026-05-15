@@ -48,7 +48,7 @@ public class EffCancelPacket extends Effect {
         if (way != ProcessType.NETTY) {
             Skript.error("Can't cancel packets in a " + (way == null ? "unknown" : way.toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
             return false;
-        } else if (data.getPriority() != PacketListenerPriority.MONITOR) {
+        } else if (data.getPriority() == PacketListenerPriority.MONITOR) {
             Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
             return false;
         }
