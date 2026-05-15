@@ -27,14 +27,14 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         PacketSendOrReceiveEvent.NettyPacketEvent.class,
                         PacketSendOrReceiveEvent.SyncPacketEvent.class,
                         PacketSendOrReceiveEvent.AsyncPacketEvent.class
-                }, "%packettype% [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
+                }, "([any] packet|%-packettype%) [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
                         on serverbound interact entity packet netty processed:
                             cancel packet
                         """)
-                .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)", "1.1.1 (added packet priority and fixed bugs)")
+                .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)", "1.1.1 (added packet priority, added listening to all packets and fixed bugs)")
                 .register();
 
         reg.newEventValue(PacketSendOrReceiveEvent.class, PacketWrapper.class)
@@ -46,20 +46,14 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                 .register();
     }
 
-    private PacketTypeCommon packetType;
+    private @Nullable PacketTypeCommon packetType;
     private ProcessType processType = ProcessType.NETTY;
     private PacketListenerPriority priority = null; // dynamic default
 
     @Override
     public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
-        PacketTypeCommon packetType = (PacketTypeCommon) args[0].getSingle();
+        this.packetType = (args.length > 0 && args[0] != null) ? (PacketTypeCommon) args[0].getSingle() : null;
 
-        if (packetType == null) {
-            Skript.error("Couldn't find that packet type");
-            return false;
-        }
-
-        this.packetType = packetType;
         for (String rawTag : parseResult.tags) {
             String tag = rawTag.trim().toLowerCase(Locale.ENGLISH);
             switch (tag) {
@@ -103,7 +97,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
     @Override
     public boolean check(Event event) {
         if (event instanceof PacketSendOrReceiveEvent packetEvent) {
-            if (packetEvent.getEvent().getPacketType() != this.packetType) {
+            if (this.packetType != null && packetEvent.getEvent().getPacketType() != this.packetType) {
                 return false;
             }
 
@@ -130,10 +124,10 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String packetType = (this.packetType != null ? this.packetType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
-        String processType = this.processType.name().toLowerCase(Locale.ENGLISH);
+        String packetTypeName = (this.packetType != null ? this.packetType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "any");
+        String processTypeName = this.processType.name().toLowerCase(Locale.ENGLISH);
         String priorityName = (this.priority != null ? this.priority.name().toLowerCase(Locale.ENGLISH) : "normal");
-        return String.format("on %s packet %s processed with priority %s", packetType, processType, priorityName);
+        return String.format("on %s packet %s processed with priority %s", packetTypeName, processTypeName, priorityName);
     }
 
     public enum ProcessType {

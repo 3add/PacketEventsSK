@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
+import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import dev.threeadd.packeteventssk.PacketEventsSK;
@@ -13,14 +14,20 @@ import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.
 import org.bukkit.Bukkit;
 import org.jspecify.annotations.NonNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PacketSendOrReceiveListener implements PacketListener {
 
+    // listener instances
     private static final Map<PacketListenerPriority, PacketSendOrReceiveListener> INSTANCES = new ConcurrentHashMap<>();
+    // listening to specific packets
     private static final Map<PacketListenerPriority, Map<PacketTypeCommon, Set<ProcessType>>> ACTIVE_LISTENERS = new ConcurrentHashMap<>();
+    // listening to all packets
+    private static final Map<PacketListenerPriority, Set<ProcessType>> GLOBAL_LISTENERS = new ConcurrentHashMap<>();
 
     private final PacketListenerPriority priority;
 
@@ -29,9 +36,13 @@ public class PacketSendOrReceiveListener implements PacketListener {
     }
 
     public static void registerListener(PacketTypeCommon type, ProcessType way, PacketListenerPriority priority) {
-        ACTIVE_LISTENERS.computeIfAbsent(priority, _ -> new ConcurrentHashMap<>())
-                .computeIfAbsent(type, _ -> ConcurrentHashMap.newKeySet())
-                .add(way);
+        if (type == null) {
+            GLOBAL_LISTENERS.computeIfAbsent(priority, _ -> ConcurrentHashMap.newKeySet()).add(way);
+        } else {
+            ACTIVE_LISTENERS.computeIfAbsent(priority, _ -> new ConcurrentHashMap<>())
+                    .computeIfAbsent(type, _ -> ConcurrentHashMap.newKeySet())
+                    .add(way);
+        }
 
         if (!INSTANCES.containsKey(priority)) {
             PacketSendOrReceiveListener listener = new PacketSendOrReceiveListener(priority);
@@ -55,16 +66,27 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
         event.markForReEncode(false); // false by default, only overridden in netty processed if modified
 
-        Map<PacketTypeCommon, Set<ProcessType>> listeners = ACTIVE_LISTENERS.get(priority);
-        if (listeners == null) return;
+        Set<ProcessType> waysToTrigger = EnumSet.noneOf(ProcessType.class);
 
-        Set<ProcessType> ways = listeners.get(type);
-        if (ways == null || ways.isEmpty()) return;
+        Map<PacketTypeCommon, Set<ProcessType>> specificListeners = ACTIVE_LISTENERS.get(priority);
+        if (specificListeners != null) {
+            Set<ProcessType> specificWays = specificListeners.get(type);
+            if (specificWays != null) {
+                waysToTrigger.addAll(specificWays);
+            }
+        }
 
-        PacketWrapper<?> wrapper = EventPacketMapper.getWrapper(type).apply(event);
+        Set<ProcessType> globalWays = GLOBAL_LISTENERS.get(priority);
+        if (globalWays != null) {
+            waysToTrigger.addAll(globalWays);
+        }
+
+        if (waysToTrigger.isEmpty()) return;
+
+        PacketWrapper<?> wrapper = getWrapper(type, event);
         if (wrapper == null) return;
 
-        if (ways.contains(ProcessType.NETTY)) {
+        if (waysToTrigger.contains(ProcessType.NETTY)) {
             PacketSendOrReceiveEvent.NettyPacketEvent nettyEvent = new PacketSendOrReceiveEvent.NettyPacketEvent(event, wrapper, priority);
             Bukkit.getPluginManager().callEvent(nettyEvent);
 
@@ -77,14 +99,31 @@ public class PacketSendOrReceiveListener implements PacketListener {
             }
         }
 
-        if (ways.contains(ProcessType.SYNC)) {
+        if (waysToTrigger.contains(ProcessType.SYNC)) {
             PacketSendOrReceiveEvent.SyncPacketEvent syncEvent = new PacketSendOrReceiveEvent.SyncPacketEvent(event, wrapper, priority);
             Bukkit.getScheduler().runTask(PacketEventsSK.getInstance(), () -> Bukkit.getPluginManager().callEvent(syncEvent));
         }
 
-        if (ways.contains(ProcessType.ASYNC)) {
+        if (waysToTrigger.contains(ProcessType.ASYNC)) {
             PacketSendOrReceiveEvent.AsyncPacketEvent asyncEvent = new PacketSendOrReceiveEvent.AsyncPacketEvent(event, wrapper, priority);
             Bukkit.getScheduler().runTaskAsynchronously(PacketEventsSK.getInstance(), () -> Bukkit.getPluginManager().callEvent(asyncEvent));
         }
+    }
+
+    private static PacketWrapper<?> getWrapper(PacketTypeCommon type, ProtocolPacketEvent event) {
+        Class<? extends PacketWrapper<?>> clazz = type.getWrapperClass();
+        if (clazz == null) return null; // only way this should return null
+
+        try {
+            if (event instanceof PacketSendEvent sendEvent && type.getSide().equals(PacketSide.SERVER)) {
+                return clazz.getConstructor(PacketSendEvent.class).newInstance(sendEvent);
+            } else if (event instanceof PacketReceiveEvent sendEvent && type.getSide().equals(PacketSide.CLIENT)) {
+                return clazz.getConstructor(PacketReceiveEvent.class).newInstance(sendEvent);
+            }
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodError | NoSuchMethodException e) {
+            throw new IllegalStateException("Couldn't create packet for: " + type);
+        }
+
+        throw new IllegalStateException("Couldn't create packet for: " + type);
     }
 }

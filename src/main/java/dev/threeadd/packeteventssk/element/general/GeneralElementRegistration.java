@@ -9,6 +9,7 @@ import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.expressions.ExprSkinFromValue;
 import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprEntityId;
 import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprPacketField;
+import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprPacketPacketType;
 import dev.threeadd.packeteventssk.element.general.expressions.prop.ExprPlayerSkin;
 import dev.threeadd.packeteventssk.element.general.section.SecExprNewPacket;
 
@@ -35,6 +36,7 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
         // start expressions
         ExprEntityId.register(reg);
         ExprPacketField.register(reg);
+        ExprPacketPacketType.register(reg);
         ExprPlayerSkin.register(reg);
 
         ExprSkinFromValue.register(reg);
