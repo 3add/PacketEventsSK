@@ -40,11 +40,11 @@ public class PacketSendOrReceiveListener implements PacketListener {
                     .add(way);
         }
 
-        if (!INSTANCES.containsKey(priority)) {
-            PacketSendOrReceiveListener listener = new PacketSendOrReceiveListener(priority);
-            INSTANCES.put(priority, listener);
-            PacketEvents.getAPI().getEventManager().registerListener(listener, priority);
-        }
+        INSTANCES.computeIfAbsent(priority, p -> {
+            PacketSendOrReceiveListener listener = new PacketSendOrReceiveListener(p);
+            PacketEvents.getAPI().getEventManager().registerListener(listener, p);
+            return listener;
+        });
     }
 
     @Override
