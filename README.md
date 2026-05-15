@@ -25,9 +25,10 @@ PacketEventsSK requires the following to run:
 
 Optionally install [SkBee](https://modrinth.com/plugin/skbee/versions) for the NBT Compound hook.
 > [!CAUTION]
-> PacketEventsSK officially supports only the latest stable:
-> - **Paper 26.1.2**
-> - **Skript 2.15.2**
+> PacketEventsSK attempts to support the latest versions of skript and minecraft:
+> - **Paper 1.21.10+**
+> - **Skript 2.15.0+**
+> - **SkBee 1.17.2+**
 >
 > There are many more versions that work, but you won't receive support for those.
 ## Features
