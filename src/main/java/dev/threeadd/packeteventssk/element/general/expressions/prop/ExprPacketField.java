@@ -47,14 +47,6 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
         if (data.getPacketType() != null) { // for the listening event
 
-            if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
-                Skript.error("Can't cancel packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
-                return false;
-            } else if (data.getPriority() != PacketListenerPriority.MONITOR) {
-                Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
-                return false;
-            }
-
             PacketTypeCommon eventPacketType = data.getPacketType();
             PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
 
@@ -117,6 +109,18 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
+            PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
+
+            if (data.getPacketType() != null) {
+                if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
+                    Skript.error("You can't alter packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
+                    return null;
+                } else if (data.getPriority() == PacketListenerPriority.MONITOR) { // Note: Swapped to == so it matches the error string
+                    Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
+                    return null;
+                }
+            }
+
             return new Class[]{Object[].class};
         }
         return null;
