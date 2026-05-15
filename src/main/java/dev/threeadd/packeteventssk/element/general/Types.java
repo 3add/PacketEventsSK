@@ -62,12 +62,7 @@ public class Types {
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
                 // TODO example
                 .since("1.0.0")
-                .supplier(() -> {
-                    List<PacketTypeCommon> all = new ArrayList<>();
-                    all.addAll(PacketTypeRegistry.getAllSendPackets());
-                    all.addAll(PacketTypeRegistry.getAllReceivePackets());
-                    return all.iterator();
-                })
+                .supplier(PacketTypeRegistry::getAllPacketsIterator)
                 .parser(new Parser<>() {
 
                     @Override
