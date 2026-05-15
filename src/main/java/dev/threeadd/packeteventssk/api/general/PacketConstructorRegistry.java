@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
@@ -101,7 +102,16 @@ public class PacketConstructorRegistry {
                 ))
                 .build();
 
-        // TODO: Populate more packets
+        builder(PacketType.Play.Client.SELECT_BUNDLE_ITEM, WrapperPlayClientSelectBundleItem.class)
+                .requiredField("slot id", Number.class, WrapperPlayClientSelectBundleItem::getSlotId,
+                        (w, id) -> w.setSlotId(id.intValue()))
+                .requiredField("selected item index", Number.class, WrapperPlayClientSelectBundleItem::getSelectedItemIndex,
+                        (w, index) -> w.setSelectedItemIndex(index.intValue()))
+                .constructor(values -> new WrapperPlayClientSelectBundleItem(
+                        values.get("slot id", Number.class).intValue(),
+                        values.get("selected item index", Number.class).intValue()
+                ))
+                .build();
     }
 
     // wrapperClass is an essential argument for the lambda methods
