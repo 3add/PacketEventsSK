@@ -45,8 +45,6 @@ public abstract class PacketSendOrReceiveEvent extends Event {
     }
 
     public static class NettyPacketEvent extends PacketSendOrReceiveEvent implements Cancellable {
-        private boolean modified = false;
-
         public NettyPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, PacketListenerPriority priority) {
             super(event, wrapper, priority, true);
         }
@@ -59,14 +57,6 @@ public abstract class PacketSendOrReceiveEvent extends Event {
         @Override
         public void setCancelled(boolean state) {
             event.setCancelled(state);
-        }
-
-        public void setModified(boolean modified) {
-            this.modified = modified;
-        }
-
-        public boolean isModified() {
-            return modified;
         }
     }
 

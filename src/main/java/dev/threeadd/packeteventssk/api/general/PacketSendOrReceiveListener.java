@@ -60,7 +60,7 @@ public class PacketSendOrReceiveListener implements PacketListener {
     private static void trigger(ProtocolPacketEvent event, PacketListenerPriority priority) {
         PacketTypeCommon type = event.getPacketType();
 
-        event.markForReEncode(false); // false by default, only overridden in netty processed if modified
+        event.markForReEncode(true); // re-encode all events
 
         Set<ProcessType> waysToTrigger = EnumSet.noneOf(ProcessType.class);
 
@@ -88,10 +88,6 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
             if (nettyEvent.isCancelled()) {
                 event.setCancelled(true);
-            }
-
-            if (nettyEvent.isModified()) {
-                event.markForReEncode(true);
             }
         }
 
