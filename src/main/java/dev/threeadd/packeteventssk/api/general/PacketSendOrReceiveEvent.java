@@ -1,5 +1,6 @@
 package dev.threeadd.packeteventssk.api.general;
 
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.bukkit.event.Cancellable;
@@ -13,11 +14,13 @@ public abstract class PacketSendOrReceiveEvent extends Event {
 
     protected final ProtocolPacketEvent event;
     private final PacketWrapper<?> wrapper;
+    private final PacketListenerPriority priority;
 
-    public PacketSendOrReceiveEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, boolean isAsync) {
+    public PacketSendOrReceiveEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, PacketListenerPriority priority, boolean isAsync) {
         super(isAsync);
         this.event = event;
         this.wrapper = wrapper;
+        this.priority = priority;
     }
 
     public ProtocolPacketEvent getEvent() {
@@ -26,6 +29,10 @@ public abstract class PacketSendOrReceiveEvent extends Event {
 
     public PacketWrapper<?> getWrapper() {
         return wrapper;
+    }
+
+    public PacketListenerPriority getPriority() {
+        return priority;
     }
 
     @Override
@@ -38,10 +45,8 @@ public abstract class PacketSendOrReceiveEvent extends Event {
     }
 
     public static class NettyPacketEvent extends PacketSendOrReceiveEvent implements Cancellable {
-        private boolean modified = false;
-
-        public NettyPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper) {
-            super(event, wrapper, true);
+        public NettyPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, PacketListenerPriority priority) {
+            super(event, wrapper, priority, true);
         }
 
         @Override
@@ -53,25 +58,17 @@ public abstract class PacketSendOrReceiveEvent extends Event {
         public void setCancelled(boolean state) {
             event.setCancelled(state);
         }
-
-        public void setModified(boolean modified) {
-            this.modified = modified;
-        }
-
-        public boolean isModified() {
-            return modified;
-        }
     }
 
     public static class SyncPacketEvent extends PacketSendOrReceiveEvent {
-        public SyncPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper) {
-            super(event, wrapper, false);
+        public SyncPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, PacketListenerPriority priority) {
+            super(event, wrapper, priority, false);
         }
     }
 
     public static class AsyncPacketEvent extends PacketSendOrReceiveEvent {
-        public AsyncPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper) {
-            super(event, wrapper, true);
+        public AsyncPacketEvent(ProtocolPacketEvent event, PacketWrapper<?> wrapper, PacketListenerPriority priority) {
+            super(event, wrapper, priority, true);
         }
     }
 }

@@ -3,7 +3,6 @@ package dev.threeadd.packeteventssk;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
-import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveListener;
 import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
 import dev.threeadd.packeteventssk.api.general.UserManager;
 import dev.threeadd.packeteventssk.api.simple.ChatSessionListener;
@@ -35,7 +34,6 @@ public final class PacketEventsSK extends JavaPlugin {
         this.config = new Config(this);
 
         // PE listener
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketSendOrReceiveListener(), PacketListenerPriority.NORMAL);
         PacketEvents.getAPI().getEventManager().registerListener(new EntityTracker(), PacketListenerPriority.MONITOR);
 
         if (getPluginConfig().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {

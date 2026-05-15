@@ -6,6 +6,7 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
@@ -13,6 +14,7 @@ import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketDefinition;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketField;
 import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +31,13 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
                 .description("Gets a field's value from a packet by its name.")
-                //TODO example
-                .since("1.1.0")
+                .examples("""
+                        on clientbound entity metadata netty processed:
+                            set {_meta} to field entity meta of event-packet
+                            set fake glowing state of {_meta} to true
+                            set field entity meta of event-packet to {_meta}
+                        """)
+                .since("1.1.0", "1.1.1 (fixed bugs)")
                 .register();
     }
 
@@ -43,8 +50,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
         PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
-        if (data.getPacketType() != null) { // for the listening event
+        if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) { // for the listening event
+
             PacketTypeCommon eventPacketType = data.getPacketType();
+            if (eventPacketType == null) return false; // shouldn't ever happen
+
             PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
 
             if (def == null) {
@@ -106,6 +116,18 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
+            PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
+
+            if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) {
+                if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
+                    Skript.error("You can't alter packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
+                    return null;
+                } else if (data.getPriority() == PacketListenerPriority.MONITOR) {
+                    Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
+                    return null;
+                }
+            }
+
             return new Class[]{Object[].class};
         }
         return null;
@@ -148,10 +170,6 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
 
             ((BiConsumer<PacketWrapper<?>, Object>) targetField.setter()).accept(wrapper, newValue);
-
-            if (event instanceof PacketSendOrReceiveEvent.NettyPacketEvent packetEvent) {
-                packetEvent.setModified(true);
-            }
         }
     }
 

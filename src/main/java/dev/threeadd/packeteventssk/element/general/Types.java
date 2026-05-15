@@ -19,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Types {
@@ -57,17 +55,12 @@ public class Types {
                 .register();
 
         reg.newType(PacketTypeCommon.class, "packettype")
-                .user("packet ?type")
+                .user("packet ?types?")
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
                 // TODO example
                 .since("1.0.0")
-                .supplier(() -> {
-                    List<PacketTypeCommon> all = new ArrayList<>();
-                    all.addAll(PacketTypeRegistry.getAllSendPackets());
-                    all.addAll(PacketTypeRegistry.getAllReceivePackets());
-                    return all.iterator();
-                })
+                .supplier(() -> PacketTypeRegistry.getAllPackets().iterator())
                 .parser(new Parser<>() {
 
                     @Override
@@ -138,7 +131,7 @@ public class Types {
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
-                .user("block ?entity ?type")
+                .user("block ?entity ?type?s")
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
                 // TODO example
@@ -170,7 +163,7 @@ public class Types {
         if (Classes.getExactClassInfo(Side.class) == null && Classes.getClassInfoNoError("signside") == null) {
             EnumWrapper<Side> SIGN_SIDE_ENUM = new EnumWrapper<>(Side.class);
             reg.newEnumType(Side.class, SIGN_SIDE_ENUM, "signside")
-                    .user("sign ?side")
+                    .user("sign ?sides?")
                     .name("General - Sign Side")
                     .description("Represents a side of a sign block (front or back)")
                     // TODO example
