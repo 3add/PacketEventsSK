@@ -57,7 +57,7 @@ public class Types {
                 .register();
 
         reg.newType(PacketTypeCommon.class, "packettype")
-                .user("packet ?type")
+                .user("packet ?types?")
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
                 // TODO example
@@ -138,7 +138,7 @@ public class Types {
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
-                .user("block ?entity ?type")
+                .user("block ?entity ?type?s")
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
                 // TODO example
@@ -170,7 +170,7 @@ public class Types {
         if (Classes.getExactClassInfo(Side.class) == null && Classes.getClassInfoNoError("signside") == null) {
             EnumWrapper<Side> SIGN_SIDE_ENUM = new EnumWrapper<>(Side.class);
             reg.newEnumType(Side.class, SIGN_SIDE_ENUM, "signside")
-                    .user("sign ?side")
+                    .user("sign ?sides?")
                     .name("General - Sign Side")
                     .description("Represents a side of a sign block (front or back)")
                     // TODO example
