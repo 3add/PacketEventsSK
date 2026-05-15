@@ -53,6 +53,8 @@ public class PacketSendOrReceiveListener implements PacketListener {
     private static void trigger(ProtocolPacketEvent event, PacketListenerPriority priority) {
         PacketTypeCommon type = event.getPacketType();
 
+        event.markForReEncode(false); // false by default, only overridden in netty processed if modified
+
         Map<PacketTypeCommon, Set<ProcessType>> listeners = ACTIVE_LISTENERS.get(priority);
         if (listeners == null) return;
 
@@ -76,19 +78,13 @@ public class PacketSendOrReceiveListener implements PacketListener {
         }
 
         if (ways.contains(ProcessType.SYNC)) {
-            Bukkit.getScheduler().runTask(PacketEventsSK.getInstance(), () -> {
-                event.markForReEncode(false);
-                PacketSendOrReceiveEvent.SyncPacketEvent syncEvent = new PacketSendOrReceiveEvent.SyncPacketEvent(event, wrapper, priority);
-                Bukkit.getPluginManager().callEvent(syncEvent);
-            });
+            PacketSendOrReceiveEvent.SyncPacketEvent syncEvent = new PacketSendOrReceiveEvent.SyncPacketEvent(event, wrapper, priority);
+            Bukkit.getScheduler().runTask(PacketEventsSK.getInstance(), () -> Bukkit.getPluginManager().callEvent(syncEvent));
         }
 
         if (ways.contains(ProcessType.ASYNC)) {
-            Bukkit.getScheduler().runTaskAsynchronously(PacketEventsSK.getInstance(), () -> {
-                event.markForReEncode(false);
-                PacketSendOrReceiveEvent.AsyncPacketEvent asyncEvent = new PacketSendOrReceiveEvent.AsyncPacketEvent(event, wrapper, priority);
-                Bukkit.getPluginManager().callEvent(asyncEvent);
-            });
+            PacketSendOrReceiveEvent.AsyncPacketEvent asyncEvent = new PacketSendOrReceiveEvent.AsyncPacketEvent(event, wrapper, priority);
+            Bukkit.getScheduler().runTaskAsynchronously(PacketEventsSK.getInstance(), () -> Bukkit.getPluginManager().callEvent(asyncEvent));
         }
     }
 }

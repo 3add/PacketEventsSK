@@ -6,6 +6,7 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
@@ -13,6 +14,7 @@ import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketDefinition;
 import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketField;
 import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +46,15 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
         if (data.getPacketType() != null) { // for the listening event
+
+            if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
+                Skript.error("Can't cancel packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
+                return false;
+            } else if (data.getPriority() != PacketListenerPriority.MONITOR) {
+                Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
+                return false;
+            }
+
             PacketTypeCommon eventPacketType = data.getPacketType();
             PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
 

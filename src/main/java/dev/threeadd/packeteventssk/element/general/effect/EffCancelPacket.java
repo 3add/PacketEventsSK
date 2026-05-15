@@ -5,6 +5,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
@@ -46,6 +47,9 @@ public class EffCancelPacket extends Effect {
 
         if (way != ProcessType.NETTY) {
             Skript.error("Can't cancel packets in a " + (way == null ? "unknown" : way.toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
+            return false;
+        } else if (data.getPriority() != PacketListenerPriority.MONITOR) {
+            Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
             return false;
         }
 

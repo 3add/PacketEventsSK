@@ -27,7 +27,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         PacketSendOrReceiveEvent.NettyPacketEvent.class,
                         PacketSendOrReceiveEvent.SyncPacketEvent.class,
                         PacketSendOrReceiveEvent.AsyncPacketEvent.class
-                }, "%packettype% [(:(sync|async|netty)) processed] [with priority (:(lowest|low|normal|high|highest|monitor))]")
+                }, "%packettype% [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
@@ -48,7 +48,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
 
     private PacketTypeCommon packetType;
     private ProcessType processType = ProcessType.NETTY;
-    private PacketListenerPriority priority = PacketListenerPriority.NORMAL;
+    private PacketListenerPriority priority = null; // dynamic default
 
     @Override
     public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
@@ -60,14 +60,29 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
         }
 
         this.packetType = packetType;
-
-        for (String tag : parseResult.tags) {
+        for (String rawTag : parseResult.tags) {
+            String tag = rawTag.trim().toLowerCase(Locale.ENGLISH);
             switch (tag) {
                 case "sync", "async", "netty" ->
                         this.processType = ProcessType.valueOf(tag.toUpperCase(Locale.ENGLISH));
                 case "lowest", "low", "normal", "high", "highest", "monitor" ->
                         this.priority = PacketListenerPriority.valueOf(tag.toUpperCase(Locale.ENGLISH));
             }
+        }
+
+        // no priority provided, use defaults based on processType
+        if (this.priority == null) {
+            if (this.processType == ProcessType.NETTY) {
+                this.priority = PacketListenerPriority.NORMAL;
+            } else {
+                this.priority = PacketListenerPriority.MONITOR;
+            }
+        }
+
+        // validate event setup
+        if ((this.processType == ProcessType.SYNC || this.processType == ProcessType.ASYNC) && this.priority != PacketListenerPriority.MONITOR) {
+            Skript.error("You can only listen " + this.processType.toString().toLowerCase(Locale.ENGLISH) + " to packets using the \"monitor\" priority as they can't modify or cancel the packet.");
+            return false;
         }
 
         PacketSendOrReceiveListener.registerListener(packetType, this.processType, this.priority);
@@ -110,14 +125,14 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
 
     @Override
     public boolean canExecuteAsynchronously() {
-        return processType == ProcessType.NETTY || processType == ProcessType.ASYNC;
+        return true;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String packetType = (this.packetType != null ? this.packetType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
         String processType = this.processType.name().toLowerCase(Locale.ENGLISH);
-        String priorityName = this.priority.name().toLowerCase(Locale.ENGLISH);
+        String priorityName = (this.priority != null ? this.priority.name().toLowerCase(Locale.ENGLISH) : "normal");
         return String.format("on %s packet %s processed with priority %s", packetType, processType, priorityName);
     }
 
