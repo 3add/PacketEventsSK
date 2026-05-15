@@ -120,7 +120,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
                     Skript.error("You can't alter packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
                     return null;
-                } else if (data.getPriority() == PacketListenerPriority.MONITOR) { // Note: Swapped to == so it matches the error string
+                } else if (data.getPriority() == PacketListenerPriority.MONITOR) {
                     Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
                     return null;
                 }
