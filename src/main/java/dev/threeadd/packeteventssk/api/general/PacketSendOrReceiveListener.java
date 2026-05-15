@@ -1,11 +1,7 @@
 package dev.threeadd.packeteventssk.api.general;
 
 import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.event.PacketListener;
-import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
+import com.github.retrooper.packetevents.event.*;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -120,7 +116,8 @@ public class PacketSendOrReceiveListener implements PacketListener {
             } else if (event instanceof PacketReceiveEvent sendEvent && type.getSide().equals(PacketSide.CLIENT)) {
                 return clazz.getConstructor(PacketReceiveEvent.class).newInstance(sendEvent);
             }
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodError | NoSuchMethodException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodError |
+                 NoSuchMethodException e) {
             throw new IllegalStateException("Couldn't create packet for: " + type);
         }
 
