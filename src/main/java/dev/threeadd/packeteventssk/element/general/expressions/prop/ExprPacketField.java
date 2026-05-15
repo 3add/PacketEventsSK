@@ -53,6 +53,8 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) { // for the listening event
 
             PacketTypeCommon eventPacketType = data.getPacketType();
+            if (eventPacketType == null) return false; // shouldn't ever happen
+
             PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
 
             if (def == null) {
