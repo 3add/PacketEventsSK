@@ -6,7 +6,7 @@ plugins {
 }
 
 // Version of PacketEventsSK
-val projectVersion = "1.1.1"
+val projectVersion = "1.1.2"
 // Server version
 val serverVersion = "26.1.2"
 // Minimum version of Minecraft that PacketEventsSK supports
