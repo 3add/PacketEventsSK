@@ -31,7 +31,12 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
                 .description("Gets a field's value from a packet by its name.")
-                //TODO example
+                .examples("""
+                        on clientbound entity metadata netty processed:
+                            set {_meta} to field entity meta of event-packet
+                            set fake glowing state of {_meta} to true
+                            set field entity meta of event-packet to {_meta}
+                        """)
                 .since("1.1.0", "1.1.1 (fixed bugs)")
                 .register();
     }
@@ -163,10 +168,6 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
 
             ((BiConsumer<PacketWrapper<?>, Object>) targetField.setter()).accept(wrapper, newValue);
-
-            if (event instanceof PacketSendOrReceiveEvent.NettyPacketEvent packetEvent) {
-                packetEvent.setModified(true);
-            }
         }
     }
 
