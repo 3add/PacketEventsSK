@@ -3,19 +3,13 @@ package dev.threeadd.packeteventssk;
 import ch.njol.skript.Skript;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.general.SkBeePacketRegistrations;
+import dev.threeadd.packeteventssk.api.util.LogUtil;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistry;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AddonLoader {
-
-    private static final Logger log = LoggerFactory.getLogger(AddonLoader.class);
 
     private final Plugin skriptPlugin;
     private final Registration registration;
@@ -31,17 +25,17 @@ public class AddonLoader {
 
     protected boolean canLoad() {
         if (skriptPlugin == null || !skriptPlugin.isEnabled()) {
-            log.error("Skript plugin not found or is disabled, Skript elements cannot load,");
+            LogUtil.error("Skript plugin not found or is disabled, Skript elements cannot load");
             return false;
         }
 
         if (!Skript.isAcceptRegistrations()) {
-            log.error("Skript is no longer accepting registrations, PacketEventsSK can no longer load");
+            LogUtil.error("Skript is no longer accepting registrations, PacketEventsSK can no longer load");
             return false;
         }
 
         if (isPlugmanReloaded()) {
-            log.error("PacketEventsSK does not support reloading with PlugMan, stuff will break!");
+            LogUtil.error("PacketEventsSK does not support reloading with PlugMan, stuff will break!");
             return false;
         }
 
@@ -49,18 +43,37 @@ public class AddonLoader {
             Class<?> nbtApiClass = Class.forName("com.shanebeestudios.skbee.api.nbt.NBTApi");
             boolean enabled = (boolean) nbtApiClass.getMethod("isEnabled").invoke(null);
             if (enabled) {
-                log.info("Hooked into SkBee NBT using NBT-API");
+                LogUtil.info("Hooked into SkBee NBT using NBT-API");
                 SkBeePacketRegistrations.register();
             }
         } catch (ClassNotFoundException ignored) {
-            log.warn("SkBee not found, PacketEventsSK elements depending on NBT will not be registered");
+            LogUtil.error("SkBee not found, PacketEventsSK elements depending on NBT will not be registered");
         } catch (Exception e) {
-            log.error("Failed to hook into SkBee NBT", e);
+            throw new IllegalStateException("Failed to hook into SkBee NBT", e);
         }
 
         SkriptElementRegistry.INSTANCE.register(PacketEventsSK.getInstance().getPluginConfig());
         SkriptElementRegistry.INSTANCE.getRegisteredItems().forEach(this::loadElement);
         this.registration.finalizeRegistration();
+
+        // ELEMENT COUNT
+        int typeCount = this.registration.getTypes().size();
+        int structureCount = this.registration.getStructures().size();
+        int eventCount = this.registration.getEvents().size();
+        int sectionCount = this.registration.getSections().size();
+        int effectCount = this.registration.getEffects().size();
+        int expressionCount = this.registration.getExpressions().size();
+        int conditionCount = this.registration.getConditions().size();
+        int total = eventCount + effectCount + expressionCount + conditionCount + sectionCount + typeCount + structureCount;
+
+        LogUtil.info("Loaded %s PacketEventsSK elements", total);
+        LogUtil.info(" - %s types", typeCount);
+        LogUtil.info(" - %s structures", structureCount);
+        LogUtil.info(" - %s events", eventCount);
+        LogUtil.info(" - %s sections", sectionCount);
+        LogUtil.info(" - %s effects", effectCount);
+        LogUtil.info(" - %s expressions", expressionCount);
+        LogUtil.info(" - %s conditions", conditionCount);
 
         return true;
     }
@@ -71,20 +84,15 @@ public class AddonLoader {
             logElementStatus(element.identifier(), true);
         } catch (Exception e) {
             logElementStatus(element.identifier(), false);
-            log.error("Something went wrong loading {}", element.identifier(), e);
+            throw new IllegalStateException("Failed to load element " + element.identifier(), e);
         }
     }
 
     private void logElementStatus(String elementName, boolean success) {
         String statusText = success ? "successfully" : "failed";
-        int color = success ? 0x89F53B : 0xF52A0D;
+        String color = success ? "89F53B" : "xF52A0D";
 
-        PacketEventsSK.getInstance().getComponentLogger()
-                .info(Component.text(elementName + " loaded")
-                        .appendSpace()
-                        .append(Component.text(statusText)
-                                .decorate(TextDecoration.UNDERLINED)
-                                .color(TextColor.color(color))));
+        LogUtil.mini("loaded %s <#%s><u>%s</u>", elementName, color, statusText);
     }
 
     private boolean isPlugmanReloaded() {

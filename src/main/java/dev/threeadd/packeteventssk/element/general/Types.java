@@ -13,17 +13,14 @@ import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
+import dev.threeadd.packeteventssk.api.util.LogUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
 public class Types {
-
-    private static final Logger log = LoggerFactory.getLogger(Types.class);
 
     public static void register(Registration reg) {
         reg.newType(PacketWrapper.class, "packet")
@@ -170,7 +167,7 @@ public class Types {
                     .since("1.1.0")
                     .register();
         } else {
-            log.warn("It looks like another addon has sign side registered, you should just be able to use their syntax though.");
+            LogUtil.warning("It looks like another addon has sign side registered, you should just be able to use their syntax though.");
         }
 
         reg.newType(Skin.class, "skin")
