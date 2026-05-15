@@ -32,7 +32,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 .name("General - Packet Field")
                 .description("Gets a field's value from a packet by its name.")
                 //TODO example
-                .since("1.1.0")
+                .since("1.1.0", "1.1.1 (fixed bugs)")
                 .register();
     }
 

@@ -34,7 +34,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         on serverbound interact entity packet netty processed:
                             cancel packet
                         """)
-                .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)")
+                .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)", "1.1.1 (added packet priority and fixed bugs)")
                 .register();
 
         reg.newEventValue(PacketSendOrReceiveEvent.class, PacketWrapper.class)

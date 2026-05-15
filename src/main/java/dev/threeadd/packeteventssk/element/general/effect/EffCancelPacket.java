@@ -31,7 +31,7 @@ public class EffCancelPacket extends Effect {
                             cancel the packet
                             send "You can't view my chunks 3add!"
                         """)
-                .since("1.0.0")
+                .since("1.0.0", "1.1.1 (fixed bugs)")
                 .register();
     }
 
