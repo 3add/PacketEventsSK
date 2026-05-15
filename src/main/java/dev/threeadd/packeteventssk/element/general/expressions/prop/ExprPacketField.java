@@ -116,7 +116,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         if (mode == Changer.ChangeMode.SET) {
             PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
-            if (data.getPacketType() != null) {
+            if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) {
                 if (data.getProcessType() != EvtPacketSendOrReceive.ProcessType.NETTY) {
                     Skript.error("You can't alter packets in a " + (data.getProcessType() == null ? "unknown" : data.getProcessType().toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
                     return null;
