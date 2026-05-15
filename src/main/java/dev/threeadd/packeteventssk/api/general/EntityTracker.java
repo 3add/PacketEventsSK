@@ -82,7 +82,7 @@ public class EntityTracker implements PacketListener {
         EntityType type = spawnPacket.getEntityType();
         UUID userUuid = event.getUser().getUUID();
 
-        PLAYER_ENTITIES.computeIfAbsent(userUuid, _ -> new ConcurrentHashMap<>()).put(entityId, type);
+        PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>()).put(entityId, type);
     }
 
     private void handleDestroy(PacketSendEvent event) {

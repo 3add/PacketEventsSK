@@ -33,10 +33,10 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
     public static void registerListener(PacketTypeCommon type, ProcessType way, PacketListenerPriority priority) {
         if (type == null) {
-            GLOBAL_LISTENERS.computeIfAbsent(priority, _ -> ConcurrentHashMap.newKeySet()).add(way);
+            GLOBAL_LISTENERS.computeIfAbsent(priority, k -> ConcurrentHashMap.newKeySet()).add(way);
         } else {
-            ACTIVE_LISTENERS.computeIfAbsent(priority, _ -> new ConcurrentHashMap<>())
-                    .computeIfAbsent(type, _ -> ConcurrentHashMap.newKeySet())
+            ACTIVE_LISTENERS.computeIfAbsent(priority, k -> new ConcurrentHashMap<>())
+                    .computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet())
                     .add(way);
         }
 

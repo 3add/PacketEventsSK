@@ -90,7 +90,7 @@ public class PacketConstructorRegistry {
                 .build();
 
         builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
-                .constructor(_ -> new WrapperPlayServerCloseWindow())
+                .constructor(k -> new WrapperPlayServerCloseWindow())
                 .build();
 
         builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)

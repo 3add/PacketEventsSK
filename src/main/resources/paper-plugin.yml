@@ -1,0 +1,22 @@
+name: PacketEventsSK
+version: '${projectVersion}'
+main: dev.threeadd.packeteventssk.PacketEventsSK
+description: packetevents addon for Skript
+api-version: '${apiversion}'
+authors: [3add, retrooper and contributors (packetevents)]
+dependencies:
+  server:
+    packetevents:
+      load: BEFORE
+      required: true
+      join-classpath: true
+
+    Skript:
+      load: BEFORE
+      required: true
+      join-classpath: true
+
+    SkBee:
+      load: BEFORE
+      required: false
+      join-classpath: true
