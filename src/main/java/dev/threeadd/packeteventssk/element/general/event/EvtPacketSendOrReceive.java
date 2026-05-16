@@ -27,7 +27,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         PacketSendOrReceiveEvent.NettyPacketEvent.class,
                         PacketSendOrReceiveEvent.SyncPacketEvent.class,
                         PacketSendOrReceiveEvent.AsyncPacketEvent.class
-                }, "([any] packet|%-packettype%) [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
+                }, "([any] packet|%*-packettype%) [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
