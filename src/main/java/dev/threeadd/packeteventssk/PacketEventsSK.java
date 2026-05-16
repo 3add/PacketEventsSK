@@ -4,7 +4,6 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
 import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
-import dev.threeadd.packeteventssk.api.general.UserManager;
 import dev.threeadd.packeteventssk.api.simple.ChatSessionListener;
 import dev.threeadd.packeteventssk.api.simple.GlowingEntityListener;
 import dev.threeadd.packeteventssk.api.simple.PlayerSkinListener;
@@ -70,8 +69,6 @@ public final class PacketEventsSK extends JavaPlugin {
         if (Bukkit.getServerConfig().isProxyOnlineMode()) {
             getServer().getPluginManager().registerEvents(new PlayerSkinRegistry(), this);
         }
-
-        getServer().getPluginManager().registerEvents(new UserManager(), this);
 
         long end = System.nanoTime();
         LogUtil.info("Finished loading PacketEventsSK v%s in %sms", getPluginMeta().getVersion(), (end - start) / 1_000_000F);
