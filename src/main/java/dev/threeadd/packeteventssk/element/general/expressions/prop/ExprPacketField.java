@@ -28,9 +28,27 @@ import java.util.function.BiConsumer;
 public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     public static void register(Registration reg) {
+
+        StringBuilder description = new StringBuilder();
+        description.append("Gets or sets a field's value from a packet by its name.\n\n");
+        description.append("### Available Packets and their fields\n");
+
+        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+
+            String fieldsLine = def.getReadableFields();
+            if (!fieldsLine.isEmpty()) {
+                description.append("* **")
+                        .append(def)
+                        .append("** allowed fields:\n")
+                        .append("  `")
+                        .append(fieldsLine)
+                        .append("`\n");
+            }
+        }
+
         reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
-                .description("Gets a field's value from a packet by its name.")
+                .description(description.toString())
                 .examples("""
                         on clientbound entity metadata netty processed:
                             set {_meta} to field entity meta of event-packet

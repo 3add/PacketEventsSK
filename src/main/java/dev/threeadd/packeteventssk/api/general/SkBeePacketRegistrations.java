@@ -16,11 +16,15 @@ public class SkBeePacketRegistrations {
 
     public static void register() {
         PacketConstructorRegistry.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
-                .requiredField("block position", Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()), (w, vector) ->
-                        w.setPosition(ConversionUtil.toPeVectorI(vector)))
-                .requiredField("block entity type", BlockEntityType.class, WrapperPlayServerBlockEntityData::getBlockEntityType, WrapperPlayServerBlockEntityData::setType)
-                .requiredField("nbt compound", NBTCompound.class, w -> SkBeeConversionUtil.toNbtApiNBTCompound(w.getNBT()),
-                        (w, nbt) -> w.setNBT(SkBeeConversionUtil.toPeNBTCompound(nbt)))
+                .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
+                        (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)),
+                        "block position", "block pos", "position", "pos")
+                .requiredField(BlockEntityType.class, WrapperPlayServerBlockEntityData::getBlockEntityType,
+                        WrapperPlayServerBlockEntityData::setType,
+                        "block entity type", "entity type", "type")
+                .requiredField(NBTCompound.class, w -> SkBeeConversionUtil.toNbtApiNBTCompound(w.getNBT()),
+                        (w, nbt) -> w.setNBT(SkBeeConversionUtil.toPeNBTCompound(nbt)),
+                        "nbt compound", "nbt", "compound")
                 .constructor(values -> new WrapperPlayServerBlockEntityData(
                         ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
                         values.get("block entity type", BlockEntityType.class),

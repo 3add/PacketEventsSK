@@ -36,9 +36,26 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
         VALIDATOR = builder.build();
 
+        StringBuilder description = new StringBuilder();
+        description.append("Create a new packet from a packet type.\n\n");
+        description.append("### Available Packets and their fields\n");
+
+        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+
+            String fieldsLine = def.getReadableFields();
+            if (!fieldsLine.isEmpty()) {
+                description.append("* **")
+                        .append(def)
+                        .append("** allowed fields:\n")
+                        .append("  `")
+                        .append(fieldsLine)
+                        .append("`\n");
+            }
+        }
+
         reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %packettype%")
                 .name("General - New Packet")
-                .description("Create a new packet from a packet type. This section is a data block, not an execution block.")
+                .description(description.toString())
                 // TODO Example
                 .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
@@ -158,7 +175,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             values.put(field.name(), value);
         }
 
-        return this.definition.constructor().apply(new PacketConstructorRegistry.PacketValues(values));
+        return this.definition.constructor().apply(new PacketConstructorRegistry.PacketValues(this.definition.fields(), values));
     }
 
     @Override
