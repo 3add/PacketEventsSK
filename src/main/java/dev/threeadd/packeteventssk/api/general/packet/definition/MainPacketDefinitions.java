@@ -2,6 +2,8 @@ package dev.threeadd.packeteventssk.api.general.packet.definition;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
@@ -15,7 +17,7 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 
 public class MainPacketDefinitions {
-    
+
     public static void register() {
         PacketDefinitionRegistry.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
                 .requiredField(Number.class, WrapperPlayServerEntityVelocity::getEntityId,
@@ -114,6 +116,26 @@ public class MainPacketDefinitions {
                 .constructor(values -> new WrapperPlayClientSelectBundleItem(
                         values.get("slot id", Number.class).intValue(),
                         values.get("selected item index", Number.class).intValue()
+                ))
+                .build();
+
+        PacketDefinitionRegistry.builder(PacketType.Play.Client.INTERACT_ENTITY, WrapperPlayClientInteractEntity.class)
+                .requiredField(Number.class, WrapperPlayClientInteractEntity::getEntityId,
+                        (w, id) -> w.setEntityId(id.intValue()),
+                        "entity id", "id")
+                .requiredField(InteractionHand.class, WrapperPlayClientInteractEntity::getHand, WrapperPlayClientInteractEntity::setHand,
+                        "interaction hand", "hand")
+                .requiredField(Vector.class,
+                        w -> ConversionUtil.toBukkitVector(w.getLocation()),
+                        (w, newLoc) -> w.setLocation(ConversionUtil.toPeVectorD(newLoc)),
+                        "location vector", "location", "loc")
+                .requiredField(Boolean.class, w -> w.isSneaking().orElse(false), WrapperPlayClientInteractEntity::setSneaking,
+                        "sneaking state", "sneaking")
+                .constructor(values -> new WrapperPlayClientInteractEntity(
+                        values.get("entity id", Number.class).intValue(),
+                        values.get("interaction hand", InteractionHand.class),
+                        ConversionUtil.toPeVectorD(values.get("location vector", Vector.class)),
+                        values.get("sneaking state", Boolean.class)
                 ))
                 .build();
     }

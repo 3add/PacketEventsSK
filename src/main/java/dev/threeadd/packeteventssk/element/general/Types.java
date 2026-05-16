@@ -2,9 +2,9 @@ package dev.threeadd.packeteventssk.element.general;
 
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
-import ch.njol.skript.registrations.Classes;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -13,7 +13,6 @@ import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.packet.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
-import dev.threeadd.packeteventssk.api.util.LogUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
@@ -128,7 +127,7 @@ public class Types {
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
-                .user("block ?entity ?type?s")
+                .user("block ?entit(y|ies) types?")
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
                 // TODO example
@@ -157,18 +156,23 @@ public class Types {
                 })
                 .register();
 
-        if (Classes.getExactClassInfo(Side.class) == null && Classes.getClassInfoNoError("signside") == null) {
-            EnumWrapper<Side> SIGN_SIDE_ENUM = new EnumWrapper<>(Side.class);
-            reg.newEnumType(Side.class, SIGN_SIDE_ENUM, "signside")
-                    .user("sign ?sides?")
-                    .name("General - Sign Side")
-                    .description("Represents a side of a sign block (front or back)")
-                    // TODO example
-                    .since("1.1.0")
-                    .register();
-        } else {
-            LogUtil.warning("It looks like another addon has sign side registered, you should just be able to use their syntax though.");
-        }
+        EnumWrapper<Side> SIGN_SIDE_ENUM = new EnumWrapper<>(Side.class);
+        reg.newEnumType(Side.class, SIGN_SIDE_ENUM, "signside")
+                .user("sign ?sides?")
+                .name("General - Sign Side")
+                .description("Represents a side of a sign block (front or back)")
+                // TODO example
+                .since("1.1.0")
+                .register();
+
+        EnumWrapper<InteractionHand> interactionHand = new EnumWrapper<>(InteractionHand.class);
+        reg.newEnumType(InteractionHand.class, interactionHand, "interactionhand")
+                .user("interaction ?hands?")
+                .name("General - Interaction Hand")
+                .description("Represents an interaction hand (main hand or off hand)")
+                // TODO example
+                .since("1.1.2")
+                .register();
 
         reg.newType(Skin.class, "skin")
                 .user("skin")
