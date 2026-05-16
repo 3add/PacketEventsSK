@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class MainPacketDefinitions {
 
     public static void register() {
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
                 .requiredField(Number.class, WrapperPlayServerEntityVelocity::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
                         "entity id", "id")
@@ -32,7 +32,7 @@ public class MainPacketDefinitions {
                 )
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getAbsolutePos()),
                         (w, vector) -> w.setAbsolutePos(ConversionUtil.toPeVectorI(vector)),
                         "absolute position", "absolute pos", "abs position", "abs pos", "position", "pos")
@@ -45,7 +45,7 @@ public class MainPacketDefinitions {
                 )
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
                 .requiredField(Number.class, WrapperPlayServerEntityMetadata::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
                         "entity id", "id")
@@ -66,7 +66,7 @@ public class MainPacketDefinitions {
                 )
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getBlockPosition()),
                         (w, vector) -> w.setBlockPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")
@@ -79,7 +79,7 @@ public class MainPacketDefinitions {
                 ))
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
                         (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")
@@ -92,11 +92,11 @@ public class MainPacketDefinitions {
                 ))
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
                 .constructor(k -> new WrapperPlayServerCloseWindow())
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)
                 .requiredField(Number[].class,
                         w -> Arrays.stream(w.getEntityIds()).boxed().toArray(Number[]::new),
                         (w, ids) -> w.setEntityIds(Arrays.stream(ids).mapToInt(Number::intValue).toArray()),
@@ -106,7 +106,7 @@ public class MainPacketDefinitions {
                 ))
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Client.SELECT_BUNDLE_ITEM, WrapperPlayClientSelectBundleItem.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Client.SELECT_BUNDLE_ITEM, WrapperPlayClientSelectBundleItem.class)
                 .requiredField(Number.class, WrapperPlayClientSelectBundleItem::getSlotId,
                         (w, id) -> w.setSlotId(id.intValue()),
                         "slot id", "id")
@@ -119,7 +119,7 @@ public class MainPacketDefinitions {
                 ))
                 .build();
 
-        PacketDefinitionRegistry.builder(PacketType.Play.Client.INTERACT_ENTITY, WrapperPlayClientInteractEntity.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Client.INTERACT_ENTITY, WrapperPlayClientInteractEntity.class)
                 .requiredField(Number.class, WrapperPlayClientInteractEntity::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
                         "entity id", "id")

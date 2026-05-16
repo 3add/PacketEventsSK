@@ -10,10 +10,10 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
-import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry.PacketDefinition;
-import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry.PacketField;
 import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
+import dev.threeadd.packeteventssk.api.util.properties.PropertyDefinition;
+import dev.threeadd.packeteventssk.api.util.properties.PropertyField;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
@@ -33,7 +33,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         description.append("Gets or sets a field's value from a packet by its name.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
+        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
 
             String fieldsLine = def.getReadableFields();
             if (!fieldsLine.isEmpty()) {
@@ -73,7 +73,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             PacketTypeCommon eventPacketType = data.getPacketType();
             if (eventPacketType == null) return false; // shouldn't ever happen
 
-            PacketDefinition def = PacketDefinitionRegistry.getDefinition(eventPacketType);
+            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def = PacketDefinitionRegistry.INSTANCE.getDefinition(eventPacketType);
 
             if (def == null) {
                 Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
@@ -86,7 +86,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
         } else { // more global check
             boolean isValidField = false;
-            for (PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
+            for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
                 if (def.getField(this.fieldName) != null) {
                     isValidField = true;
                     break;
@@ -114,11 +114,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PacketDefinition definition = PacketDefinitionRegistry.getDefinition(type);
+            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
 
             if (definition == null) continue;
 
-            PacketField<?> targetField = definition.getField(this.fieldName);
+            PropertyField<PacketWrapper<?>, ?> targetField = definition.getField(this.fieldName);
 
             if (targetField == null || targetField.getter() == null) continue;
 
@@ -133,7 +133,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
-        if (mode == Changer.ChangeMode.SET) {
+        if (mode == Changer.ChangeMode.SET && this.fieldName != null) {
             PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
             if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) {
@@ -144,9 +144,33 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                     Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
                     return null;
                 }
+
+                PacketTypeCommon eventPacketType = data.getPacketType();
+                if (eventPacketType != null) {
+                    PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def = PacketDefinitionRegistry.INSTANCE.getDefinition(eventPacketType);
+                    if (def != null) {
+                        PropertyField<PacketWrapper<?>, ?> field = def.getField(this.fieldName);
+                        if (field != null) {
+                            return new Class<?>[]{field.expectedType()};
+                        }
+                    }
+                }
             }
 
-            return new Class[]{Object[].class};
+            List<Class<?>> acceptedTypes = new ArrayList<>();
+            for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
+                PropertyField<PacketWrapper<?>, ?> field = def.getField(this.fieldName);
+                if (field != null) {
+                    Class<?> expected = field.expectedType();
+                    if (!acceptedTypes.contains(expected)) {
+                        acceptedTypes.add(expected);
+                    }
+                }
+            }
+
+            if (!acceptedTypes.isEmpty()) {
+                return acceptedTypes.toArray(new Class<?>[0]);
+            }
         }
         return null;
     }
@@ -160,11 +184,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PacketDefinition definition = PacketDefinitionRegistry.getDefinition(type);
+            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
 
             if (definition == null) continue;
 
-            PacketField<?> targetField = definition.getField(this.fieldName);
+            PropertyField<PacketWrapper<?>, ?> targetField = definition.getField(this.fieldName);
 
             if (targetField == null || targetField.setter() == null) continue;
 

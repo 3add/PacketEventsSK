@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 public class SkBeePacketDefinitions {
 
     public static void register() {
-        PacketDefinitionRegistry.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
+        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
                         (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")

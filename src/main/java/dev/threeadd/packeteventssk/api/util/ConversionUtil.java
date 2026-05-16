@@ -1,13 +1,16 @@
 package dev.threeadd.packeteventssk.api.util;
 
+import ch.njol.skript.util.Timespan;
 import com.github.retrooper.packetevents.protocol.world.WorldBlockPosition;
 import com.github.retrooper.packetevents.resources.ResourceLocation;
 import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
+import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Display;
 import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
 
@@ -61,6 +64,22 @@ public class ConversionUtil {
     public static ResourceLocation getWorldKey(World world) {
         if (world == null) return null;
         return new ResourceLocation(world.getKey().toString());
+    }
+
+    public static Timespan toTimespan(long ticks) {
+        return new Timespan(Timespan.TimePeriod.TICK, ticks);
+    }
+
+    public static long toTicks(Timespan timespan) {
+        return timespan.getAs(Timespan.TimePeriod.TICK);
+    }
+
+    public static Display.Billboard toBillboard(AbstractDisplayMeta.BillboardConstraints billboardConstraints) {
+        return Display.Billboard.valueOf(billboardConstraints.name());
+    }
+
+    public static AbstractDisplayMeta.BillboardConstraints toBillboardConstraints(Display.Billboard billboard) {
+        return AbstractDisplayMeta.BillboardConstraints.valueOf(billboard.name());
     }
 
     public static WorldBlockPosition toWorldBlockPosition(Location location) {

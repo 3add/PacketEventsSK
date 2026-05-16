@@ -31,14 +31,14 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                 .name("General - On Packet")
                 .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
                 .examples("""
-                        on serverbound interact entity packet netty processed:
-                            cancel packet
-                        """,
+                                on serverbound interact entity packet netty processed:
+                                    cancel packet
+                                """,
                         """
-                        # can be used to see which packets get sent in certain circumstances
-                        on any packet:
-                            send packet type of event-packet to console
-                        """)
+                                # can be used to see which packets get sent in certain circumstances
+                                on any packet:
+                                    send packet type of event-packet to console
+                                """)
                 .since("1.0.0", "1.0.1 altered", "1.1.0 (changed from struct to event)", "1.1.1 (added packet priority, added listening to all packets and fixed bugs)")
                 .register();
 

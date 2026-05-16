@@ -13,6 +13,9 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
+import dev.threeadd.packeteventssk.api.util.properties.PropertyDefinition;
+import dev.threeadd.packeteventssk.api.util.properties.PropertyField;
+import dev.threeadd.packeteventssk.api.util.properties.PropertyValues;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +32,8 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
-            for (PacketDefinitionRegistry.PacketField<?> field : def.fields()) {
+        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
+            for (PropertyField<PacketWrapper<?>, ?> field : def.fields()) {
                 builder.addOptionalEntry(field.name(), Object.class);
             }
         }
@@ -40,7 +43,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         description.append("Create a new packet from a packet type.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
+        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
 
             String fieldsLine = def.getReadableFields();
             if (!fieldsLine.isEmpty()) {
@@ -64,7 +67,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     private Literal<PacketTypeCommon> packetTypeLiteral;
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
-    private PacketDefinitionRegistry.PacketDefinition definition;
+    private PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,7 +86,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
 
         PacketTypeCommon type = this.packetTypeLiteral.getSingle();
-        this.definition = PacketDefinitionRegistry.getDefinition(type);
+        this.definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
 
         if (this.definition == null) {
             Skript.error("Packet creation for " + type.getName() + " is not currently supported.");
@@ -107,7 +110,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         List<String> missingKeys = new ArrayList<>();
         boolean hasTypeError = false;
 
-        for (PacketDefinitionRegistry.PacketField<?> field : this.definition.fields()) {
+        for (PropertyField<PacketWrapper<?>, ?> field : this.definition.fields()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -146,12 +149,13 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         return new PacketWrapper[]{createPacket(event)};
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private @Nullable PacketWrapper<?> createPacket(@NotNull Event event) {
         if (this.definition == null) return null;
 
         Map<String, Object> values = new HashMap<>();
 
-        for (PacketDefinitionRegistry.PacketField<?> field : this.definition.fields()) {
+        for (PropertyField<PacketWrapper<?>, ?> field : this.definition.fields()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -175,7 +179,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             values.put(field.name(), value);
         }
 
-        return this.definition.constructor().apply(new PacketDefinitionRegistry.PacketValues(this.definition.fields(), values));
+        return this.definition.constructor().apply(new PropertyValues((List) this.definition.fields(), values));
     }
 
     @Override
