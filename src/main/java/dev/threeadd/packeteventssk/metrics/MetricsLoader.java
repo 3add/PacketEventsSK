@@ -1,9 +1,10 @@
-package dev.threeadd.packeteventssk;
+package dev.threeadd.packeteventssk.metrics;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.util.Version;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import dev.threeadd.packeteventssk.PacketEventsSK;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;

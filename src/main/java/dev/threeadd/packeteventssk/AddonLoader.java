@@ -2,7 +2,8 @@ package dev.threeadd.packeteventssk;
 
 import ch.njol.skript.Skript;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.general.SkBeePacketRegistrations;
+import dev.threeadd.packeteventssk.api.general.packet.definition.MainPacketDefinitions;
+import dev.threeadd.packeteventssk.api.general.packet.definition.SkBeePacketDefinitions;
 import dev.threeadd.packeteventssk.api.util.LogUtil;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistry;
@@ -39,12 +40,14 @@ public class AddonLoader {
             return false;
         }
 
+        MainPacketDefinitions.register();
+
         try {
             Class<?> nbtApiClass = Class.forName("com.shanebeestudios.skbee.api.nbt.NBTApi");
             boolean enabled = (boolean) nbtApiClass.getMethod("isEnabled").invoke(null);
             if (enabled) {
                 LogUtil.info("Hooked into SkBee NBT using NBT-API");
-                SkBeePacketRegistrations.register();
+                SkBeePacketDefinitions.register();
             }
         } catch (ClassNotFoundException ignored) {
             LogUtil.error("SkBee not found, PacketEventsSK elements depending on NBT will not be registered");

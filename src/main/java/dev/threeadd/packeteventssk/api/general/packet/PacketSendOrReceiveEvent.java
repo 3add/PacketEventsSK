@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.api.general;
+package dev.threeadd.packeteventssk.api.general.packet;
 
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;

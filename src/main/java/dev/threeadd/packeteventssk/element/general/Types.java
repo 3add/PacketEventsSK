@@ -11,7 +11,7 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
-import dev.threeadd.packeteventssk.api.general.PacketTypeRegistry;
+import dev.threeadd.packeteventssk.api.general.packet.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
 import dev.threeadd.packeteventssk.api.util.LogUtil;
 import me.tofaa.entitylib.meta.EntityMeta;

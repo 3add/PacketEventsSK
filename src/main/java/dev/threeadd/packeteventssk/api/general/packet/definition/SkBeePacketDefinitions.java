@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.api.general;
+package dev.threeadd.packeteventssk.api.general.packet.definition;
 
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
@@ -9,13 +9,13 @@ import dev.threeadd.packeteventssk.api.util.SkBeeConversionUtil;
 import org.bukkit.util.Vector;
 
 /**
- * Registers SkBee-dependent packet definitions into {@link PacketConstructorRegistry}.
+ * Registers SkBee-dependent packet definitions into {@link PacketDefinitionRegistry}.
  * This class is only loaded when SkBee is confirmed to be present at runtime.
  */
-public class SkBeePacketRegistrations {
+public class SkBeePacketDefinitions {
 
     public static void register() {
-        PacketConstructorRegistry.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
+        PacketDefinitionRegistry.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
                         (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")

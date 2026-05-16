@@ -10,10 +10,10 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
-import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketDefinition;
-import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry.PacketField;
-import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
+import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry.PacketDefinition;
+import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry.PacketField;
+import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
@@ -33,7 +33,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         description.append("Gets or sets a field's value from a packet by its name.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
 
             String fieldsLine = def.getReadableFields();
             if (!fieldsLine.isEmpty()) {
@@ -73,7 +73,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             PacketTypeCommon eventPacketType = data.getPacketType();
             if (eventPacketType == null) return false; // shouldn't ever happen
 
-            PacketDefinition def = PacketConstructorRegistry.getDefinition(eventPacketType);
+            PacketDefinition def = PacketDefinitionRegistry.getDefinition(eventPacketType);
 
             if (def == null) {
                 Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
@@ -86,7 +86,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
         } else { // more global check
             boolean isValidField = false;
-            for (PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+            for (PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
                 if (def.getField(this.fieldName) != null) {
                     isValidField = true;
                     break;
@@ -114,7 +114,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PacketDefinition definition = PacketConstructorRegistry.getDefinition(type);
+            PacketDefinition definition = PacketDefinitionRegistry.getDefinition(type);
 
             if (definition == null) continue;
 
@@ -160,7 +160,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PacketDefinition definition = PacketConstructorRegistry.getDefinition(type);
+            PacketDefinition definition = PacketDefinitionRegistry.getDefinition(type);
 
             if (definition == null) continue;
 

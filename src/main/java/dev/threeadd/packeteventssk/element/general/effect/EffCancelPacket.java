@@ -7,7 +7,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.ProcessType;
 import org.bukkit.event.Event;

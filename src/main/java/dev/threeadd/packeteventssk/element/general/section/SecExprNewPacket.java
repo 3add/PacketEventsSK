@@ -12,7 +12,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
-import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
+import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +29,8 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
-            for (PacketConstructorRegistry.PacketField<?> field : def.fields()) {
+        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
+            for (PacketDefinitionRegistry.PacketField<?> field : def.fields()) {
                 builder.addOptionalEntry(field.name(), Object.class);
             }
         }
@@ -40,7 +40,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         description.append("Create a new packet from a packet type.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
+        for (PacketDefinitionRegistry.PacketDefinition def : PacketDefinitionRegistry.getAllDefinitions()) {
 
             String fieldsLine = def.getReadableFields();
             if (!fieldsLine.isEmpty()) {
@@ -64,7 +64,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     private Literal<PacketTypeCommon> packetTypeLiteral;
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
-    private PacketConstructorRegistry.PacketDefinition definition;
+    private PacketDefinitionRegistry.PacketDefinition definition;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,7 +83,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
 
         PacketTypeCommon type = this.packetTypeLiteral.getSingle();
-        this.definition = PacketConstructorRegistry.getDefinition(type);
+        this.definition = PacketDefinitionRegistry.getDefinition(type);
 
         if (this.definition == null) {
             Skript.error("Packet creation for " + type.getName() + " is not currently supported.");
@@ -107,7 +107,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         List<String> missingKeys = new ArrayList<>();
         boolean hasTypeError = false;
 
-        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
+        for (PacketDefinitionRegistry.PacketField<?> field : this.definition.fields()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -151,7 +151,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
         Map<String, Object> values = new HashMap<>();
 
-        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
+        for (PacketDefinitionRegistry.PacketField<?> field : this.definition.fields()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -175,7 +175,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             values.put(field.name(), value);
         }
 
-        return this.definition.constructor().apply(new PacketConstructorRegistry.PacketValues(this.definition.fields(), values));
+        return this.definition.constructor().apply(new PacketDefinitionRegistry.PacketValues(this.definition.fields(), values));
     }
 
     @Override
