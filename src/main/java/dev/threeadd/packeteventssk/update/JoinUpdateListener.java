@@ -16,11 +16,10 @@ public class JoinUpdateListener implements Listener {
         Player player = event.getPlayer();
         if (!player.hasPermission("packeteventssk.update.check")) return;
 
-        Bukkit.getScheduler().runTaskLater(PacketEventsSK.getInstance(), () -> {
-            UpdateChecker.getUpdateVersion(true).thenAccept(version -> {
-                LogUtil.sendRichMessage(player, "Update available: <green>%s", version.getUpdateVersion());
-                LogUtil.sendRichMessage(player, "Download at: <green>%s", version.getUpdateLink());
-            });
-        }, 30L);
+        Bukkit.getScheduler().runTaskLater(PacketEventsSK.getInstance(), () ->
+                UpdateChecker.getUpdateVersion(true).thenAccept(version -> {
+                    LogUtil.sendRichMessage(player, "Update available: <green>%s", version.getUpdateVersion());
+                    LogUtil.sendRichMessage(player, "Download at: <green>%s", version.getUpdateLink());
+                }), 30L);
     }
 }
