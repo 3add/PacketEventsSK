@@ -4,9 +4,10 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import dev.threeadd.packeteventssk.test.utils.TestResults;
+import dev.threeadd.packeteventssk.test.platform.utils.TestResults;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class PlatformMain {
 
-    public static void main(String... args) throws IOException, InterruptedException {
+    public static void main(String... args) throws IOException, InterruptedException, URISyntaxException {
         System.out.println("Initializing test platform...");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

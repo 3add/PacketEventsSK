@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.test.utils;
+package dev.threeadd.packeteventssk.test.platform.utils;
 
 import java.util.Map;
 import java.util.Set;

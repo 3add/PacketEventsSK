@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.threeadd.packeteventssk.test.utils.TestResults;
+import dev.threeadd.packeteventssk.test.platform.utils.TestResults;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -74,12 +76,12 @@ public class Environment {
             return resolvedSource;
         }
 
-        private void generateSource() throws IOException {
+        private void generateSource() throws IOException, URISyntaxException {
             if (resolvedSource != null)
                 return;
 
             String stringUrl = "https://fill.papermc.io/v3/projects/paper/versions/" + version + "/builds";
-            URL url = new URL(stringUrl);
+            URL url = new URI(stringUrl).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", "PacketEventsSK-TestPlatform/1.0 (https://github.com/threeadd/PacketEventsSK)");
 
@@ -140,7 +142,7 @@ public class Environment {
         this.commandLine = commandLine;
     }
 
-    public void initialize(Path dataRoot, Path runnerRoot) throws IOException {
+    public void initialize(Path dataRoot, Path runnerRoot) throws IOException, URISyntaxException {
         Path env = runnerRoot.resolve(name);
         Path plugin = env.resolve(packetEventsSKTarget);
         Files.createDirectories(plugin.getParent());
@@ -169,7 +171,7 @@ public class Environment {
 
         for (Resource resource : allDownloads) {
             String source = resource.getSource();
-            URL url = new URL(source);
+            URL url = new URI(source).toURL();
             Path target = env.resolve(resource.getTarget());
             Files.createDirectories(target.getParent());
             System.out.println("Downloading " + source);
