@@ -3,6 +3,7 @@ package dev.threeadd.packeteventssk.api.general.packet.definition;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -85,7 +86,7 @@ public class PacketDefinitionRegistry {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> PacketBuilder<W> optionalField(Class<T> type, Function<W, T> getter, BiConsumer<W, T> setter, String... names) {
+        public <T> PacketBuilder<W> optionalField(Class<T> type, Function<W,  @Nullable T> getter, BiConsumer<W, @Nullable T> setter, String... names) {
             if (names == null || names.length == 0) {
                 throw new IllegalArgumentException("Field registration must specify at least a primary name.");
             }
