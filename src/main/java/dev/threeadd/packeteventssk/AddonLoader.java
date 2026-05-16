@@ -17,7 +17,7 @@ public class AddonLoader {
 
     protected AddonLoader() {
         this.skriptPlugin = Bukkit.getPluginManager().getPlugin("Skript");
-        this.registration = new Registration("PacketEventsSK", false);
+        this.registration = new Registration("PacketEventsSK", true);
     }
 
     public Registration getRegistration() {
