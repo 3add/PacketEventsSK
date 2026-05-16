@@ -1,0 +1,11 @@
+version: $projectVersion
+
+types:
+    fakeentity: fake entit¦y¦ies
+    packet: packet¦s
+    packettype: packet type¦s
+    entitymeta: entity meta¦s
+    blockentitytype: block entity type¦s
+    signside: sign side¦s
+    interactionhand: interaction hand¦s
+    skin: skin¦s

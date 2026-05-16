@@ -1,57 +1,55 @@
 package dev.threeadd.packeteventssk.element.general.effect;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Example;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Effect;
+import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
+import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.ProcessType;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.registration.SyntaxInfo;
-import org.skriptlang.skript.registration.SyntaxRegistry;
-import dev.threeadd.packeteventssk.element.general.api.PacketTriggerEvent;
-import dev.threeadd.packeteventssk.element.general.structures.PacketEventStruct.PacketEventParserData;
-import dev.threeadd.packeteventssk.element.general.structures.PacketEventStruct.ProcessWay;
-import dev.threeadd.packeteventssk.util.effect.CustomEffect;
 
-@SuppressWarnings("unused")
-@Name("General - Cancel Packet")
-@Description("""
-        Used to cancel the packet in a packet receive/send event.
-        This just means that the packet won't be processed/sent.
-        """)
-@Example("""
-        on chunk data send netty processed:
-            if player's name isn't "3add":
-                stop
-            cancel the packet
-            send "You can't view my chunks 3add!"
-        """)
-@Since("1.0.0")
-public class EffCancelPacket extends CustomEffect {
+import java.util.Locale;
 
-    public static void register(SyntaxRegistry registry) {
-        registry.register(
-                SyntaxRegistry.EFFECT,
-                SyntaxInfo.builder(EffCancelPacket.class)
-                        .supplier(EffCancelPacket::new)
-                        .addPatterns("cancel [the] packet")
-                        .build()
-        );
+public class EffCancelPacket extends Effect {
+
+    public static void register(Registration reg) {
+        reg.newEffect(EffCancelPacket.class, "cancel [the] packet")
+                .name("General - Cancel Packet")
+                .description("""
+                        Used to cancel the packet in a packet receive/send event.
+                        This just means that the packet won't be processed/sent.
+                        """)
+                .examples("""
+                        on clientbound chunk data netty processed:
+                            if player's name isn't "3add":
+                                stop
+                            cancel the packet
+                            send "You can't view my chunks 3add!"
+                        """)
+                .since("1.0.0", "1.1.1 (fixed bugs)")
+                .register();
     }
 
     @Override
-    protected boolean initialize(SkriptParser.ParseResult parseResult) {
-        PacketEventParserData data = getParser().getData(PacketEventParserData.class);
-        if (data == null) {
-            Skript.error("Can't cancel packets outside of packet events.");
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        if (!getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) {
+            Skript.error("You can only cancel packets inside of a packet event.");
             return false;
         }
 
-        ProcessWay way = data.getProcessWay();
-        if (way != ProcessWay.NETTY) {
-            Skript.error("Can't cancel packets outside of netty processed packet events, this is because they have probably already been processed on the netty thread.");
+        PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
+        ProcessType way = data.getProcessType();
+
+        if (way != ProcessType.NETTY) {
+            Skript.error("Can't cancel packets in a " + (way == null ? "unknown" : way.toString().toLowerCase(Locale.ENGLISH)) + " processed event, the packets have already been processed at that point. Use a netty processed event instead.");
+            return false;
+        } else if (data.getPriority() == PacketListenerPriority.MONITOR) {
+            Skript.error("You can't alter packets when using the \"monitor\" listening priority.");
             return false;
         }
 
@@ -60,12 +58,13 @@ public class EffCancelPacket extends CustomEffect {
 
     @Override
     protected void execute(Event event) {
-        if (event instanceof PacketTriggerEvent triggerEvent)
+        if (event instanceof PacketSendOrReceiveEvent.NettyPacketEvent triggerEvent) {
             triggerEvent.setCancelled(true);
+        }
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "cancel packet";
+        return "cancel the packet";
     }
 }
