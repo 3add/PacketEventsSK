@@ -10,18 +10,16 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
-import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyDefinition;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyField;
+import dev.threeadd.packeteventssk.api.general.PacketSendOrReceiveEvent;
+import dev.threeadd.packeteventssk.api.general.packet.PacketFieldRegistry;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("rawtypes")
@@ -33,20 +31,19 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         description.append("Gets or sets a field's value from a packet by its name.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-
-            String fieldsLine = def.getReadableFields();
-            if (!fieldsLine.isEmpty()) {
+        Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+            String fieldLines = schema.getReadableFields();
+            if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(def)
-                        .append("** allowed fields:\n")
-                        .append("  `")
-                        .append(fieldsLine)
-                        .append("`\n");
+                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append("** fields:\n")
+                        .append(fieldLines)
+                        .append("\n");
             }
         }
 
-        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] [field] <[a-zA-Z0-9_ ]+>", "packet")
+        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] field <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
                 .description(description.toString())
                 .examples("""
@@ -73,21 +70,21 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             PacketTypeCommon eventPacketType = data.getPacketType();
             if (eventPacketType == null) return false; // shouldn't ever happen
 
-            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def = PacketDefinitionRegistry.INSTANCE.getDefinition(eventPacketType);
+            FieldSchema<PacketTypeCommon, PacketWrapper<?>> def = PacketFieldRegistry.INSTANCE.getSchema(eventPacketType);
 
             if (def == null) {
                 Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
 
-            if (def.getField(this.fieldName) == null) {
+            if (def.getAccessor(this.fieldName) == null) {
                 Skript.error("The field '" + this.fieldName + "' does not exist in a " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
         } else { // more global check
             boolean isValidField = false;
-            for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-                if (def.getField(this.fieldName) != null) {
+            for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+                if (def.getAccessor(this.fieldName) != null) {
                     isValidField = true;
                     break;
                 }
@@ -114,11 +111,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
+            FieldSchema<PacketTypeCommon, PacketWrapper<?>> definition = PacketFieldRegistry.INSTANCE.getSchema(type);
 
             if (definition == null) continue;
 
-            PropertyField<PacketWrapper<?>, ?> targetField = definition.getField(this.fieldName);
+            FieldAccessor<PacketWrapper<?>, ?> targetField = definition.getAccessor(this.fieldName);
 
             if (targetField == null || targetField.getter() == null) continue;
 
@@ -147,9 +144,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
                 PacketTypeCommon eventPacketType = data.getPacketType();
                 if (eventPacketType != null) {
-                    PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def = PacketDefinitionRegistry.INSTANCE.getDefinition(eventPacketType);
+                    FieldSchema<PacketTypeCommon, PacketWrapper<?>> def = PacketFieldRegistry.INSTANCE.getSchema(eventPacketType);
                     if (def != null) {
-                        PropertyField<PacketWrapper<?>, ?> field = def.getField(this.fieldName);
+                        FieldAccessor<PacketWrapper<?>, ?> field = def.getAccessor(this.fieldName);
                         if (field != null) {
                             return new Class<?>[]{field.expectedType()};
                         }
@@ -158,8 +155,8 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
 
             List<Class<?>> acceptedTypes = new ArrayList<>();
-            for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-                PropertyField<PacketWrapper<?>, ?> field = def.getField(this.fieldName);
+            for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+                FieldAccessor<PacketWrapper<?>, ?> field = def.getAccessor(this.fieldName);
                 if (field != null) {
                     Class<?> expected = field.expectedType();
                     if (!acceptedTypes.contains(expected)) {
@@ -184,11 +181,11 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             if (wrapper == null) continue;
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
-            PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
+            FieldSchema<PacketTypeCommon, PacketWrapper<?>> definition = PacketFieldRegistry.INSTANCE.getSchema(type);
 
             if (definition == null) continue;
 
-            PropertyField<PacketWrapper<?>, ?> targetField = definition.getField(this.fieldName);
+            FieldAccessor<PacketWrapper<?>, ?> targetField = definition.getAccessor(this.fieldName);
 
             if (targetField == null || targetField.setter() == null) continue;
 

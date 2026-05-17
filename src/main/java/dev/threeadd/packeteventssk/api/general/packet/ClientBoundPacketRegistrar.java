@@ -1,13 +1,11 @@
-package dev.threeadd.packeteventssk.api.general.packet.definition;
+package dev.threeadd.packeteventssk.api.general.packet;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.player.InteractionHand;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.data.BlockData;
@@ -16,10 +14,11 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 
-public class MainPacketDefinitions {
+public class ClientBoundPacketRegistrar implements FieldRegistrar {
 
-    public static void register() {
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
+    @Override
+    public boolean register() {
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
                 .requiredField(Number.class, WrapperPlayServerEntityVelocity::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
                         "entity id", "id")
@@ -30,9 +29,9 @@ public class MainPacketDefinitions {
                         values.get("entity id", Number.class).intValue(),
                         ConversionUtil.toPeVectorD(values.get("velocity vector", Vector.class)))
                 )
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.GAME_TEST_HIGHLIGHT_POS, WrapperPlayServerGameTestHighlightPos.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getAbsolutePos()),
                         (w, vector) -> w.setAbsolutePos(ConversionUtil.toPeVectorI(vector)),
                         "absolute position", "absolute pos", "abs position", "abs pos", "position", "pos")
@@ -43,9 +42,9 @@ public class MainPacketDefinitions {
                         ConversionUtil.toPeVectorI(values.get("absolute position", Vector.class)),
                         ConversionUtil.toPeVectorI(values.get("relative position", Vector.class)))
                 )
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_METADATA, WrapperPlayServerEntityMetadata.class)
                 .requiredField(Number.class, WrapperPlayServerEntityMetadata::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
                         "entity id", "id")
@@ -64,9 +63,9 @@ public class MainPacketDefinitions {
                         values.get("entity id", Number.class).intValue(),
                         values.get("entity metadata", EntityMeta.class))
                 )
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.BLOCK_CHANGE, WrapperPlayServerBlockChange.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getBlockPosition()),
                         (w, vector) -> w.setBlockPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")
@@ -77,9 +76,9 @@ public class MainPacketDefinitions {
                         ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
                         SpigotConversionUtil.fromBukkitBlockData(values.get("block state", BlockData.class))
                 ))
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.OPEN_SIGN_EDITOR, WrapperPlayServerOpenSignEditor.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
                         (w, vector) -> w.setPosition(ConversionUtil.toPeVectorI(vector)),
                         "block position", "block pos", "position", "pos")
@@ -90,13 +89,13 @@ public class MainPacketDefinitions {
                         ConversionUtil.toPeVectorI(values.get("block position", Vector.class)),
                         values.get("sign side", Side.class) == Side.FRONT
                 ))
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.CLOSE_WINDOW, WrapperPlayServerCloseWindow.class)
                 .constructor(k -> new WrapperPlayServerCloseWindow())
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.DESTROY_ENTITIES, WrapperPlayServerDestroyEntities.class)
                 .requiredField(Number[].class,
                         w -> Arrays.stream(w.getEntityIds()).boxed().toArray(Number[]::new),
                         (w, ids) -> w.setEntityIds(Arrays.stream(ids).mapToInt(Number::intValue).toArray()),
@@ -104,39 +103,8 @@ public class MainPacketDefinitions {
                 .constructor(values -> new WrapperPlayServerDestroyEntities(
                         Arrays.stream(values.get("entity ids", Number[].class)).mapToInt(Number::intValue).toArray()
                 ))
-                .build();
+                .build(this);
 
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Client.SELECT_BUNDLE_ITEM, WrapperPlayClientSelectBundleItem.class)
-                .requiredField(Number.class, WrapperPlayClientSelectBundleItem::getSlotId,
-                        (w, id) -> w.setSlotId(id.intValue()),
-                        "slot id", "id")
-                .requiredField(Number.class, WrapperPlayClientSelectBundleItem::getSelectedItemIndex,
-                        (w, index) -> w.setSelectedItemIndex(index.intValue()),
-                        "selected item index", "selected index", "item index", "index")
-                .constructor(values -> new WrapperPlayClientSelectBundleItem(
-                        values.get("slot id", Number.class).intValue(),
-                        values.get("selected item index", Number.class).intValue()
-                ))
-                .build();
-
-        PacketDefinitionRegistry.INSTANCE.builder(PacketType.Play.Client.INTERACT_ENTITY, WrapperPlayClientInteractEntity.class)
-                .requiredField(Number.class, WrapperPlayClientInteractEntity::getEntityId,
-                        (w, id) -> w.setEntityId(id.intValue()),
-                        "entity id", "id")
-                .requiredField(InteractionHand.class, WrapperPlayClientInteractEntity::getHand, WrapperPlayClientInteractEntity::setHand,
-                        "interaction hand", "hand")
-                .requiredField(Vector.class,
-                        w -> ConversionUtil.toBukkitVector(w.getLocation()),
-                        (w, newLoc) -> w.setLocation(ConversionUtil.toPeVectorD(newLoc)),
-                        "location vector", "location", "loc")
-                .requiredField(Boolean.class, w -> w.isSneaking().orElse(false), WrapperPlayClientInteractEntity::setSneaking,
-                        "sneaking state", "sneaking")
-                .constructor(values -> new WrapperPlayClientInteractEntity(
-                        values.get("entity id", Number.class).intValue(),
-                        values.get("interaction hand", InteractionHand.class),
-                        ConversionUtil.toPeVectorD(values.get("location vector", Vector.class)),
-                        values.get("sneaking state", Boolean.class)
-                ))
-                .build();
+        return true;
     }
 }

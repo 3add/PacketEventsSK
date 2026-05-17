@@ -1,11 +1,14 @@
 package dev.threeadd.packeteventssk.api.entity.meta;
 
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import me.tofaa.entitylib.meta.other.InteractionMeta;
 
-public class InteractionMetaDefinitions {
+public class InteractionMetaRegistrar implements FieldRegistrar {
 
-    public static void register() {
-        MetaDefinitionRegistry.INSTANCE.builder(InteractionMeta.class)
+    @Override
+    public boolean register() {
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.INTERACTION, InteractionMeta.class)
                 .optionalField(Number.class,
                         InteractionMeta::getWidth,
                         (meta, newNum) -> meta.setWidth(newNum.intValue()),
@@ -14,6 +17,8 @@ public class InteractionMetaDefinitions {
                         InteractionMeta::getHeight,
                         (meta, newNum) -> meta.setHeight(newNum.intValue()),
                         "interaction height")
-                .build();
+                .build(this);
+
+        return true;
     }
 }

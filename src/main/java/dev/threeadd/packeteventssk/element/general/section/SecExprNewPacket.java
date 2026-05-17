@@ -12,10 +12,10 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
-import dev.threeadd.packeteventssk.api.general.packet.definition.PacketDefinitionRegistry;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyDefinition;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyField;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyValues;
+import dev.threeadd.packeteventssk.api.general.packet.PacketFieldRegistry;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.InitializationContext;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +32,13 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-            for (PropertyField<PacketWrapper<?>, ?> field : def.fields()) {
-                builder.addOptionalEntry(field.name(), Object.class);
+        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+            for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
+                builder.addOptionalEntry(field.name(), field.expectedType());
+
+                for (String alias : field.aliases()) { // register aliases
+                    builder.addOptionalEntry(alias, field.expectedType());
+                }
             }
         }
         VALIDATOR = builder.build();
@@ -43,23 +47,22 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         description.append("Create a new packet from a packet type.\n\n");
         description.append("### Available Packets and their fields\n");
 
-        for (PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> def : PacketDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-
-            String fieldsLine = def.getReadableFields();
-            if (!fieldsLine.isEmpty()) {
+        Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+            String fieldLines = schema.getReadableFields();
+            if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(def)
-                        .append("** allowed fields:\n")
-                        .append("  `")
-                        .append(fieldsLine)
-                        .append("`\n");
+                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append("** fields:\n")
+                        .append(fieldLines)
+                        .append("\n");
             }
         }
 
         reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %packettype%")
                 .name("General - New Packet")
                 .description(description.toString())
-                // TODO Example
+                // TODO example
                 .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
     }
@@ -67,7 +70,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     private Literal<PacketTypeCommon> packetTypeLiteral;
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
-    private PropertyDefinition<PacketTypeCommon, PacketWrapper<?>> definition;
+    private FieldSchema<PacketTypeCommon, PacketWrapper<?>> definition;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -86,14 +89,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
 
         PacketTypeCommon type = this.packetTypeLiteral.getSingle();
-        this.definition = PacketDefinitionRegistry.INSTANCE.getDefinition(type);
+        this.definition = PacketFieldRegistry.INSTANCE.getSchema(type);
 
         if (this.definition == null) {
             Skript.error("Packet creation for " + type.getName() + " is not currently supported.");
             return false;
         }
 
-        boolean hasRequiredFields = this.definition.fields().stream().anyMatch(field -> !field.isOptional());
+        boolean hasRequiredFields = this.definition.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
                 Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet.");
@@ -108,31 +111,28 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         List<String> missingKeys = new ArrayList<>();
-        boolean hasTypeError = false;
 
-        for (PropertyField<PacketWrapper<?>, ?> field : this.definition.fields()) {
+        for (FieldAccessor<PacketWrapper<?>, ?> field : this.definition.accessors()) {
             String key = field.name();
-            Class<?> expectedType = field.expectedType();
 
             Expression<?> expr = container.getOptional(key, Object.class, false);
+
+            if (expr == null) {
+                for (String alias : field.aliases()) {
+                    expr = container.getOptional(alias, Object.class, false);
+                    if (expr != null) {
+                        break;
+                    }
+                }
+            }
 
             if (expr == null) {
                 if (!field.isOptional()) {
                     missingKeys.add(key);
                 }
-                continue;
+            } else {
+                this.fieldExpressions.put(key, expr);
             }
-
-            Class<?> baseType = expectedType.isArray() ? expectedType.getComponentType() : expectedType;
-            Expression<?> converted = expr.getConvertedExpression(baseType);
-
-            if (converted == null) {
-                Skript.error("The value for '" + key + "' must be of type " + expectedType.getSimpleName() + ".");
-                hasTypeError = true;
-                continue;
-            }
-
-            this.fieldExpressions.put(key, converted);
         }
 
         if (!missingKeys.isEmpty()) {
@@ -141,7 +141,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             return false;
         }
 
-        return !hasTypeError;
+        return true;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
         Map<String, Object> values = new HashMap<>();
 
-        for (PropertyField<PacketWrapper<?>, ?> field : this.definition.fields()) {
+        for (FieldAccessor<PacketWrapper<?>, ?> field : this.definition.accessors()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -179,7 +179,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             values.put(field.name(), value);
         }
 
-        return this.definition.constructor().apply(new PropertyValues((List) this.definition.fields(), values));
+        return this.definition.constructor().apply(new InitializationContext((List) this.definition.accessors(), values));
     }
 
     @Override

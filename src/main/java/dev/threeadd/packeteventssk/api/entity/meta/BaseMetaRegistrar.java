@@ -1,16 +1,19 @@
 package dev.threeadd.packeteventssk.api.entity.meta;
 
 import ch.njol.skript.util.Timespan;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Pose;
 
-public class BaseMetaDefinitions {
+public class BaseMetaRegistrar implements FieldRegistrar {
 
-    public static void register() {
-        MetaDefinitionRegistry.INSTANCE.builder(EntityMeta.class)
+    @Override
+    public boolean register() {
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, EntityMeta.class)
                 .optionalField(Timespan.class,
                         meta -> ConversionUtil.toTimespan(meta.getAirTicks()),
                         (meta, timespan) -> meta.setAirTicks((short) ConversionUtil.toTicks(timespan)),
@@ -67,6 +70,8 @@ public class BaseMetaDefinitions {
                         EntityMeta::isSwimming,
                         EntityMeta::setSwimming,
                         "swimming state", "swimming")
-                .build();
+                .build(this);
+
+        return true;
     }
 }

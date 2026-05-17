@@ -7,17 +7,17 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.api.entity.meta.MetaDefinitionRegistry;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyDefinition;
-import dev.threeadd.packeteventssk.api.util.properties.PropertyField;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import dev.threeadd.packeteventssk.api.entity.meta.MetaFieldRegistry;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -25,25 +25,33 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\n\n");
-        description.append("### Available Meta Types and their fields\n");
+        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inehrit \"entity\" fields\n\n");
+        description.append("### Available Meta Fields by Category\n");
 
-        for (PropertyDefinition<Class<? extends EntityMeta>, EntityMeta> def : MetaDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-            String fieldsLine = def.getReadableFields();
-            if (!fieldsLine.isEmpty()) {
+        Collection<FieldSchema<EntityType, EntityMeta>> schemas = MetaFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<EntityType, EntityMeta> schema : schemas) {
+            String fieldLines = schema.getReadableFields();
+            if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(def)
-                        .append("** allowed fields:\n")
-                        .append("  `")
-                        .append(fieldsLine)
-                        .append("`\n");
+                        .append(schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append("** fields:\n")
+                        .append(fieldLines)
+                        .append("\n");
             }
         }
 
-        reg.newPropertyExpression(ExprMetaField.class, Object.class, "[entity] [meta] [field] <[a-zA-Z0-9_ ]+>", "entitymetas")
+        reg.newPropertyExpression(ExprMetaField.class, Object.class, "[entity] [meta] field <[a-zA-Z0-9_ ]+>", "entitymeta")
                 .name("Entity Meta Property Field")
                 .description(description.toString())
-                .examples("set air time of fake meta of {_entity} to 10 seconds")
+                .examples("""
+                        on clientbound entity metadata:
+                            # note that {_meta} is a copy of the packet's meta
+                            set {_meta} to meta of event-packet
+                            set glowing state of {_meta} to true
+
+                            # so we set it again here
+                            set meta of event-packet to {_meta}
+                        """)
                 .since("1.1.2")
                 .register();
     }
@@ -56,8 +64,8 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         this.fieldName = parseResult.regexes.getFirst().group().trim();
 
         boolean isValidField = false;
-        for (PropertyDefinition<Class<? extends EntityMeta>, EntityMeta> def : MetaDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-            if (def.getField(this.fieldName) != null) {
+        for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+            if (def.getAccessor(this.fieldName) != null) {
                 isValidField = true;
                 break;
             }
@@ -72,27 +80,6 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    private PropertyField<EntityMeta, ?> getFieldHierarchical(@NotNull Class<? extends EntityMeta> metaClass, String fieldName) {
-        Class<?> current = metaClass;
-        while (current != null && EntityMeta.class.isAssignableFrom(current)) {
-            PropertyDefinition<Class<? extends EntityMeta>, EntityMeta> def = MetaDefinitionRegistry.INSTANCE.getDefinition((Class<? extends EntityMeta>) current);
-            if (def != null) {
-                PropertyField<EntityMeta, ?> field = def.getField(fieldName);
-                if (field != null) return field;
-            }
-            current = current.getSuperclass();
-        }
-
-        for (PropertyDefinition<Class<? extends EntityMeta>, EntityMeta> def : MetaDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-            if (def.type().isAssignableFrom(metaClass)) {
-                PropertyField<EntityMeta, ?> field = def.getField(fieldName);
-                if (field != null) return field;
-            }
-        }
-        return null;
-    }
-
     @Nullable
     @Override
     protected Object[] get(Event event, EntityMeta[] source) {
@@ -103,7 +90,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         for (EntityMeta meta : source) {
             if (meta == null) continue;
 
-            PropertyField<EntityMeta, ?> targetField = getFieldHierarchical(meta.getClass(), this.fieldName);
+            FieldAccessor<EntityMeta, ?> targetField = MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), fieldName);
             if (targetField == null || targetField.getter() == null) continue;
 
             Object value = ((Function<EntityMeta, ?>) targetField.getter()).apply(meta);
@@ -127,8 +114,8 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         if (mode == Changer.ChangeMode.SET && this.fieldName != null) {
             List<Class<?>> acceptedTypes = new ArrayList<>();
 
-            for (PropertyDefinition<Class<? extends EntityMeta>, EntityMeta> def : MetaDefinitionRegistry.INSTANCE.getAllDefinitions()) {
-                PropertyField<EntityMeta, ?> field = def.getField(this.fieldName);
+            for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+                FieldAccessor<EntityMeta, ?> field = def.getAccessor(this.fieldName);
                 if (field != null) {
                     Class<?> expected = field.expectedType();
                     if (!acceptedTypes.contains(expected)) {
@@ -154,7 +141,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         for (EntityMeta meta : getExpr().getArray(event)) {
             if (meta == null) continue;
 
-            PropertyField<EntityMeta, ?> targetField = getFieldHierarchical(meta.getClass(), this.fieldName);
+            FieldAccessor<EntityMeta, ?> targetField = MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), fieldName);
             if (targetField == null || targetField.setter() == null) continue;
 
             Class<?> expected = targetField.expectedType();

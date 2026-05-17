@@ -3,7 +3,9 @@ package dev.threeadd.packeteventssk.api.entity.meta;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.util.ColorRGB;
 import ch.njol.skript.util.Timespan;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.BlockDisplayMeta;
@@ -16,24 +18,25 @@ import org.bukkit.entity.Display;
 import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
 
-public class DisplayMetaDefinitions {
+public class DisplayMetaRegistrar implements FieldRegistrar {
 
-    public static void register() {
-        MetaDefinitionRegistry.INSTANCE.builder(BlockDisplayMeta.class)
+    @Override
+    public boolean register() {
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.BLOCK_DISPLAY, BlockDisplayMeta.class)
                 .optionalField(BlockData.class,
                         meta -> SpigotConversionUtil.toBukkitBlockData(meta.getBlockState()),
                         (meta, data) -> meta.setBlockState(SpigotConversionUtil.fromBukkitBlockData(data)),
                         "display block data", "display block state")
-                .build();
+                .build(this);
 
-        MetaDefinitionRegistry.INSTANCE.builder(ItemDisplayMeta.class)
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.ITEM_DISPLAY, ItemDisplayMeta.class)
                 .optionalField(ItemType.class,
                         meta -> new ItemType(SpigotConversionUtil.toBukkitItemStack(meta.getItem())),
                         (meta, item) -> meta.setItem(SpigotConversionUtil.fromBukkitItemStack(item.getRandom())),
                         "display item", "display item stack")
-                .build();
+                .build(this);
 
-        MetaDefinitionRegistry.INSTANCE.builder(TextDisplayMeta.class)
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.TEXT_DISPLAY, TextDisplayMeta.class)
                 .optionalField(ch.njol.skript.util.Color.class,
                         meta -> ColorRGB.fromBukkitColor(Color.fromARGB(meta.getBackgroundColor())),
                         (meta, newColor) -> meta.setBackgroundColor(newColor.asARGB()),
@@ -46,9 +49,9 @@ public class DisplayMetaDefinitions {
                         TextDisplayMeta::isShadow,
                         TextDisplayMeta::setShadow,
                         "display text shadow state", "display shadow state", "display shadow")
-                .build();
+                .build(this);
 
-        MetaDefinitionRegistry.INSTANCE.builder(AbstractDisplayMeta.class)
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.DISPLAY, AbstractDisplayMeta.class)
                 .optionalField(Display.Billboard.class,
                         meta -> ConversionUtil.toBillboard(meta.getBillboardConstraints()),
                         (meta, newBillboard) -> meta.setBillboardConstraints(ConversionUtil.toBillboardConstraints(newBillboard)),
@@ -97,6 +100,8 @@ public class DisplayMetaDefinitions {
                         AbstractDisplayMeta::getViewRange,
                         (meta, newNum) -> meta.setViewRange(newNum.intValue()),
                         "display view range")
-                .build();
+                .build(this);
+
+        return true;
     }
 }

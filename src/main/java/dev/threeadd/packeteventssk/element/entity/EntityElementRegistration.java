@@ -26,13 +26,8 @@ public class EntityElementRegistration implements SkriptElementRegistration {
     @Override
     public void load(Registration reg) {
 
-        // start definitions
-        BaseMetaDefinitions.register();
-        DisplayMetaDefinitions.register();
-        InteractionMetaDefinitions.register();
-        ItemMetaDefinitions.register();
-        LivingMetaDefinitions.register();
-        // end definitions
+        // property registry (registered before the expr/sec using it)
+        MetaFieldRegistry.INSTANCE.registerAll();
 
         // start effects
         EffKillFakeEntity.register(reg);

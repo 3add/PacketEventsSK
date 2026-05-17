@@ -1,9 +1,9 @@
-package dev.threeadd.packeteventssk.api.util.properties;
+package dev.threeadd.packeteventssk.api.util.field;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public record PropertyField<O, T>(
+public record FieldAccessor<O, T>(
         String name,
         String[] aliases,
         Class<T> expectedType,
@@ -11,6 +11,13 @@ public record PropertyField<O, T>(
         Function<O, T> getter,
         BiConsumer<O, T> setter
 ) {
+    /**
+     * Checks if the provided input string matches either the primary name or any assigned aliases,
+     * ignoring case sensitivity.
+     *
+     * @param input the string signature to test
+     * @return true if this accessor answers to the given name
+     */
     public boolean matches(String input) {
         if (name.equalsIgnoreCase(input)) return true;
         for (String alias : aliases) {
