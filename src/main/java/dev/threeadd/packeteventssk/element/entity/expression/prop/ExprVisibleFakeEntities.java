@@ -1,0 +1,71 @@
+package dev.threeadd.packeteventssk.element.entity.expression.prop;
+
+import ch.njol.skript.expressions.base.PropertyExpression;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.util.Kleenean;
+import com.github.shanebeee.skr.Registration;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+public class ExprVisibleFakeEntities extends PropertyExpression<Player, WrapperEntity> {
+
+    public static void register(Registration reg) {
+        reg.newPropertyExpression(ExprVisibleFakeEntities.class, WrapperEntity.class, "[visible] fake[ ]entities", "player")
+                .name("Fake Entity - Visible Fake Entities")
+                .description("Used to get all fake entities viewed by a player")
+                .examples("""
+                        command test:
+                            trigger:
+                                set {_p} to player
+                                create a new fake zombie entity at player for players:
+                                    set fake scale attribute of the fake entity to 2
+                        
+                                    if visible fake entities of {_p} contains the fake entity:
+                                        send "You can see the fake entity!" to {_p}
+                        """)
+                .since("1.0.1")
+                .register();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        setExpr((Expression<? extends Player>) expressions[0]);
+        return true;
+    }
+
+    @Override
+    protected WrapperEntity[] get(Event event, Player[] source) {
+        Set<UUID> playerUUIDs = Arrays.stream(source)
+                .map(Player::getUniqueId)
+                .collect(Collectors.toSet());
+
+        return EntityLib.getApi().getAllEntities().stream()
+                .filter(entity -> entity.getViewers().stream().anyMatch(playerUUIDs::contains))
+                .toArray(WrapperEntity[]::new);
+    }
+
+    @Override
+    public boolean isSingle() {
+        return false;
+    }
+
+    @Override
+    public Class<? extends WrapperEntity> getReturnType() {
+        return WrapperEntity.class;
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean debug) {
+        return "visible fake entities of " + getExpr().toString(event, debug);
+    }
+}

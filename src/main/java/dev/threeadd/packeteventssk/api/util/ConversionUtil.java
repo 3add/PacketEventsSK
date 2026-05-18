@@ -51,6 +51,11 @@ public class ConversionUtil {
         return new Vector3i(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
     }
 
+    public static com.github.retrooper.packetevents.protocol.world.Location toPeLocation(Vector vector) {
+        if (vector == null) return null;
+        return new com.github.retrooper.packetevents.protocol.world.Location(toPeVectorD(vector), 0, 0);
+    }
+
     public static Quaternionf toBukkitQuaternionf(Quaternion4f quaternion4f) {
         if (quaternion4f == null) return null;
         return new Quaternionf(quaternion4f.getX(), quaternion4f.getY(), quaternion4f.getZ(), quaternion4f.getW());

@@ -1,22 +1,24 @@
 package dev.threeadd.packeteventssk.element.general.section;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.bukkitutil.EntityUtils;
 import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.expressions.base.SectionExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
-import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
-import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
+import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,16 +27,15 @@ import org.skriptlang.skript.lang.entry.EntryValidator;
 
 import java.util.*;
 
-public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
+public class SecExprNewMeta extends SectionExpression<EntityMeta> {
 
     private static EntryValidator VALIDATOR;
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
-            for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
+        for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+            for (FieldAccessor<EntityMeta, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
                 for (String alias : field.aliases()) { // register aliases
@@ -45,11 +46,11 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
-        description.append("Create a new packet from a packet type.\n\n");
-        description.append("### Available Packets and their fields\n");
+        description.append("Create a new meta from an entity type.\n\n");
+        description.append("### Available Metas and their fields\n");
 
-        Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
-        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+        Collection<FieldSchema<EntityType, EntityMeta>> schemas = MetaFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<EntityType, EntityMeta> schema : schemas) {
             String fieldLines = schema.getReadableFields();
             if (!fieldLines.isEmpty()) {
                 description.append("* **")
@@ -60,18 +61,17 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             }
         }
 
-        reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %*packettype%")
-                .name("General - New Packet")
+        reg.newSimpleExpression(SecExprNewMeta.class, EntityMeta.class, "[a] [new] %*entitydata% [entity] meta [data]")
+                .name("General - Create Meta")
                 .description(description.toString())
-                // TODO example
-                .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
+                .since("1.1.2")
                 .register();
     }
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
 
-    private PacketTypeCommon type;
-    private FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema;
+    private EntityType type;
+    private FieldSchema<EntityType, EntityMeta> schema;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,27 +83,36 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
                         @Nullable List<TriggerItem> triggerItems) {
 
         if (!(expressions[0] instanceof Literal<?>)) { // shouldn't ever happen cause of our *
-            Skript.error("The packet type needs to be a literal");
+            Skript.error("The entity type needs to be a literal");
             return false;
         }
 
-        Literal<PacketTypeCommon> packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
+        Literal<EntityData<?>> entityDataLiteral = (Literal<EntityData<?>>) expressions[0];
 
-        this.type = packetTypeLiteral.getSingle();
-        this.schema = PacketFieldRegistry.INSTANCE.getSchema(this.type);
+        EntityData<?> skriptType = entityDataLiteral.getSingle();
+        if (skriptType == null) return false;
+
+        org.bukkit.entity.EntityType bukkitType = EntityUtils.toBukkitEntityType(skriptType);
+        this.type = SpigotConversionUtil.fromBukkitEntityType(bukkitType);
+
+        this.schema = MetaFieldRegistry.INSTANCE.getSchema(this.type);
 
         if (this.schema == null) {
-            Skript.error("Packet creation for " + this.type.getName() + " is not currently supported. Consider creating/handling it through reflection.");
-            return false; // can't return an empty packet so this expr can't be used
+            Skript.warning("Meta creation for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is not currently supported. Consider creating/handling it through reflection.");
+            return true;
         }
 
+        if (this.schema.constructor() == null) {
+            Skript.error("Meta creation for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is abstract and thus can't be created. Use an extending entity instead.");
+            return false;
+        }
+        
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " packet.");
+                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " meta.");
                 return false;
             }
-
             return true;
         }
 
@@ -113,7 +122,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         List<String> missingKeys = new ArrayList<>();
-        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
+        for (FieldAccessor<EntityMeta, ?> field : this.schema.accessors()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -147,8 +156,8 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         if (!missingKeys.isEmpty()) {
-            String packetName = type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ");
-            Skript.error("Missing required entries for " + packetName + " packet: " + String.join(", ", missingKeys));
+            String metaName = this.type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+            Skript.error("Missing required entries for " + metaName + " meta: " + String.join(", ", missingKeys));
             return false;
         }
 
@@ -156,15 +165,15 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     }
 
     @Override
-    protected PacketWrapper<?> @Nullable [] get(Event event) {
-        return new PacketWrapper[]{createPacket(event)};
+    protected EntityMeta @Nullable [] get(Event event) {
+        return new EntityMeta[]{createMeta(event)};
     }
 
-    private @Nullable PacketWrapper<?> createPacket(@NotNull Event event) {
+    private @Nullable EntityMeta createMeta(@NotNull Event event) {
         if (this.schema == null) return null;
 
         Map<String, Object> values = new HashMap<>();
-        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
+        for (FieldAccessor<EntityMeta, ?> field : this.schema.accessors()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -196,15 +205,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         return true;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Class<? extends PacketWrapper<?>> getReturnType() {
-        return (Class) PacketWrapper.class;
+    public Class<? extends EntityMeta> getReturnType() {
+        return EntityMeta.class;
     }
 
     @Override
-    public String toString(@Nullable Event event, boolean debug) {
-        String packetType = (this.type != null ? this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
-        return String.format("a new %s packet", packetType);
+    public String toString(@Nullable Event event, boolean debug) {;
+        String entityData = (this.type != null ? this.type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
+        return String.format("a new %s meta", entityData);
     }
 }

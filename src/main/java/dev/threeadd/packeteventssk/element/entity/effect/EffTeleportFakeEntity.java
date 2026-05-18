@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class EffTeleportFakeEntity extends Effect {
 
     public static void register(Registration reg) {
-        reg.newEffect(EffTeleportFakeEntity.class, "teleport fake[ ]entit(y|ies) %fakeentities% to %location%")
+        reg.newEffect(EffTeleportFakeEntity.class, "teleport fake [entit(y|ies)] %fakeentities% to %location%")
                 .name("Fake Entity - Teleport Fake Entity")
                 .description("Teleport a spawned fake entity to a location.")
                 .examples("""

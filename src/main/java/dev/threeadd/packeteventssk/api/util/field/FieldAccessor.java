@@ -1,5 +1,7 @@
 package dev.threeadd.packeteventssk.api.util.field;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -9,7 +11,7 @@ public record FieldAccessor<O, T>(
         Class<T> expectedType,
         boolean isOptional,
         Function<O, T> getter,
-        BiConsumer<O, T> setter
+        @Nullable BiConsumer<O, T> setter
 ) {
     /**
      * Checks if the provided input string matches either the primary name or any assigned aliases,
