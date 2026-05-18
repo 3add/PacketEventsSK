@@ -1,21 +1,23 @@
-package dev.threeadd.packeteventssk.element.general.section;
+package dev.threeadd.packeteventssk.element.entity.section;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.bukkitutil.EntityUtils;
 import ch.njol.skript.config.SectionNode;
+import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.expressions.base.SectionExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
-import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
-import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
+import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -25,16 +27,15 @@ import org.skriptlang.skript.lang.entry.EntryValidator;
 
 import java.util.*;
 
-public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
+public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
 
     private static EntryValidator VALIDATOR;
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
-            for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
+        for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
+            for (FieldAccessor<WrapperEntity, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
                 for (String alias : field.aliases()) { // register aliases
@@ -45,11 +46,11 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
-        description.append("Create a new packet from a packet type.\n\n");
-        description.append("### Available Packets and their fields\n");
+        description.append("Create a new fake entity from an entity type.\n\n");
+        description.append("### Available Entities and their fields\n");
 
-        Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
-        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+        Collection<FieldSchema<EntityType, WrapperEntity>> schemas = FakeEntityFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<EntityType, WrapperEntity> schema : schemas) {
             String fieldLines = schema.getReadableFields();
             if (!fieldLines.isEmpty()) {
                 description.append("* **")
@@ -60,18 +61,17 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             }
         }
 
-        reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %*packettype%")
-                .name("General - New Packet")
+        reg.newSimpleExpression(SecExprNewFakeEntity.class, WrapperEntity.class, "[a] [new] fake %*entitydata% entity")
+                .name("Fake Entity - Create Fake Entity")
                 .description(description.toString())
-                // TODO example
-                .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
+                .since("1.0.0", "1.1.2 (changed to SectionExpression)")
                 .register();
     }
 
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
 
-    private PacketTypeCommon type;
-    private FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema;
+    private EntityType type;
+    private FieldSchema<EntityType, WrapperEntity> schema;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,27 +83,31 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
                         @Nullable List<TriggerItem> triggerItems) {
 
         if (!(expressions[0] instanceof Literal<?>)) { // shouldn't ever happen cause of our *
-            Skript.error("The packet type needs to be a literal");
+            Skript.error("The entity type needs to be a literal");
             return false;
         }
 
-        Literal<PacketTypeCommon> packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
+        Literal<EntityData<?>> entityDataLiteral = (Literal<EntityData<?>>) expressions[0];
 
-        this.type = packetTypeLiteral.getSingle();
-        this.schema = PacketFieldRegistry.INSTANCE.getSchema(this.type);
+        EntityData<?> type = entityDataLiteral.getSingle();
+        if (type == null) return false;
+
+        org.bukkit.entity.EntityType bukkitType = EntityUtils.toBukkitEntityType(type);
+        this.type = SpigotConversionUtil.fromBukkitEntityType(bukkitType);
+
+        this.schema = FakeEntityFieldRegistry.INSTANCE.getSchema(this.type);
 
         if (this.schema == null) {
-            Skript.error("Packet creation for " + this.type.getName() + " is not currently supported. Consider creating/handling it through reflection.");
-            return false; // can't return an empty packet so this expr can't be used
+            Skript.warning("Fake entity creation for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is not currently supported. Consider creating/handling it through reflection.");
+            return true;
         }
 
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " packet.");
+                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " fake entity.");
                 return false;
             }
-
             return true;
         }
 
@@ -113,7 +117,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         List<String> missingKeys = new ArrayList<>();
-        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
+        for (FieldAccessor<WrapperEntity, ?> field : this.schema.accessors()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
@@ -147,8 +151,8 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         if (!missingKeys.isEmpty()) {
-            String packetName = type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ");
-            Skript.error("Missing required entries for " + packetName + " packet: " + String.join(", ", missingKeys));
+            String entityName = this.type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+            Skript.error("Missing required entries for " + entityName + " entity: " + String.join(", ", missingKeys));
             return false;
         }
 
@@ -156,15 +160,15 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     }
 
     @Override
-    protected PacketWrapper<?> @Nullable [] get(Event event) {
-        return new PacketWrapper[]{createPacket(event)};
+    protected WrapperEntity @Nullable [] get(Event event) {
+        return new WrapperEntity[]{createEntity(event)};
     }
 
-    private @Nullable PacketWrapper<?> createPacket(@NotNull Event event) {
+    private @Nullable WrapperEntity createEntity(@NotNull Event event) {
         if (this.schema == null) return null;
 
         Map<String, Object> values = new HashMap<>();
-        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
+        for (FieldAccessor<WrapperEntity, ?> field : this.schema.accessors()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -196,15 +200,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         return true;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Class<? extends PacketWrapper<?>> getReturnType() {
-        return (Class) PacketWrapper.class;
+    public Class<? extends WrapperEntity> getReturnType() {
+        return WrapperEntity.class;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String packetType = (this.type != null ? this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
-        return String.format("a new %s packet", packetType);
+        String type = this.type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+        return String.format("a new fake %s entity", type);
     }
 }

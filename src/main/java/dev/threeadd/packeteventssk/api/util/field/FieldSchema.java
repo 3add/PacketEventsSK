@@ -1,5 +1,7 @@
 package dev.threeadd.packeteventssk.api.util.field;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -7,8 +9,7 @@ import java.util.function.Function;
 public record FieldSchema<K, O>(
         K type,
         List<FieldAccessor<O, ?>> accessors,
-        Function<InitializationContext, O> constructor,
-        FieldRegistrar registrar // the registrar that registered this field
+        @Nullable Function<ConstructionContext<K, O>, O> constructor
 ) {
     public FieldAccessor<O, ?> getAccessor(String name) {
         for (FieldAccessor<O, ?> accessor : accessors) {

@@ -1,5 +1,7 @@
 package dev.threeadd.packeteventssk.api.util.field;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -16,7 +18,7 @@ public abstract class BaseFieldRegistry<K, BaseType> {
                 throw new RuntimeException("Failed to register fields for " + registrar.getClass().getSimpleName());
             }
         }
-    };
+    }
 
     public FieldSchema<K, BaseType> getSchema(K key) {
         return REGISTRY.get(key);
@@ -34,32 +36,32 @@ public abstract class BaseFieldRegistry<K, BaseType> {
     public class Builder<T extends BaseType> {
         protected final K type;
         protected final List<FieldAccessor<BaseType, ?>> accessors = new ArrayList<>();
-        protected Function<InitializationContext, T> constructor;
+        protected @Nullable Function<ConstructionContext<K, T>, T> constructor;
 
         public Builder(K type) {
             this.type = type;
         }
 
         @SuppressWarnings("unchecked")
-        public <V> Builder<T> requiredField(Class<V> expectedType, Function<T, V> getter, BiConsumer<T, V> setter, String... names) {
+        public <V> Builder<T> requiredField(Class<V> expectedType, Function<T, V> getter, @Nullable BiConsumer<T, V> setter, String... names) {
             accessors.add(new FieldAccessor<>(names[0], Arrays.copyOfRange(names, 1, names.length), expectedType, false, (Function<BaseType, V>) getter, (BiConsumer<BaseType, V>) setter));
             return this;
         }
 
         @SuppressWarnings("unchecked")
-        public <V> Builder<T> optionalField(Class<V> expectedType, Function<T, V> getter, BiConsumer<T, V> setter, String... names) {
+        public <V> Builder<T> optionalField(Class<V> expectedType, Function<T, V> getter, @Nullable BiConsumer<T, V> setter, String... names) {
             accessors.add(new FieldAccessor<>(names[0], Arrays.copyOfRange(names, 1, names.length), expectedType, true, (Function<BaseType, V>) getter, (BiConsumer<BaseType, V>) setter));
             return this;
         }
 
-        public Builder<T> constructor(Function<InitializationContext, T> constructor) {
+        public Builder<T> constructor(@Nullable Function<ConstructionContext<K, T>, T> constructor) {
             this.constructor = constructor;
             return this;
         }
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        public void build(FieldRegistrar registrar) {
-            REGISTRY.put(type, new FieldSchema(type, accessors, constructor, registrar));
+        public void build() {
+            REGISTRY.put(type, new FieldSchema(type, accessors, constructor));
         }
     }
 }
