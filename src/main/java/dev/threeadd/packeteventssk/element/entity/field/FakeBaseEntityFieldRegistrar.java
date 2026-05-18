@@ -11,7 +11,6 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -27,10 +26,10 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
                         w -> w.getViewers().stream().map(Bukkit::getPlayer).toArray(Player[]::new),
                         FakeBaseEntityFieldRegistrar::setViewers,
                         "entity viewers", "viewers")
-                .requiredField(Vector.class,
-                        w -> ConversionUtil.toBukkitVector(w.getLocation()),
+                .requiredField(org.bukkit.Location.class,
+                        w -> ConversionUtil.toBukkitLocation(w.getLocation()),
                         (w, newVec) -> w.setLocation(ConversionUtil.toPeLocation(newVec)),
-                        "entity location vector", "entity location", "location")
+                        "entity location", "location")
                 .optionalField(Number.class, WrapperEntity::getEntityId, null, "entity id", "id")
                 .optionalField(EntityMeta.class, WrapperEntity::getEntityMeta, null, "entity meta data", "meta data", "meta")
                 .optionalField(EntityType.class, WrapperEntity::getEntityType, null, "entity type", "type")
@@ -81,10 +80,10 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
             }
         }
 
-        Vector vector = context.getRequired("entity location vector", Vector.class);
-        Location location = ConversionUtil.toPeLocation(vector);
-        entity.setLocation(location);
-        entity.spawn(location);
+        org.bukkit.Location location = context.getRequired("entity location", org.bukkit.Location.class);
+        Location peLocation = ConversionUtil.toPeLocation(location);
+        entity.setLocation(peLocation);
+        entity.spawn(peLocation);
     }
 
     private static void setViewers(WrapperEntity w, Player[] viewers) {

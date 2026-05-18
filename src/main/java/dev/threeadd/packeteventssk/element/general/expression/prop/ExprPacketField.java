@@ -11,15 +11,18 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
-import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
+import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("rawtypes")

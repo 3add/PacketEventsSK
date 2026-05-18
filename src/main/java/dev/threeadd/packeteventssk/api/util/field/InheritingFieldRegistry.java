@@ -1,18 +1,18 @@
 package dev.threeadd.packeteventssk.api.util.field;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A specialized field registry that allows schemas to inherit fields from their superclasses.
  */
 public abstract class InheritingFieldRegistry<K, BaseType> extends BaseFieldRegistry<K, BaseType> {
 
-    protected final BiMap<Class<? extends BaseType>, K> classToTypeMap = HashBiMap.create();
+    protected final Map<Class<? extends BaseType>, K> classToTypeMap = new HashMap<>();
 
     protected abstract @Nullable K getParentKey(K key);
 
@@ -26,7 +26,6 @@ public abstract class InheritingFieldRegistry<K, BaseType> extends BaseFieldRegi
             }
             current = getParentKey(current);
         }
-
         return null;
     }
 
@@ -36,13 +35,9 @@ public abstract class InheritingFieldRegistry<K, BaseType> extends BaseFieldRegi
         return new InheritingBuilder<>(key, clazz);
     }
 
-    /**
-     * Walks up the class hierarchy to find the appropriate accessor for a given field name.
-     */
     @Nullable
     public FieldAccessor<BaseType, ?> getAccessor(Class<?> clazz, String fieldName) {
         Class<?> current = clazz;
-
         while (current != null && current != Object.class) {
             K type = classToTypeMap.get(current);
             if (type != null) {
@@ -71,14 +66,14 @@ public abstract class InheritingFieldRegistry<K, BaseType> extends BaseFieldRegi
         @Override
         public void build() {
             List<FieldAccessor<BaseType, ?>> mergedAccessors = new ArrayList<>();
-
             Class<?> current = clazz.getSuperclass();
 
             while (current != null && current != Object.class) {
                 K parentKey = classToTypeMap.get(current);
                 if (parentKey != null && REGISTRY.containsKey(parentKey)) {
                     FieldSchema<K, BaseType> parentSchema = REGISTRY.get(parentKey);
-                    mergedAccessors.addAll(0, parentSchema.accessors());
+                    mergedAccessors.addAll(parentSchema.accessors());
+                    break;
                 }
                 current = current.getSuperclass();
             }

@@ -1,18 +1,15 @@
 package dev.threeadd.packeteventssk.element.general;
 
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
 import dev.threeadd.packeteventssk.element.general.effect.EffSendOrReceivePacket;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.expression.ExprSkinFromValue;
-import dev.threeadd.packeteventssk.element.general.expression.prop.ExprEntityId;
-import dev.threeadd.packeteventssk.element.general.expression.prop.ExprPacketField;
-import dev.threeadd.packeteventssk.element.general.expression.prop.ExprPacketPacketType;
-import dev.threeadd.packeteventssk.element.general.expression.prop.ExprPlayerSkin;
+import dev.threeadd.packeteventssk.element.general.expression.prop.*;
+import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
+import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
 import dev.threeadd.packeteventssk.element.general.section.SecExprNewMeta;
 import dev.threeadd.packeteventssk.element.general.section.SecExprNewPacket;
 
@@ -42,6 +39,7 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
 
         // start expressions
         ExprEntityId.register(reg);
+        ExprMetaField.register(reg);
         ExprPacketField.register(reg);
         ExprPacketPacketType.register(reg);
         ExprPlayerSkin.register(reg);

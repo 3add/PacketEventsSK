@@ -6,8 +6,8 @@ import ch.njol.skript.util.Timespan;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
+import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.BlockDisplayMeta;
@@ -27,6 +27,54 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public boolean register() {
+
+        MetaFieldRegistry.INSTANCE.builder(EntityTypes.DISPLAY, AbstractDisplayMeta.class)
+                .optionalField(Display.Billboard.class,
+                        meta -> ConversionUtil.toBillboard(meta.getBillboardConstraints()),
+                        (meta, newBillboard) -> meta.setBillboardConstraints(ConversionUtil.toBillboardConstraints(newBillboard)),
+                        "display billboard constraints", "display billboard")
+                .optionalField(Number.class,
+                        AbstractDisplayMeta::getHeight,
+                        (meta, newNum) -> meta.setHeight(newNum.intValue()),
+                        "display height")
+                .optionalField(Number.class,
+                        AbstractDisplayMeta::getWidth,
+                        (meta, newNum) -> meta.setWidth(newNum.intValue()),
+                        "display width")
+                .optionalField(Timespan.class,
+                        meta -> ConversionUtil.toTimespan(meta.getInterpolationDelay()),
+                        (meta, newTime) -> meta.setInterpolationDelay((int) ConversionUtil.toTicks(newTime)),
+                        "display interpolation delay")
+                .optionalField(Quaternionf.class,
+                        meta -> ConversionUtil.toBukkitQuaternionf(meta.getLeftRotation()),
+                        (meta, newQuaternionf) -> meta.setLeftRotation(ConversionUtil.toPeQuaternion4f(newQuaternionf)),
+                        "display left rotation")
+                .optionalField(Quaternionf.class,
+                        meta -> ConversionUtil.toBukkitQuaternionf(meta.getRightRotation()),
+                        (meta, newQuaternionf) -> meta.setRightRotation(ConversionUtil.toPeQuaternion4f(newQuaternionf)),
+                        "display right rotation")
+                .optionalField(Vector.class,
+                        meta -> ConversionUtil.toBukkitVector(meta.getScale()),
+                        (meta, newVector) -> meta.setScale(ConversionUtil.toPeVectorF(newVector)),
+                        "display scale")
+                .optionalField(Timespan.class,
+                        meta -> ConversionUtil.toTimespan(meta.getPositionRotationInterpolationDuration()),
+                        (meta, newTime) -> meta.setPositionRotationInterpolationDuration((int) ConversionUtil.toTicks(newTime)),
+                        "display teleport interpolation duration")
+                .optionalField(Timespan.class,
+                        meta -> ConversionUtil.toTimespan(meta.getTransformationInterpolationDuration()),
+                        (meta, newTime) -> meta.setTransformationInterpolationDuration((int) ConversionUtil.toTicks(newTime)),
+                        "display transform interpolation duration")
+                .optionalField(Vector.class,
+                        meta -> ConversionUtil.toBukkitVector(meta.getTranslation()),
+                        (meta, newVector) -> meta.setTranslation(ConversionUtil.toPeVectorF(newVector)),
+                        "display translation")
+                .optionalField(Number.class,
+                        AbstractDisplayMeta::getViewRange,
+                        (meta, newNum) -> meta.setViewRange(newNum.intValue()),
+                        "display view range")
+                .build();
+
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.BLOCK_DISPLAY, BlockDisplayMeta.class)
                 .optionalField(BlockData.class,
                         meta -> SpigotConversionUtil.toBukkitBlockData(meta.getBlockState()),
@@ -76,7 +124,7 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                 .optionalField(Boolean.class,
                         TextDisplayMeta::isShadow,
                         TextDisplayMeta::setShadow,
-                        "display text shadow state", "display shadow state", "display shadow")
+                        "display text shadowed state", "display shadowed state", "display shadowed")
                 .constructor(context -> {
                     TextDisplayMeta meta = (TextDisplayMeta) BaseMetaFieldRegistrar.BASE_ENTITY_META_CONSTRUCTOR.apply((ConstructionContext) context);
                     DISPLAY_CONSUMER.accept((ConstructionContext) context, meta);
@@ -91,64 +139,13 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         meta.setText(text);
                     }
 
-                    Boolean shadow = context.getOptional("display shadow state", Boolean.class);
+                    Boolean shadow = context.getOptional("display text shadowed state", Boolean.class);
                     if (shadow != null) {
                         meta.setShadow(shadow);
                     }
 
                     return meta;
                 })
-                .build();
-
-        MetaFieldRegistry.INSTANCE.builder(EntityTypes.DISPLAY, AbstractDisplayMeta.class)
-                .optionalField(Display.Billboard.class,
-                        meta -> ConversionUtil.toBillboard(meta.getBillboardConstraints()),
-                        (meta, newBillboard) -> meta.setBillboardConstraints(ConversionUtil.toBillboardConstraints(newBillboard)),
-                        "display billboard constraints", "display billboard")
-                .optionalField(Number.class,
-                        AbstractDisplayMeta::getHeight,
-                        (meta, newNum) -> meta.setHeight(newNum.intValue()),
-                        "display height")
-                .optionalField(Number.class,
-                        AbstractDisplayMeta::getWidth,
-                        (meta, newNum) -> meta.setWidth(newNum.intValue()),
-                        "display width")
-                .optionalField(Timespan.class,
-                        meta -> ConversionUtil.toTimespan(meta.getInterpolationDelay()),
-                        (meta, newTime) -> meta.setInterpolationDelay((int) ConversionUtil.toTicks(newTime)),
-                        "display interpolation delay")
-                .optionalField(Quaternionf.class,
-                        meta -> ConversionUtil.toBukkitQuaternionf(meta.getLeftRotation()),
-                        (meta, newQuaternionf) -> meta.setLeftRotation(ConversionUtil.toPeQuaternion4f(newQuaternionf)),
-                        "display left rotation")
-                .optionalField(Quaternionf.class,
-                        meta -> ConversionUtil.toBukkitQuaternionf(meta.getRightRotation()),
-                        (meta, newQuaternionf) -> meta.setRightRotation(ConversionUtil.toPeQuaternion4f(newQuaternionf)),
-                        "display right rotation")
-                .optionalField(Vector.class,
-                        meta -> ConversionUtil.toBukkitVector(meta.getScale()),
-                        (meta, newVector) -> meta.setScale(ConversionUtil.toPeVectorF(newVector)),
-                        "display scale")
-                .optionalField(Vector.class,
-                        meta -> ConversionUtil.toBukkitVector(meta.getScale()),
-                        (meta, newVector) -> meta.setScale(ConversionUtil.toPeVectorF(newVector)),
-                        "display scale")
-                .optionalField(Timespan.class,
-                        meta -> ConversionUtil.toTimespan(meta.getPositionRotationInterpolationDuration()),
-                        (meta, newTime) -> meta.setPositionRotationInterpolationDuration((int) ConversionUtil.toTicks(newTime)),
-                        "display teleport interpolation duration")
-                .optionalField(Timespan.class,
-                        meta -> ConversionUtil.toTimespan(meta.getTransformationInterpolationDuration()),
-                        (meta, newTime) -> meta.setTransformationInterpolationDuration((int) ConversionUtil.toTicks(newTime)),
-                        "display transform interpolation duration")
-                .optionalField(Vector.class,
-                        meta -> ConversionUtil.toBukkitVector(meta.getTranslation()),
-                        (meta, newVector) -> meta.setTranslation(ConversionUtil.toPeVectorF(newVector)),
-                        "display translation")
-                .optionalField(Number.class,
-                        AbstractDisplayMeta::getViewRange,
-                        (meta, newNum) -> meta.setViewRange(newNum.intValue()),
-                        "display view range")
                 .build();
 
         return true;
@@ -191,7 +188,7 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
 
         Timespan teleportInterpolationDuration = context.getOptional("display teleport interpolation duration", Timespan.class);
         if (teleportInterpolationDuration != null) {
-            meta.setTransformationInterpolationDuration((int) ConversionUtil.toTicks(teleportInterpolationDuration));
+            meta.setPositionRotationInterpolationDuration((int) ConversionUtil.toTicks(teleportInterpolationDuration));
         }
 
         Timespan transformInterpolationDuration = context.getOptional("display transform interpolation duration", Timespan.class);

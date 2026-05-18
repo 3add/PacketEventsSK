@@ -1,8 +1,6 @@
 package dev.threeadd.packeteventssk.element.entity;
 
 import com.github.shanebeee.skr.Registration;
-import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
-import dev.threeadd.packeteventssk.element.entity.section.SecExprNewFakeEntity;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
 import dev.threeadd.packeteventssk.element.entity.effect.EffKillFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.effect.EffRideFakeEntity;
@@ -12,8 +10,11 @@ import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntitiesAll
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityEventValue;
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityFromId;
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityFromUuid;
-import dev.threeadd.packeteventssk.element.entity.expression.prop.*;
+import dev.threeadd.packeteventssk.element.entity.expression.prop.ExprFakeEntityField;
+import dev.threeadd.packeteventssk.element.entity.expression.prop.ExprVisibleFakeEntities;
 import dev.threeadd.packeteventssk.element.entity.expression.prop.living.ExprFakeLivingEntityAttribute;
+import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.section.SecExprNewFakeEntity;
 
 public class EntityElementRegistration implements SkriptElementRegistration {
 

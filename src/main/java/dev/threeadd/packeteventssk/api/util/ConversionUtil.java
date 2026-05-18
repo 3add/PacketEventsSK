@@ -8,6 +8,7 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
@@ -15,11 +16,6 @@ import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
 
 public class ConversionUtil {
-
-    public static Vector toBukkitVector(com.github.retrooper.packetevents.protocol.world.Location location) {
-        if (location == null) return null;
-        return new Vector(location.getX(), location.getY(), location.getZ());
-    }
 
     public static Vector toBukkitVector(Vector3i vector3i) {
         if (vector3i == null) return null;
@@ -51,9 +47,14 @@ public class ConversionUtil {
         return new Vector3i(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
     }
 
-    public static com.github.retrooper.packetevents.protocol.world.Location toPeLocation(Vector vector) {
-        if (vector == null) return null;
-        return new com.github.retrooper.packetevents.protocol.world.Location(toPeVectorD(vector), 0, 0);
+    public static Location toBukkitLocation(com.github.retrooper.packetevents.protocol.world.Location location) {
+        if (location == null) return null;
+        return new Location(Bukkit.getWorlds().getFirst(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+    }
+
+    public static com.github.retrooper.packetevents.protocol.world.Location toPeLocation(Location location) {
+        if (location == null) return null;
+        return new com.github.retrooper.packetevents.protocol.world.Location(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public static Quaternionf toBukkitQuaternionf(Quaternion4f quaternion4f) {

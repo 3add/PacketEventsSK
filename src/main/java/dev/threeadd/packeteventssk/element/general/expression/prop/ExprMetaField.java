@@ -6,17 +6,20 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.github.shanebeee.skr.Registration;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
-import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -47,7 +50,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
                             # note that {_meta} is a copy of the packet's meta
                             set {_meta} to meta of event-packet
                             set glowing state of {_meta} to true
-
+                        
                             # so we set it again here
                             set meta of event-packet to {_meta}
                         """)

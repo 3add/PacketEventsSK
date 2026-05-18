@@ -13,9 +13,9 @@ import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
+import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
@@ -61,7 +61,7 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
             }
         }
 
-        reg.newSimpleExpression(SecExprNewMeta.class, EntityMeta.class, "[a] [new] %*entitydata% [entity] meta [data]")
+        reg.newSimpleExpression(SecExprNewMeta.class, EntityMeta.class, "[a] [new] [fake] %*entitydata% [entity] meta [data]")
                 .name("General - Create Meta")
                 .description(description.toString())
                 .since("1.1.2")
@@ -106,7 +106,7 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
             Skript.error("Meta creation for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is abstract and thus can't be created. Use an extending entity instead.");
             return false;
         }
-        
+
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
@@ -211,7 +211,7 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
     }
 
     @Override
-    public String toString(@Nullable Event event, boolean debug) {;
+    public String toString(@Nullable Event event, boolean debug) {
         String entityData = (this.type != null ? this.type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
         return String.format("a new %s meta", entityData);
     }

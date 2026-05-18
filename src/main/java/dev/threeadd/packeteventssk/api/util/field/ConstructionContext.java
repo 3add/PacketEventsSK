@@ -28,9 +28,10 @@ public class ConstructionContext<K, BaseType> {
         throw new IllegalArgumentException("Attempted to look up field '" + fieldName + "', but it is not defined in this schema.");
     }
 
-    public <T> @NotNull T getRequired(String fieldName,  Class<? extends T> clazz) {
+    public <T> @NotNull T getRequired(String fieldName, Class<? extends T> clazz) {
         T field = getOptional(fieldName, clazz);
-        if (field == null) throw new IllegalStateException("Required field '" + fieldName + "' was not provided for type " + key);
+        if (field == null)
+            throw new IllegalStateException("Required field '" + fieldName + "' was not provided for type " + key);
         return field;
     }
 
