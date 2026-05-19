@@ -12,9 +12,6 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class EffDisplayedSkin extends Effect {
 
@@ -60,17 +57,13 @@ public class EffDisplayedSkin extends Effect {
 
         if (viewers == null || viewers.length == 0) {
             for (Player target : targets) {
-                PlayerSkinManager.setGlobalSkin(target.getUniqueId(), newSkin);
+                PlayerSkinManager.setGlobalSkin(target, newSkin);
             }
             return;
         }
 
-        Set<UUID> viewerUuids = Arrays.stream(viewers)
-                .map(Player::getUniqueId)
-                .collect(Collectors.toSet());
-
         for (Player target : targets) {
-            PlayerSkinManager.setSkinForViewers(target.getUniqueId(), viewerUuids, newSkin);
+            PlayerSkinManager.setSkinForViewers(target, Arrays.stream(viewers).toList(), newSkin);
         }
     }
 
