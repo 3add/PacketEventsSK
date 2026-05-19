@@ -194,7 +194,7 @@ public class Types {
 
                     @Override
                     public String toString(Skin skin, int flags) {
-                        return "skin with properties " + skin.properties();
+                        return "skin: " + skin.properties().stream().map(prop -> "value: '" + prop.getSignature() + "', signature: '" + prop.getSignature() + "'").toList();
                     }
 
                     @Override
