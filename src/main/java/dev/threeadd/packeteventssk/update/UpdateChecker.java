@@ -54,13 +54,9 @@ public class UpdateChecker {
                 }
             }
             return true;
-        }).whenComplete((ignored, throwable) -> {
-            if (throwable != null) {
-                LogUtil.mini("<red>Failed to check for updates: " + throwable.getMessage());
-                return;
-            }
-
+        }).exceptionally(ignored -> {
             LogUtil.mini("<green>Plugin is up to date!");
+            return true;
         });
     }
 
