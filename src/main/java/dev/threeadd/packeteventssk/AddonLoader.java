@@ -76,7 +76,7 @@ public class AddonLoader {
 
     private void logElementStatus(String elementName, boolean success) {
         String statusText = success ? "successfully" : "failed";
-        String color = success ? "89F53B" : "xF52A0D";
+        String color = success ? "89F53B" : "F52A0D";
 
         LogUtil.mini("loaded %s <#%s><u>%s</u>", elementName, color, statusText);
     }
