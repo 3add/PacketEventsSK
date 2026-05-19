@@ -58,9 +58,14 @@ Fake entity management and metadata wrappers.
 - [GitHub Repository](https://github.com/Tofaa2/EntityLib)
 - **Included with PacketEventsSK**
 ### SkBee
-Parts of PacketEventsSK use types and convertors provided by SkBee.
+SkBee provides the NBT Compound hook for fields using NBT.
 
 - [GitHub Repository](https://github.com/ShaneBeee/SkBee)
 - [Install Here](https://modrinth.com/plugin/skbee/versions)
+### Other
+Other elements use common types provided by other frequently used addons.
+Such as:
+- Entity Pose (provided by: SkBee)
+These elements will not register without SkBee present.
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
