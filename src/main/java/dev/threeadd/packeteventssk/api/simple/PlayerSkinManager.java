@@ -20,8 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -31,7 +29,6 @@ public class PlayerSkinManager {
     private static final Map<UUID, Map<UUID, Skin>> skinMap = new HashMap<>();
 
     private static final Map<UUID, Skin> globalSkinMap = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(PlayerSkinManager.class);
 
     public static void setGlobalSkin(Player target, Skin skin) {
         if (target == null || skin == null) return;
@@ -86,8 +83,6 @@ public class PlayerSkinManager {
 
     private static void updateSkin(Player target, Collection<? extends Player> viewers) {
         User targetUser = PacketEvents.getAPI().getPlayerManager().getUser(target);
-
-        log.error("target: {}, viewers: {}", target.getName(), viewers.stream().map(Player::getName).toList());
 
         // unregister player for all players with the old data
         WrapperPlayServerPlayerInfoRemove infoRemove = new WrapperPlayServerPlayerInfoRemove(targetUser.getUUID());
