@@ -8,11 +8,15 @@ import me.tofaa.entitylib.meta.types.LivingEntityMeta;
 
 import java.util.function.BiConsumer;
 
+// Should fully match: https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Living_Entity
+// including order of fields
 public class LivingMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public boolean register() {
+
+        // TODO incomplete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.LIVINGENTITY, LivingEntityMeta.class)
                 .optionalField(Number.class,
                         LivingEntityMeta::getHealth,

@@ -7,11 +7,15 @@ import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.projectile.ItemEntityMeta;
 
+// Should fully match: https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Item
+// including order of fields
 public class ItemMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public boolean register() {
+
+        // complete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.ITEM, ItemEntityMeta.class)
                 .optionalField(ItemType.class,
                         meta -> new ItemType(SpigotConversionUtil.toBukkitItemStack(meta.getItem())),
