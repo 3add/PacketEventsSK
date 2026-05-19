@@ -20,7 +20,7 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
     public boolean register() {
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, EntityMeta.class)
                 .optionalField(Number.class,
-                        (w) -> -1, // TODO update when entitylib adds entity id getter
+                        EntityMeta::getEntityId,
                         null,
                         "entity id", "id")
                 .optionalField(Timespan.class,
