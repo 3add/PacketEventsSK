@@ -54,9 +54,8 @@ public class UpdateChecker {
                 }
             }
             return true;
-        }).exceptionally(throwable -> {
+        }).thenRun(() -> {
             LogUtil.mini("<green>Plugin is up to date!");
-            return true;
         });
     }
 
