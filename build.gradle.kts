@@ -24,14 +24,19 @@ repositories {
     // Skript
     maven("https://repo.skriptlang.org/releases")
 
+    // EntityLib (entity management)
+    maven("https://maven.pvphub.me/tofaa")
+
     // Skript Registration (SKR) and SkBee (Skript implementation of NBT-API)
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") {
+        mavenContent {
+            // JitPack holds an outdated version of entity lib that's private, causes issues so exclude and just use pvphub
+            excludeGroup("io.github.tofaa2")
+        }
+    }
 
     // PacketEvents (packet library)
     maven("https://repo.codemc.org/repository/maven-public")
-
-    // EntityLib (entity management)
-    maven("https://maven.pvphub.me/tofaa")
 }
 
 dependencies {
@@ -51,7 +56,7 @@ dependencies {
     implementation("com.github.ShaneBeee:SkriptRegistration:1.4.2")
 
     // EntityLib
-    implementation("io.github.tofaa2:spigot:3.2.3-SNAPSHOT")
+    implementation("io.github.tofaa2:spigot:3.3.0-SNAPSHOT")
 
     // bStats Metrics
     implementation("org.bstats:bstats-bukkit:3.2.1")
