@@ -4,8 +4,6 @@ import dev.threeadd.packeteventssk.PacketEventsSK;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +14,6 @@ import java.util.Map;
 
 public class Config {
 
-    private static final Logger log = LoggerFactory.getLogger(Config.class);
     private final PacketEventsSK plugin;
     private FileConfiguration config;
     private File configFile;
@@ -66,7 +63,7 @@ public class Config {
             if (hasUpdated)
                 config.save(configFile);
         } catch (IOException e) {
-            log.error("Failed to save {}", configFile.getName(), e);
+            throw new IllegalStateException("Couldn't update config file " + configFile.getName(), e);
         }
     }
 

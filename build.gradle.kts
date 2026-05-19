@@ -1,16 +1,19 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     java
     id("com.gradleup.shadow") version "9.3.0"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
 }
 
 // Version of PacketEventsSK
-val projectVersion = "1.1.1"
-// Server version
-val serverVersion = "26.1.2"
-// Minimum version of Minecraft that PacketEventsSK supports
-val apiVersion = "1.21.10"
+val projectVersion = "1.1.2"
+// API Version
+val apiVersion = "26.1.2"
+// Minimum paper version that PacketEventsSK supports
+val minApiVersion = "1.21.10"
+// Where this builds on the server
+val serverLocation = "C:/Users/jaspe/Desktop/Servers/packetSKTestServer/plugins"
 
 repositories {
     mavenCentral()
@@ -21,19 +24,24 @@ repositories {
     // Skript
     maven("https://repo.skriptlang.org/releases")
 
+    // EntityLib (entity management)
+    maven("https://maven.pvphub.me/tofaa")
+
     // Skript Registration (SKR) and SkBee (Skript implementation of NBT-API)
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") {
+        mavenContent {
+            // JitPack holds an outdated version of entity lib that's private, causes issues so exclude and just use pvphub
+            excludeGroup("io.github.tofaa2")
+        }
+    }
 
     // PacketEvents (packet library)
     maven("https://repo.codemc.org/repository/maven-public")
-
-    // EntityLib (entity management)
-    maven("https://maven.pvphub.me/tofaa")
 }
 
 dependencies {
     // Paper (and NMS)
-    paperweight.paperDevBundle("$serverVersion.build.+")
+    paperweight.paperDevBundle("$apiVersion.build.+")
 
     // PacketEvents
     compileOnly("com.github.retrooper:packetevents-spigot:2.12.1")
@@ -48,17 +56,29 @@ dependencies {
     implementation("com.github.ShaneBeee:SkriptRegistration:1.4.2")
 
     // EntityLib
-    implementation("io.github.tofaa2:spigot:3.2.3-SNAPSHOT")
+    implementation("io.github.tofaa2:spigot:3.3.0-SNAPSHOT")
 
     // bStats Metrics
     implementation("org.bstats:bstats-bukkit:3.2.1")
 }
 
 tasks {
+    register<Copy>("buildServer") {
+        group = "build"
+
+        dependsOn("shadowJar")
+
+        val shadowJarTask = named<ShadowJar>("shadowJar")
+
+        from(shadowJarTask.flatMap { it.archiveFile })
+        into(file(serverLocation))
+
+        outputs.dir(file(serverLocation))
+    }
     processResources {
         val props = mapOf(
             "projectVersion" to projectVersion,
-            "apiversion" to apiVersion
+            "apiversion" to minApiVersion
         )
 
         filesNotMatching("assets/**") {

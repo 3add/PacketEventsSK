@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Configurable<T> {
+
+    public static final Configurable<Boolean> UPDATE_CHECKER_ENABLED = register("update-checker.enabled", Boolean.class);
+    public static final Configurable<Boolean> UPDATE_CHECKER_ASYNC = register("update-checker.async", Boolean.class);
     public static final Configurable<Boolean> ELEMENTS_ENTITY = register("elements.entity", Boolean.class);
     public static final Configurable<Boolean> ELEMENTS_SIMPLE = register("elements.simple", Boolean.class);
 

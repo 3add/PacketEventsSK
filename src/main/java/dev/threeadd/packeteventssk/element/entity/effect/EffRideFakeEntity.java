@@ -17,8 +17,8 @@ public class EffRideFakeEntity extends Effect {
 
     public static void register(Registration reg) {
         reg.newEffect(EffRideFakeEntity.class,
-                        "(make|let|force) fake[ ]entit(y|ies) %fakeentities% [to] (ride|mount) %fakeentity/livingentity%",
-                        "(make|let|force) fake[ ]entit(y|ies) %fakeentities% [to] (dismount|(dismount|leave) as passenger[s]) (from|of) %fakeentity/livingentity%")
+                        "(make|let|force) fake [entit(y|ies)] %fakeentities% [to] (ride|mount) %fakeentity/livingentity%",
+                        "(make|let|force) fake [entit(y|ies)] %fakeentities% [to] (dismount|(dismount|leave) as passenger[s]) (from|of) %fakeentity/livingentity%")
                 .name("Fake Entity - Ride")
                 .description("""
                         Make fake entities ride another entity (fake or real), or remove them as passengers.

@@ -1,7 +1,15 @@
-# Welcome to PacketEventsSK v1.1.1
+# Welcome to PacketEventsSK v1.1.2
 
 # If you have any questions, please first refer to the wiki:
 # - https://github.com/3add/PacketEventsSK/wiki
+
+# Enable this to automatically check for updates
+update-checker:
+  # If the update checker should be enabled at all
+  enabled: true
+
+  # If the update checker should run asynchronously or on the main thread
+  async: false
 
 # This config section contains all configurable syntax elements
 # that PacketEventsSK contains.

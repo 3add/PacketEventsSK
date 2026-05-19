@@ -12,7 +12,10 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
 import com.github.shanebeee.skr.skript.SimpleEntryValidator;
-import dev.threeadd.packeteventssk.api.general.PacketConstructorRegistry;
+import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
+import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
+import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
+import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,25 +32,45 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     public static void register(Registration reg) {
 
         SimpleEntryValidator builder = SimpleEntryValidator.builder();
-        for (PacketConstructorRegistry.PacketDefinition def : PacketConstructorRegistry.getAllDefinitions()) {
-            for (PacketConstructorRegistry.PacketField<?> field : def.fields()) {
+        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+            for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
+
+                for (String alias : field.aliases()) { // register aliases
+                    builder.addOptionalEntry(alias, Object.class);
+                }
             }
         }
         VALIDATOR = builder.build();
 
-        reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %packettype%")
+        StringBuilder description = new StringBuilder();
+        description.append("Create a new packet from a packet type.\n\n");
+        description.append("### Available Packets and their fields\n");
+
+        Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
+        for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+            String fieldLines = schema.getReadableFields();
+            if (!fieldLines.isEmpty()) {
+                description.append("* **")
+                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append("** fields:\n")
+                        .append(fieldLines)
+                        .append("\n");
+            }
+        }
+
+        reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %*packettype%")
                 .name("General - New Packet")
-                .description("Create a new packet from a packet type. This section is a data block, not an execution block.")
-                // TODO Example
+                .description(description.toString())
+                // TODO example
                 .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
     }
 
-    private Literal<PacketTypeCommon> packetTypeLiteral;
-
     private final Map<String, Expression<?>> fieldExpressions = new HashMap<>();
-    private PacketConstructorRegistry.PacketDefinition definition;
+
+    private PacketTypeCommon type;
+    private FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -58,27 +81,28 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
                         @Nullable SectionNode sectionNode,
                         @Nullable List<TriggerItem> triggerItems) {
 
-        if (!(expressions[0] instanceof Literal<?>)) {
+        if (!(expressions[0] instanceof Literal<?>)) { // shouldn't ever happen cause of our *
             Skript.error("The packet type needs to be a literal");
             return false;
         }
 
-        this.packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
+        Literal<PacketTypeCommon> packetTypeLiteral = (Literal<PacketTypeCommon>) expressions[0];
 
-        PacketTypeCommon type = this.packetTypeLiteral.getSingle();
-        this.definition = PacketConstructorRegistry.getDefinition(type);
+        this.type = packetTypeLiteral.getSingle();
+        this.schema = PacketFieldRegistry.INSTANCE.getSchema(this.type);
 
-        if (this.definition == null) {
-            Skript.error("Packet creation for " + type.getName() + " is not currently supported.");
-            return false;
+        if (this.schema == null) {
+            Skript.error("Packet creation for " + this.type.getName() + " is not currently supported. Consider creating/handling it through reflection.");
+            return false; // can't return an empty packet so this expr can't be used
         }
 
-        boolean hasRequiredFields = this.definition.fields().stream().anyMatch(field -> !field.isOptional());
+        boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + type.getName() + " packet.");
+                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " packet.");
                 return false;
             }
+
             return true;
         }
 
@@ -88,13 +112,20 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         }
 
         List<String> missingKeys = new ArrayList<>();
-        boolean hasTypeError = false;
-
-        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
+        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
             String key = field.name();
             Class<?> expectedType = field.expectedType();
 
             Expression<?> expr = container.getOptional(key, Object.class, false);
+
+            if (expr == null) {
+                for (String alias : field.aliases()) {
+                    expr = container.getOptional(alias, Object.class, false);
+                    if (expr != null) {
+                        break;
+                    }
+                }
+            }
 
             if (expr == null) {
                 if (!field.isOptional()) {
@@ -108,8 +139,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
             if (converted == null) {
                 Skript.error("The value for '" + key + "' must be of type " + expectedType.getSimpleName() + ".");
-                hasTypeError = true;
-                continue;
+                return false;
             }
 
             this.fieldExpressions.put(key, converted);
@@ -121,7 +151,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             return false;
         }
 
-        return !hasTypeError;
+        return true;
     }
 
     @Override
@@ -130,11 +160,10 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
     }
 
     private @Nullable PacketWrapper<?> createPacket(@NotNull Event event) {
-        if (this.definition == null) return null;
+        if (this.schema == null) return null;
 
         Map<String, Object> values = new HashMap<>();
-
-        for (PacketConstructorRegistry.PacketField<?> field : this.definition.fields()) {
+        for (FieldAccessor<PacketWrapper<?>, ?> field : this.schema.accessors()) {
             Expression<?> expr = this.fieldExpressions.get(field.name());
 
             if (expr == null) {
@@ -158,7 +187,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             values.put(field.name(), value);
         }
 
-        return this.definition.constructor().apply(new PacketConstructorRegistry.PacketValues(values));
+        return this.schema.constructor().apply(new ConstructionContext<>(this.type, this.schema.accessors(), values));
     }
 
     @Override
@@ -174,8 +203,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        PacketTypeCommon type = this.packetTypeLiteral.getSingle();
-        String packetType = (type != null ? type.getName() : "unknown");
+        String packetType = (this.type != null ? this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") : "unknown");
         return String.format("a new %s packet", packetType);
     }
 }

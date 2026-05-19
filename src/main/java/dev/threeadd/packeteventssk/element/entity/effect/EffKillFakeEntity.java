@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class EffKillFakeEntity extends Effect {
 
     public static void register(Registration reg) {
-        reg.newEffect(EffKillFakeEntity.class, "kill fake[ ]entit(y|ies) %fakeentities%")
+        reg.newEffect(EffKillFakeEntity.class, "kill fake [entit(y|ies)] %fakeentities%")
                 .name("Fake Entity - Kill Fake Entity")
                 .description("Used to kill a spawned fake entity")
                 .examples("""

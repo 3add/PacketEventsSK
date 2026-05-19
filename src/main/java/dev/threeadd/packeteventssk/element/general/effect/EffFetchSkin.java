@@ -16,8 +16,8 @@ public class EffFetchSkin extends AsyncEffect {
 
     public static void register(Registration reg) {
         reg.newEffect(EffFetchSkin.class,
-                        "fetch skin (from|of) player named %string% and store (it|the result) in %-~objects%",
-                        "set %-~objects% to skin (from|of) player named %string%")
+                        "fetch skin (from|of) player (named|with name) %string% and store (it|the result) in %-~objects%",
+                        "set %-~objects% to [fetch] skin (from|of) player (named|with name) %string%")
                 .name("General - Fetch Skin")
                 .description("""
                         Used to fetch a player skin.

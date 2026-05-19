@@ -7,7 +7,6 @@ import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import com.github.retrooper.packetevents.protocol.world.Difficulty;
-import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.protocol.world.WorldBlockPosition;
 import com.github.retrooper.packetevents.protocol.world.dimension.DimensionType;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
@@ -17,11 +16,12 @@ import com.google.common.hash.Hashing;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.entity.SkinManager;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -31,53 +31,31 @@ public class PlayerSkinManager {
     private static final Map<UUID, Map<UUID, Skin>> skinMap = new HashMap<>();
 
     private static final Map<UUID, Skin> globalSkinMap = new HashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(PlayerSkinManager.class);
 
-    public static void setGlobalSkin(UUID targetId, Skin skin) {
-        if (targetId == null || skin == null) return;
+    public static void setGlobalSkin(Player target, Skin skin) {
+        if (target == null || skin == null) return;
 
-        if (skin.equals(SkinManager.getPlayer(Bukkit.getPlayer(targetId)))) {
+        if (skin.equals(SkinManager.getPlayer(Bukkit.getPlayer(target.getUniqueId())))) {
             // no need to save if it's the default skin
-            globalSkinMap.remove(targetId);
+            globalSkinMap.remove(target.getUniqueId());
         } else {
-            globalSkinMap.put(targetId, skin);
+            globalSkinMap.put(target.getUniqueId(), skin);
         }
 
         // Update for all current online players
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            updateSkin(targetId, online.getUniqueId());
-        }
+        updateSkin(target, Bukkit.getOnlinePlayers());
     }
 
-    public static void setSkinForViewer(UUID targetId, UUID viewerId, Skin skin) {
-        if (targetId == null || viewerId == null || skin == null) return;
+    public static void setSkinForViewers(Player target, Collection<? extends Player> viewers, Skin skin) {
+        if (target == null || viewers == null || skin == null) return;
 
-        skinMap.computeIfAbsent(targetId, k -> new HashMap<>()).put(viewerId, skin);
-        updateSkin(targetId, viewerId);
-    }
-
-    public static void setSkinForViewers(UUID targetId, Collection<UUID> viewers, Skin skin) {
-        if (targetId == null || viewers == null || skin == null) return;
-
-        Map<UUID, Skin> targetMap = skinMap.computeIfAbsent(targetId, k -> new HashMap<>());
-        for (UUID viewerId : viewers) {
-            targetMap.put(viewerId, skin);
-            updateSkin(targetId, viewerId);
-        }
-    }
-
-    public static void removeSkinForViewer(UUID targetId, UUID viewerId) {
-        if (targetId == null || viewerId == null) return;
-
-        Map<UUID, Skin> viewers = skinMap.get(targetId);
-        if (viewers != null) {
-            viewers.remove(viewerId);
-            if (viewers.isEmpty()) {
-                skinMap.remove(targetId);
-            }
+        Map<UUID, Skin> targetMap = skinMap.computeIfAbsent(target.getUniqueId(), k -> new HashMap<>());
+        for (Player Viewer : viewers) {
+            targetMap.put(Viewer.getUniqueId(), skin);
         }
 
-        // Update triggers a revert to original if no custom skin is found in the map
-        updateSkin(targetId, viewerId);
+        updateSkin(target, viewers);
     }
 
     public static @Nullable Skin getSkinForViewer(UUID targetId, UUID viewerId) {
@@ -86,31 +64,63 @@ public class PlayerSkinManager {
             return viewers.get(viewerId);
         }
 
-        if (globalSkinMap.containsKey(targetId))
+        if (globalSkinMap.containsKey(targetId)) {
             return globalSkinMap.get(targetId);
+        }
 
         return null;
     }
 
-    public static void clearAllSkins(UUID targetId) {
-        Map<UUID, Skin> viewers = skinMap.remove(targetId);
+    public static void clearAllSkins(Player target) {
+        Map<UUID, Skin> viewers = skinMap.remove(target.getUniqueId());
+        globalSkinMap.remove(target.getUniqueId());
         if (viewers != null) {
             for (UUID viewerId : viewers.keySet()) {
-                updateSkin(targetId, viewerId);
+                Player player = Bukkit.getPlayer(viewerId);
+                if (player == null) continue;
+
+                updateSkin(target, List.of(player));
             }
         }
     }
 
-    private static void updateSkin(UUID targetId, UUID viewerId) {
-        Player target = Bukkit.getPlayer(targetId);
-        Player viewer = Bukkit.getPlayer(viewerId);
+    private static void updateSkin(Player target, Collection<? extends Player> viewers) {
+        User targetUser = PacketEvents.getAPI().getPlayerManager().getUser(target);
 
-        if (target == null || viewer == null) return;
+        log.error("target: {}, viewers: {}", target.getName(), viewers.stream().map(Player::getName).toList());
 
+        // unregister player for all players with the old data
+        WrapperPlayServerPlayerInfoRemove infoRemove = new WrapperPlayServerPlayerInfoRemove(targetUser.getUUID());
+        for (Player viewer : viewers) {
+            if (viewer.canSee(target)) {
+                PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, infoRemove);
+            }
+        }
+
+        WrapperPlayServerDestroyEntities destroyEntities = new WrapperPlayServerDestroyEntities(target.getEntityId());
+        WrapperPlayServerSpawnEntity spawnEntity = new WrapperPlayServerSpawnEntity(target.getEntityId(), target.getUniqueId(), EntityTypes.PLAYER, ConversionUtil.toPeLocation(target.getLocation()),
+                target.getBodyYaw(), 0 /* not relevant for players */, ConversionUtil.toPeVectorD(target.getVelocity()));
+
+        // re-register the profile for viewer players
+        for (Player viewer : viewers) {
+            if (viewer.canSee(target)) {
+                PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, destroyEntities);
+                reRegisterProfile(target, viewer);
+                PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, spawnEntity);
+            }
+        }
+
+        // Refresh misc player things AFTER sending game profile
+        if (viewers.contains(target)) {
+            refreshPlayer(target);
+        }
+    }
+
+    private static void reRegisterProfile(Player target, Player viewer) {
         User targetUser = PacketEvents.getAPI().getPlayerManager().getUser(target);
 
         List<TextureProperty> properties;
-        Skin customSkin = getSkinForViewer(targetId, viewerId);
+        Skin customSkin = getSkinForViewer(target.getUniqueId(), viewer.getUniqueId());
         if (customSkin != null) {
             properties = customSkin.properties();
         } else {
@@ -119,47 +129,17 @@ public class PlayerSkinManager {
 
         UserProfile profile = new UserProfile(targetUser.getProfile().getUUID(), targetUser.getProfile().getName(), properties);
 
-        if (targetId.equals(viewerId)) {
-            sendSelfUpdate(target, targetUser, profile);
-        } else {
-            sendRemoteUpdate(target, targetUser, viewer, profile);
-        }
-    }
-
-    private static void sendRemoteUpdate(Player target, User targetUser, Player viewer, UserProfile packetProfile) {
-        User viewerUser = PacketEvents.getAPI().getPlayerManager().getUser(viewer);
-
-        WrapperPlayServerPlayerInfoRemove infoRemove = new WrapperPlayServerPlayerInfoRemove(targetUser.getUUID());
-        WrapperPlayServerDestroyEntities destroy = new WrapperPlayServerDestroyEntities(targetUser.getEntityId());
-
-        PlayerInfo playerInfo = new PlayerInfo(packetProfile, true, target.getPing(),
-                GameMode.valueOf(target.getGameMode().name()),
-                target.displayName(),
-                ChatSessionListener.getChatSession(target.getUniqueId()));
+        PlayerInfo playerInfo = new PlayerInfo(profile, true, target.getPing(), GameMode.valueOf(target.getGameMode().name()),
+                target.displayName(), ChatSessionListener.getChatSession(target.getUniqueId()));
 
         WrapperPlayServerPlayerInfoUpdate infoUpdate = new WrapperPlayServerPlayerInfoUpdate(
                 EnumSet.allOf(WrapperPlayServerPlayerInfoUpdate.Action.class), playerInfo);
 
-        Location location = SpigotConversionUtil.fromBukkitLocation(target.getLocation());
-        WrapperPlayServerSpawnEntity spawn = new WrapperPlayServerSpawnEntity(
-                targetUser.getEntityId(), targetUser.getUUID(), EntityTypes.PLAYER,
-                location, 0, 0, null);
-
-        viewerUser.sendPacket(infoRemove);
-        viewerUser.sendPacket(destroy);
-        viewerUser.sendPacket(infoUpdate);
-        viewerUser.sendPacket(spawn);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, infoUpdate);
     }
 
-    private static void sendSelfUpdate(Player player, User user, UserProfile packetProfile) {
-
-        PlayerInfo playerInfo = new PlayerInfo(packetProfile, true, player.getPing(),
-                GameMode.valueOf(player.getGameMode().name()),
-                player.displayName(),
-                ChatSessionListener.getChatSession(player.getUniqueId()));
-
-        user.sendPacket(new WrapperPlayServerPlayerInfoRemove(user.getUUID()));
-        user.sendPacket(new WrapperPlayServerPlayerInfoUpdate(EnumSet.allOf(WrapperPlayServerPlayerInfoUpdate.Action.class), playerInfo));
+    private static void refreshPlayer(Player player) {
+        User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
 
         World world = player.getWorld();
         DimensionType dimensionType = user.getDimensionType();
@@ -170,19 +150,19 @@ public class PlayerSkinManager {
         @Nullable GameMode prevGameMode = player.getPreviousGameMode() != null ? GameMode.valueOf(player.getPreviousGameMode().name()) : null;
         @Nullable WorldBlockPosition position = player.getLastDeathLocation() != null ? ConversionUtil.toWorldBlockPosition(player.getLastDeathLocation()) : null;
 
-        WrapperPlayServerRespawn respawnPacket = new WrapperPlayServerRespawn(
+        WrapperPlayServerRespawn respawn = new WrapperPlayServerRespawn(
                 dimensionType, worldName, difficulty,
                 hashedSeed, gameMode, prevGameMode,
                 false, false, WrapperPlayServerRespawn.KEEP_ALL_DATA,
                 position, null);
 
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, respawn);
+
+        player.teleportAsync(player.getLocation()); // replaces WrapperPlayServerPlayerPositionAndLook cause it's advertised as buggy if done using the packet
+
         WrapperPlayServerChangeGameState startLoadingChunksPacket = new WrapperPlayServerChangeGameState(
                 Reason.START_LOADING_CHUNKS,
                 0.0f);
-
-        user.sendPacket(respawnPacket);
-        user.sendPacket(startLoadingChunksPacket);
-
-        player.teleportAsync(player.getLocation());
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, startLoadingChunksPacket);
     }
 }
