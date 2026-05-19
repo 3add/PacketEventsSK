@@ -91,12 +91,12 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
 
         // only register if an addon provides this type
         if (Classes.getExactClassInfo(Pose.class) != null) {
-            HAS_POSE = false;
-
             builder.optionalField(Pose.class,
                     meta -> SpigotConversionUtil.toBukkitPose(meta.getPose()),
                     (meta, newPose) -> meta.setPose(SpigotConversionUtil.fromBukkitPose(newPose)),
                     "pose");
+        } else {
+            HAS_POSE = false;
         }
 
         builder.build();
