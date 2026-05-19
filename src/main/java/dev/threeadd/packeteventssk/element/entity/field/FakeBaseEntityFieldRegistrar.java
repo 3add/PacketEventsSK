@@ -23,7 +23,7 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
 
         FakeEntityFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, WrapperEntity.class)
                 .requiredField(Player[].class,
-                        w -> w.getViewers().stream().map(Bukkit::getPlayer).toArray(Player[]::new),
+                        w -> w.getViewers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).toArray(Player[]::new),
                         FakeBaseEntityFieldRegistrar::setViewers,
                         "entity viewers", "viewers")
                 .requiredField(org.bukkit.Location.class,
