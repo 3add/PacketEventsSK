@@ -73,6 +73,7 @@ public class PlayerSkinManager {
 
     public static void clearAllSkins(Player target) {
         Map<UUID, Skin> viewers = skinMap.remove(target.getUniqueId());
+        globalSkinMap.remove(target.getUniqueId());
         if (viewers != null) {
             for (UUID viewerId : viewers.keySet()) {
                 Player player = Bukkit.getPlayer(viewerId);
