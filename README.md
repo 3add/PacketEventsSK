@@ -58,7 +58,7 @@ Fake entity management and metadata wrappers.
 - [GitHub Repository](https://github.com/Tofaa2/EntityLib)
 - **Included with PacketEventsSK**
 ### SkBee
-NBT Compound hook.
+Parts of PacketEventsSK use types and convertors provided by SkBee.
 
 - [GitHub Repository](https://github.com/ShaneBeee/SkBee)
 - [Install Here](https://modrinth.com/plugin/skbee/versions)
