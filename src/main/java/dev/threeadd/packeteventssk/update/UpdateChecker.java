@@ -54,9 +54,7 @@ public class UpdateChecker {
                 }
             }
             return true;
-        }).thenRun(() -> {
-            LogUtil.mini("<green>Plugin is up to date!");
-        });
+        }).thenRun(() -> LogUtil.mini("<green>Plugin is up to date!"));
     }
 
     protected static CompletableFuture<ModrinthVersion> getUpdateVersion(boolean async) {
@@ -67,14 +65,20 @@ public class UpdateChecker {
             CompletableFuture<ModrinthVersion> latestReleaseFuture = new CompletableFuture<>();
             if (async) {
                 Bukkit.getScheduler().runTaskAsynchronously(PacketEventsSK.getInstance(), () -> {
-                    ModrinthVersion lastest = getLatestVersionFromModrinth();
-                    if (lastest == null) latestReleaseFuture.cancel(true);
-                    latestReleaseFuture.complete(lastest);
+                    ModrinthVersion latest = getLatestVersionFromModrinth();
+                    if (latest == null) {
+                        latestReleaseFuture.cancel(true);
+                    } else {
+                        latestReleaseFuture.complete(latest);
+                    }
                 });
             } else {
                 ModrinthVersion latest = getLatestVersionFromModrinth();
-                if (latest == null) latestReleaseFuture.cancel(true);
+                if (latest == null) {
+                    latestReleaseFuture.cancel(true);
+                } else {
                 latestReleaseFuture.complete(latest);
+                }
             }
             latestReleaseFuture.thenApply(version -> {
                 if (version.getUpdateVersion().compareTo(PLUGIN_VERSION) <= 0) {
