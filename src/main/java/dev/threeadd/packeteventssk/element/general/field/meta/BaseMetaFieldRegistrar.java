@@ -19,6 +19,8 @@ import java.util.function.Function;
 // including order of fields
 public class BaseMetaFieldRegistrar implements FieldRegistrar {
 
+    private static boolean HAS_POSE = true;
+
     @Override
     public void register() {
 
@@ -89,6 +91,8 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
 
         // only register if an addon provides this type
         if (Classes.getExactClassInfo(Pose.class) != null) {
+            HAS_POSE = false;
+
             builder.optionalField(Pose.class,
                     meta -> SpigotConversionUtil.toBukkitPose(meta.getPose()),
                     (meta, newPose) -> meta.setPose(SpigotConversionUtil.fromBukkitPose(newPose)),
@@ -172,9 +176,11 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
             meta.setHasNoGravity(!gravity);
         }
 
-        Pose pose = context.getOptional("pose", Pose.class);
-        if (pose != null) {
-            meta.setPose(SpigotConversionUtil.fromBukkitPose(pose));
+        if (HAS_POSE) {
+            Pose pose = context.getOptional("pose", Pose.class);
+            if (pose != null) {
+                meta.setPose(SpigotConversionUtil.fromBukkitPose(pose));
+            }
         }
 
         Timespan frozenTime = context.getOptional("frozen time", Timespan.class);
