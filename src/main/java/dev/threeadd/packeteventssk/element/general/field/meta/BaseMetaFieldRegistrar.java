@@ -20,7 +20,7 @@ import java.util.function.Function;
 public class BaseMetaFieldRegistrar implements FieldRegistrar {
 
     @Override
-    public boolean register() {
+    public void register() {
 
         // complete
         MetaFieldRegistry.Builder<EntityMeta> builder = MetaFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, EntityMeta.class)
@@ -96,8 +96,6 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
         }
 
         builder.build();
-
-        return true;
     }
 
     @SuppressWarnings("UnstableApiUsage")

@@ -11,7 +11,7 @@ public class InteractionMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public boolean register() {
+    public void register() {
 
         // complete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.INTERACTION, InteractionMeta.class)
@@ -49,7 +49,5 @@ public class InteractionMetaFieldRegistrar implements FieldRegistrar {
                     return meta;
                 })
                 .build();
-
-        return true;
     }
 }

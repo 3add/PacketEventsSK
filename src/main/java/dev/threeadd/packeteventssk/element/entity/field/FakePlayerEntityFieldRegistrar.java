@@ -9,7 +9,7 @@ import me.tofaa.entitylib.wrapper.WrapperPlayer;
 public class FakePlayerEntityFieldRegistrar implements FieldRegistrar {
 
     @Override
-    public boolean register() {
+    public void register() {
 
         FakeEntityFieldRegistry.INSTANCE.builder(EntityTypes.PLAYER, WrapperPlayer.class)
                 .requiredField(Skin.class,
@@ -41,7 +41,5 @@ public class FakePlayerEntityFieldRegistrar implements FieldRegistrar {
                     return player;
                 })
                 .build();
-
-        return true;
     }
 }

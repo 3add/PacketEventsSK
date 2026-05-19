@@ -14,9 +14,7 @@ public abstract class BaseFieldRegistry<K, BaseType> {
     public void registerAll() {
         List<FieldRegistrar> registrars = getRegistrars();
         for (FieldRegistrar registrar : registrars) {
-            if (!registrar.register()) {
-                throw new RuntimeException("Failed to register fields for " + registrar.getClass().getSimpleName());
-            }
+            registrar.register();
         }
     }
 

@@ -30,7 +30,7 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public boolean register() {
+    public void register() {
 
         // complete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.DISPLAY, AbstractDisplayMeta.class)
@@ -235,8 +235,6 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                     return meta;
                 })
                 .build();
-
-        return true;
     }
 
     private static final BiConsumer<ConstructionContext<EntityType, AbstractDisplayMeta>, AbstractDisplayMeta> DISPLAY_CONSUMER = (context, meta) -> {

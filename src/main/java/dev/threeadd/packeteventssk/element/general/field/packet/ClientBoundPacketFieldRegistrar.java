@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
 
     @Override
-    public boolean register() {
+    public void register() {
         PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_VELOCITY, WrapperPlayServerEntityVelocity.class)
                 .requiredField(Number.class, WrapperPlayServerEntityVelocity::getEntityId,
                         (w, id) -> w.setEntityId(id.intValue()),
@@ -26,8 +26,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, vector) -> w.setVelocity(ConversionUtil.toPeVectorD(vector)),
                         "velocity vector", "vector", "velocity")
                 .constructor(values -> new WrapperPlayServerEntityVelocity(
-                        values.getOptional("entity id", Number.class).intValue(),
-                        ConversionUtil.toPeVectorD(values.getOptional("velocity vector", Vector.class)))
+                        values.getRequired("entity id", Number.class).intValue(),
+                        ConversionUtil.toPeVectorD(values.getRequired("velocity vector", Vector.class)))
                 )
                 .build();
 
@@ -39,8 +39,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, vector) -> w.setRelativePos(ConversionUtil.toPeVectorI(vector)),
                         "relative position", "relative pos", "rel position", "rel pos")
                 .constructor(values -> new WrapperPlayServerGameTestHighlightPos(
-                        ConversionUtil.toPeVectorI(values.getOptional("absolute position", Vector.class)),
-                        ConversionUtil.toPeVectorI(values.getOptional("relative position", Vector.class)))
+                        ConversionUtil.toPeVectorI(values.getRequired("absolute position", Vector.class)),
+                        ConversionUtil.toPeVectorI(values.getRequired("relative position", Vector.class)))
                 )
                 .build();
 
@@ -60,8 +60,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         }, WrapperPlayServerEntityMetadata::setEntityMetadata,
                         "entity metadata", "entity meta", "metadata", "meta")
                 .constructor(values -> new WrapperPlayServerEntityMetadata(
-                        values.getOptional("entity id", Number.class).intValue(),
-                        values.getOptional("entity metadata", EntityMeta.class))
+                        values.getRequired("entity id", Number.class).intValue(),
+                        values.getRequired("entity metadata", EntityMeta.class))
                 )
                 .build();
 
@@ -73,8 +73,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, blockData) -> w.setBlockState(SpigotConversionUtil.fromBukkitBlockData(blockData)),
                         "block state", "state", "block data", "data")
                 .constructor(values -> new WrapperPlayServerBlockChange(
-                        ConversionUtil.toPeVectorI(values.getOptional("block position", Vector.class)),
-                        SpigotConversionUtil.fromBukkitBlockData(values.getOptional("block state", BlockData.class))
+                        ConversionUtil.toPeVectorI(values.getRequired("block position", Vector.class)),
+                        SpigotConversionUtil.fromBukkitBlockData(values.getRequired("block state", BlockData.class))
                 ))
                 .build();
 
@@ -86,8 +86,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, side) -> w.setFrontText(side == Side.FRONT),
                         "sign side", "side")
                 .constructor(values -> new WrapperPlayServerOpenSignEditor(
-                        ConversionUtil.toPeVectorI(values.getOptional("block position", Vector.class)),
-                        values.getOptional("sign side", Side.class) == Side.FRONT
+                        ConversionUtil.toPeVectorI(values.getRequired("block position", Vector.class)),
+                        values.getRequired("sign side", Side.class) == Side.FRONT
                 ))
                 .build();
 
@@ -101,10 +101,8 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, ids) -> w.setEntityIds(Arrays.stream(ids).mapToInt(Number::intValue).toArray()),
                         "entity ids", "ids")
                 .constructor(values -> new WrapperPlayServerDestroyEntities(
-                        Arrays.stream(values.getOptional("entity ids", Number[].class)).mapToInt(Number::intValue).toArray()
+                        Arrays.stream(values.getRequired("entity ids", Number[].class)).mapToInt(Number::intValue).toArray()
                 ))
                 .build();
-
-        return true;
     }
 }

@@ -14,7 +14,7 @@ public class LivingMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public boolean register() {
+    public void register() {
 
         // TODO incomplete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.LIVINGENTITY, LivingEntityMeta.class)
@@ -29,8 +29,6 @@ public class LivingMetaFieldRegistrar implements FieldRegistrar {
                     return meta;
                 })
                 .build();
-
-        return true;
     }
 
     static final BiConsumer<ConstructionContext<EntityType, LivingEntityMeta>, LivingEntityMeta> LIVING_ENTITY_CONSUMER = (context, meta) -> {

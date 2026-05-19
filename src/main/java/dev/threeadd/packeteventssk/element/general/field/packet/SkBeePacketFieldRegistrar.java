@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 public class SkBeePacketFieldRegistrar implements FieldRegistrar {
 
     @Override
-    public boolean register() {
+    public void register() {
 
         PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.BLOCK_ENTITY_DATA, WrapperPlayServerBlockEntityData.class)
                 .requiredField(Vector.class, w -> ConversionUtil.toBukkitVector(w.getPosition()),
@@ -34,7 +34,5 @@ public class SkBeePacketFieldRegistrar implements FieldRegistrar {
                         SkBeeConversionUtil.toPeNBTCompound(values.getRequired("nbt compound", NBTCompound.class))
                 ))
                 .build();
-
-        return true;
     }
 }

@@ -13,7 +13,7 @@ public class ItemMetaFieldRegistrar implements FieldRegistrar {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public boolean register() {
+    public void register() {
 
         // complete
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.ITEM, ItemEntityMeta.class)
@@ -33,7 +33,5 @@ public class ItemMetaFieldRegistrar implements FieldRegistrar {
                     return meta;
                 })
                 .build();
-
-        return true;
     }
 }

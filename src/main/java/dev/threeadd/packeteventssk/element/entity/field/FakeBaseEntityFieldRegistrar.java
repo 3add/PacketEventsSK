@@ -19,7 +19,7 @@ import java.util.UUID;
 public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
 
     @Override
-    public boolean register() {
+    public void register() {
 
         FakeEntityFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, WrapperEntity.class)
                 .requiredField(Player[].class,
@@ -44,8 +44,6 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
                     return entity;
                 })
                 .build();
-
-        return true;
     }
 
     public record CommonEntityData(int entityId, UUID uuid, @Nullable EntityMeta meta) {
