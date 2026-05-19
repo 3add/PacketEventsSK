@@ -27,7 +27,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inehrit \"entity\" fields\n\n");
+        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
         description.append("### Available Meta Fields by Category\n");
 
         Collection<FieldSchema<EntityType, EntityMeta>> schemas = MetaFieldRegistry.INSTANCE.getAllSchemas();

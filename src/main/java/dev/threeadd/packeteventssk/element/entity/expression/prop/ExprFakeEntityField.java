@@ -27,7 +27,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inehrit \"entity\" fields\n\n");
+        description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
         description.append("### Available Fake Entity Fields by Category\n");
 
         Collection<FieldSchema<EntityType, WrapperEntity>> schemas = FakeEntityFieldRegistry.INSTANCE.getAllSchemas();
