@@ -57,10 +57,13 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
                         EntityMeta::isFlyingWithElytra,
                         EntityMeta::setFlyingWithElytra,
                         "elytra flying state", "elytra flying")
+                /*
                 .optionalField(Timespan.class,
                         meta -> ConversionUtil.toTimespan(meta.getAirTicks()),
                         (meta, timespan) -> meta.setAirTicks((short) ConversionUtil.toTicks(timespan)),
                         "air time", "air ticks")
+                 TODO re-enable when entity lib fixes (https://github.com/Tofaa2/EntityLib/issues/63)
+                 */
                 .optionalField(Component.class,
                         EntityMeta::getCustomName,
                         EntityMeta::setCustomName,
@@ -143,10 +146,13 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
             meta.setFlyingWithElytra(elytraFlying);
         }
 
+        /*
         Timespan airTime = context.getOptional("air time", Timespan.class);
         if (airTime != null) {
             meta.setAirTicks((short) ConversionUtil.toTicks(airTime));
         }
+        re-enable when entity lib fixes: https://github.com/Tofaa2/EntityLib/issues/63
+         */
 
         Component customName = context.getOptional("custom name", Component.class);
         if (customName != null) {
