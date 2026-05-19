@@ -54,7 +54,14 @@ public class UpdateChecker {
                 }
             }
             return true;
-        }).thenRun(() -> LogUtil.mini("<green>Plugin is up to date!"));
+        }).whenComplete((ignored, throwable) -> {
+            if (throwable != null) {
+                LogUtil.mini("<red>Failed to check for updates: " + throwable.getMessage());
+                return;
+            }
+
+            LogUtil.mini("<green>Plugin is up to date!");
+        });
     }
 
     protected static CompletableFuture<ModrinthVersion> getUpdateVersion(boolean async) {
