@@ -8,10 +8,12 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.util.Vector3i;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
+import me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
 
@@ -86,6 +88,34 @@ public class ConversionUtil {
 
     public static AbstractDisplayMeta.BillboardConstraints toBillboardConstraints(Display.Billboard billboard) {
         return AbstractDisplayMeta.BillboardConstraints.valueOf(billboard.name());
+    }
+
+    public static ItemDisplay.ItemDisplayTransform toItemDisplayTransform(ItemDisplayMeta.DisplayType displayType) {
+        return switch (displayType) {
+            case NONE -> ItemDisplay.ItemDisplayTransform.NONE;
+            case THIRD_PERSON_LEFT_HAND -> ItemDisplay.ItemDisplayTransform.THIRDPERSON_LEFTHAND;
+            case THIRD_PERSON_RIGHT_HAND -> ItemDisplay.ItemDisplayTransform.THIRDPERSON_RIGHTHAND;
+            case FIRST_PERSON_LEFT_HAND -> ItemDisplay.ItemDisplayTransform.FIRSTPERSON_LEFTHAND;
+            case FIRST_PERSON_RIGHT_HAND -> ItemDisplay.ItemDisplayTransform.FIRSTPERSON_RIGHTHAND;
+            case HEAD -> ItemDisplay.ItemDisplayTransform.HEAD;
+            case GUI -> ItemDisplay.ItemDisplayTransform.GUI;
+            case GROUND -> ItemDisplay.ItemDisplayTransform.GROUND;
+            case FIXED -> ItemDisplay.ItemDisplayTransform.FIXED;
+        };
+    }
+
+    public static ItemDisplayMeta.DisplayType toDisplayType(ItemDisplay.ItemDisplayTransform displayType) {
+        return switch (displayType) {
+            case NONE -> ItemDisplayMeta.DisplayType.NONE;
+            case THIRDPERSON_LEFTHAND -> ItemDisplayMeta.DisplayType.THIRD_PERSON_LEFT_HAND;
+            case THIRDPERSON_RIGHTHAND -> ItemDisplayMeta.DisplayType.THIRD_PERSON_RIGHT_HAND;
+            case FIRSTPERSON_LEFTHAND -> ItemDisplayMeta.DisplayType.FIRST_PERSON_LEFT_HAND;
+            case FIRSTPERSON_RIGHTHAND -> ItemDisplayMeta.DisplayType.FIRST_PERSON_RIGHT_HAND;
+            case HEAD -> ItemDisplayMeta.DisplayType.HEAD;
+            case GUI -> ItemDisplayMeta.DisplayType.GUI;
+            case GROUND -> ItemDisplayMeta.DisplayType.GROUND;
+            case FIXED -> ItemDisplayMeta.DisplayType.FIXED;
+        };
     }
 
     public static WorldBlockPosition toWorldBlockPosition(Location location) {
