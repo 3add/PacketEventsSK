@@ -1,5 +1,6 @@
 package dev.threeadd.packeteventssk.element.general.field.meta;
 
+import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Timespan;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
@@ -18,7 +19,7 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
 
     @Override
     public boolean register() {
-        MetaFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, EntityMeta.class)
+        MetaFieldRegistry.Builder<EntityMeta> builder = MetaFieldRegistry.INSTANCE.builder(EntityTypes.ENTITY, EntityMeta.class)
                 .optionalField(Number.class,
                         EntityMeta::getEntityId,
                         null,
@@ -59,10 +60,6 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
                         EntityMeta::isInvisible,
                         EntityMeta::setInvisible,
                         "invisible", "invisible state")
-                .optionalField(Pose.class,
-                        meta -> SpigotConversionUtil.toBukkitPose(meta.getPose()),
-                        (meta, newPose) -> meta.setPose(SpigotConversionUtil.fromBukkitPose(newPose)),
-                        "pose")
                 .optionalField(Boolean.class,
                         EntityMeta::isSilent,
                         EntityMeta::setSilent,
@@ -79,8 +76,17 @@ public class BaseMetaFieldRegistrar implements FieldRegistrar {
                         EntityMeta::isSwimming,
                         EntityMeta::setSwimming,
                         "swimming", "swimming state")
-                .constructor(BASE_ENTITY_META_CONSTRUCTOR)
-                .build();
+                .constructor(BASE_ENTITY_META_CONSTRUCTOR);
+
+        // only register if an addon provides this type
+        if (Classes.getExactClassInfo(Pose.class) != null) {
+            builder.optionalField(Pose.class,
+                    meta -> SpigotConversionUtil.toBukkitPose(meta.getPose()),
+                    (meta, newPose) -> meta.setPose(SpigotConversionUtil.fromBukkitPose(newPose)),
+                    "pose");
+        }
+
+        builder.build();
 
         return true;
     }
