@@ -64,6 +64,7 @@ SkBee provides the NBT Compound hook for fields using NBT.
 - [Install Here](https://modrinth.com/plugin/skbee/versions)
 ### Other
 Other elements use common types provided by other frequently used addons.
+
 Such as:
 - Entity Pose (provided by: SkBee)
   
