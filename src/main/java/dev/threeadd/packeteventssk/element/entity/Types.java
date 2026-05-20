@@ -19,8 +19,11 @@ public class Types {
                 .examples("""
                         command cloneMe:
                             trigger:
-                                create new fake player entity at player for all players:
-                                    set fake skin of the fake entity to player's skin
+                                set {_player} to a new fake player entity:
+                                    viewers: players
+                                    location: location of player
+                                    skin: skin of player
+                                    username: "Hello_World!"
                         """)
                 .since("1.0.0")
                 .parser(new Parser<>() {
