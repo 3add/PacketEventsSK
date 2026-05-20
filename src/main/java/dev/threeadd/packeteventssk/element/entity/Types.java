@@ -51,10 +51,11 @@ public class Types {
                         command spawn:
                             trigger:
                                 set {_zombie} to a new fake zombie entity:
-                                    players: all players
+                                    viewers: all players
                                     location: location of player
-
-                                set glowing state of field meta of {_zombie} to 2
+                        
+                                set {_meta} to entity field meta of {_zombie}
+                                set meta field glowing state of {_meta} to true
                         """)
                 .since("1.1.0")
                 .parser(new Parser<>() {
