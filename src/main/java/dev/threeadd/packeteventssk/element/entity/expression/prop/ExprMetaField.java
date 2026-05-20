@@ -99,6 +99,8 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
     }
 
     private String fieldName;
+    private Class<?> returnType = Object.class;
+    private boolean isArrayField = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -107,8 +109,12 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
         boolean isValidField = false;
         for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
-            if (def.getAccessor(this.fieldName) != null) {
+            FieldAccessor<EntityMeta, ?> accessor = def.getAccessor(this.fieldName);
+            if (accessor != null) {
                 isValidField = true;
+                Class<?> expected = accessor.expectedType();
+                this.isArrayField = expected.isArray();
+                this.returnType = this.isArrayField ? expected.getComponentType() : expected;
                 break;
             }
         }
@@ -160,8 +166,9 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
                 FieldAccessor<EntityMeta, ?> field = def.getAccessor(this.fieldName);
                 if (field != null) {
                     Class<?> expected = field.expectedType();
-                    if (!acceptedTypes.contains(expected)) {
-                        acceptedTypes.add(expected);
+                    Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
+                    if (!acceptedTypes.contains(typeToAccept)) {
+                        acceptedTypes.add(typeToAccept);
                     }
                 }
             }
@@ -178,15 +185,30 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
         if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
 
-        Object newValue = delta.length == 1 ? delta[0] : delta;
-
         for (EntityMeta meta : getExpr().getArray(event)) {
             if (meta == null) continue;
 
             FieldAccessor<EntityMeta, ?> targetField = MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), fieldName);
             if (targetField == null || targetField.setter() == null) continue;
 
+            Object newValue;
             Class<?> expected = targetField.expectedType();
+
+            if (expected.isArray()) {
+                Class<?> componentType = expected.getComponentType();
+                Object typedArray = Array.newInstance(componentType, delta.length);
+                for (int i = 0; i < delta.length; i++) {
+                    Array.set(typedArray, i, delta[i]);
+                }
+                newValue = typedArray;
+            } else {
+                if (delta.length == 1) {
+                    newValue = delta[0];
+                } else {
+                    newValue = delta;
+                }
+            }
+
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
 
             if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
@@ -203,8 +225,13 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
     }
 
     @Override
+    public boolean isSingle() {
+        return !isArrayField && getExpr().isSingle();
+    }
+
+    @Override
     public Class<?> getReturnType() {
-        return Object.class;
+        return this.returnType;
     }
 
     @Override

@@ -91,6 +91,8 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     }
 
     private String fieldName;
+    private Class<?> returnType = Object.class;
+    private boolean isArrayField = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -99,8 +101,12 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
         boolean isValidField = false;
         for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
-            if (def.getAccessor(this.fieldName) != null) {
+            FieldAccessor<WrapperEntity, ?> accessor = def.getAccessor(this.fieldName);
+            if (accessor != null) {
                 isValidField = true;
+                Class<?> expected = accessor.expectedType();
+                this.isArrayField = expected.isArray();
+                this.returnType = this.isArrayField ? expected.getComponentType() : expected;
                 break;
             }
         }
@@ -152,8 +158,9 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
                 FieldAccessor<WrapperEntity, ?> field = def.getAccessor(this.fieldName);
                 if (field != null) {
                     Class<?> expected = field.expectedType();
-                    if (!acceptedTypes.contains(expected)) {
-                        acceptedTypes.add(expected);
+                    Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
+                    if (!acceptedTypes.contains(typeToAccept)) {
+                        acceptedTypes.add(typeToAccept);
                     }
                 }
             }
@@ -170,15 +177,30 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
         if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
 
-        Object newValue = delta.length == 1 ? delta[0] : delta;
-
         for (WrapperEntity entity : getExpr().getArray(event)) {
             if (entity == null) continue;
 
             FieldAccessor<WrapperEntity, ?> targetField = FakeEntityFieldRegistry.INSTANCE.getAccessor(entity.getClass(), fieldName);
             if (targetField == null || targetField.setter() == null) continue;
 
+            Object newValue;
             Class<?> expected = targetField.expectedType();
+
+            if (expected.isArray()) {
+                Class<?> componentType = expected.getComponentType();
+                Object typedArray = Array.newInstance(componentType, delta.length);
+                for (int i = 0; i < delta.length; i++) {
+                    Array.set(typedArray, i, delta[i]);
+                }
+                newValue = typedArray;
+            } else {
+                if (delta.length == 1) {
+                    newValue = delta[0];
+                } else {
+                    newValue = delta;
+                }
+            }
+
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
 
             if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
@@ -195,8 +217,13 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     }
 
     @Override
+    public boolean isSingle() {
+        return !isArrayField && getExpr().isSingle();
+    }
+
+    @Override
     public Class<?> getReturnType() {
-        return Object.class;
+        return this.returnType;
     }
 
     @Override

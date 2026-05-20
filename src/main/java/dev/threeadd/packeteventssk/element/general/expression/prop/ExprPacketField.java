@@ -19,6 +19,7 @@ import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +30,6 @@ import java.util.function.BiConsumer;
 public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     public static void register(Registration reg) {
-
         StringBuilder description = new StringBuilder();
         description.append("Gets or sets a field's value from a packet by its name.\n\n");
         description.append("### Available Packets and their fields\n");
@@ -60,6 +60,8 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     }
 
     private String fieldName;
+    private Class<?> returnType = Object.class;
+    private boolean isArrayField = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -69,26 +71,34 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
         if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) { // for the listening event
-
             PacketTypeCommon eventPacketType = data.getPacketType();
-            if (eventPacketType == null) return false; // shouldn't ever happen
+            if (eventPacketType == null) return false;
 
             FieldSchema<PacketTypeCommon, PacketWrapper<?>> def = PacketFieldRegistry.INSTANCE.getSchema(eventPacketType);
-
             if (def == null) {
                 Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
 
-            if (def.getAccessor(this.fieldName) == null) {
+            FieldAccessor<PacketWrapper<?>, ?> accessor = def.getAccessor(this.fieldName);
+            if (accessor == null) {
                 Skript.error("The field '" + this.fieldName + "' does not exist in a " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
+
+            Class<?> expected = accessor.expectedType();
+            this.isArrayField = expected.isArray();
+            this.returnType = this.isArrayField ? expected.getComponentType() : expected;
+
         } else { // more global check
             boolean isValidField = false;
             for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
-                if (def.getAccessor(this.fieldName) != null) {
+                FieldAccessor<PacketWrapper<?>, ?> accessor = def.getAccessor(this.fieldName);
+                if (accessor != null) {
                     isValidField = true;
+                    Class<?> expected = accessor.expectedType();
+                    this.isArrayField = expected.isArray();
+                    this.returnType = this.isArrayField ? expected.getComponentType() : expected;
                     break;
                 }
             }
@@ -115,16 +125,24 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
             FieldSchema<PacketTypeCommon, PacketWrapper<?>> definition = PacketFieldRegistry.INSTANCE.getSchema(type);
-
             if (definition == null) continue;
 
             FieldAccessor<PacketWrapper<?>, ?> targetField = definition.getAccessor(this.fieldName);
-
             if (targetField == null || targetField.getter() == null) continue;
 
             Object value = targetField.getter().apply(wrapper);
             if (value != null) {
-                results.add(value);
+                if (value.getClass().isArray()) {
+                    int length = Array.getLength(value);
+                    for (int i = 0; i < length; i++) {
+                        Object element = Array.get(value, i);
+                        if (element != null) {
+                            results.add(element);
+                        }
+                    }
+                } else {
+                    results.add(value);
+                }
             }
         }
 
@@ -151,7 +169,8 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                     if (def != null) {
                         FieldAccessor<PacketWrapper<?>, ?> field = def.getAccessor(this.fieldName);
                         if (field != null) {
-                            return new Class<?>[]{field.expectedType()};
+                            Class<?> expected = field.expectedType();
+                            return new Class<?>[]{expected.isArray() ? expected.getComponentType() : expected};
                         }
                     }
                 }
@@ -162,8 +181,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 FieldAccessor<PacketWrapper<?>, ?> field = def.getAccessor(this.fieldName);
                 if (field != null) {
                     Class<?> expected = field.expectedType();
-                    if (!acceptedTypes.contains(expected)) {
-                        acceptedTypes.add(expected);
+                    Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
+                    if (!acceptedTypes.contains(typeToAccept)) {
+                        acceptedTypes.add(typeToAccept);
                     }
                 }
             }
@@ -185,23 +205,30 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
             FieldSchema<PacketTypeCommon, PacketWrapper<?>> definition = PacketFieldRegistry.INSTANCE.getSchema(type);
-
             if (definition == null) continue;
 
             FieldAccessor<PacketWrapper<?>, ?> targetField = definition.getAccessor(this.fieldName);
-
             if (targetField == null || targetField.setter() == null) continue;
 
             Object newValue;
-            if (delta.length == 1) {
-                newValue = delta[0];
+            Class<?> expected = targetField.expectedType();
+
+            if (expected.isArray()) {
+                Class<?> componentType = expected.getComponentType();
+                Object typedArray = Array.newInstance(componentType, delta.length);
+                for (int i = 0; i < delta.length; i++) {
+                    Array.set(typedArray, i, delta[i]);
+                }
+                newValue = typedArray;
             } else {
-                newValue = delta; // array
+                if (delta.length == 1) {
+                    newValue = delta[0];
+                } else {
+                    newValue = delta;
+                }
             }
 
-            Class<?> expected = targetField.expectedType();
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
-
             if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
                 isCompatible = true;
             }
@@ -216,8 +243,13 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     }
 
     @Override
+    public boolean isSingle() {
+        return !isArrayField && getExpr().isSingle();
+    }
+
+    @Override
     public Class<?> getReturnType() {
-        return Object.class;
+        return this.returnType;
     }
 
     @Override
