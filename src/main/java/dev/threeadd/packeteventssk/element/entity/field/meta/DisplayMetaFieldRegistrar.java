@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.field.meta;
+package dev.threeadd.packeteventssk.element.entity.field.meta;
 
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.util.ColorRGB;

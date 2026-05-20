@@ -97,35 +97,6 @@ public class Types {
                 })
                 .register();
 
-        reg.newType(EntityMeta.class, "entitymeta")
-                .user("fake ?entit(y|ies) meta")
-                .name("General - Entity Meta")
-                .description("The entity meta of a minecraft entity (this can both represent a fake entity's meta or a real entity's meta, but is mostly used for fake entities since the only use for real entities is for packet intercepting).")
-                .examples("""
-                        command spawn:
-                            trigger:
-                                create a new fake zombie entity at player for players:
-                                    set fake scale attribute of the fake entity to 2
-                        """)
-                .since("1.1.0")
-                .parser(new Parser<>() {
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(EntityMeta meta, int flags) {
-                        return "entity meta";
-                    }
-
-                    @Override
-                    public String toVariableNameString(EntityMeta meta) {
-                        return "entitymeta:" + meta.hashCode();
-                    }
-                })
-                .register();
-
         reg.newType(BlockEntityType.class, "blockentitytype")
                 .user("block ?entit(y|ies) types?")
                 .name("General - Block Entity Type")

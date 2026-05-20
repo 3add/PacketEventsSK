@@ -15,7 +15,7 @@ import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive.PacketSendOrReceiveParserData;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
+import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +46,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
         }
 
-        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[packet] (field|fake) <[a-zA-Z0-9_ ]+>", "packet")
+        reg.newPropertyExpression(ExprPacketField.class, Object.class, "[fake] packet [field] <[a-zA-Z0-9_ ]+>", "packet")
                 .name("General - Packet Field")
                 .description(description.toString())
                 .examples("""

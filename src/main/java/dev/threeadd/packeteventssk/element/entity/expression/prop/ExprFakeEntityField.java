@@ -10,7 +10,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.entity.FakeEntityFieldRegistry;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +82,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
         }
 
-        reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[entity] (field|fake) <[a-zA-Z0-9_ ]+>", "fakeentity")
+        reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[fake] [fake] entity [field] <[a-zA-Z0-9_ ]+>", "fakeentity")
                 .name("Fake Entity Property Field")
                 .description(description.toString())
                 // TODO example

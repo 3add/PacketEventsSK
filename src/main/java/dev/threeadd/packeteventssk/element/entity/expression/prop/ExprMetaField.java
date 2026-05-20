@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.expression.prop;
+package dev.threeadd.packeteventssk.element.entity.expression.prop;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
@@ -10,7 +10,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +82,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
             }
         }
 
-        reg.newPropertyExpression(ExprMetaField.class, Object.class, "[meta] (field|fake) <[a-zA-Z0-9_ ]+>", "entitymeta")
+        reg.newPropertyExpression(ExprMetaField.class, Object.class, "[fake] [entity] meta [field] <[a-zA-Z0-9_ ]+>", "entitymeta")
                 .name("Entity Meta Property Field")
                 .description(description.toString())
                 .examples("""

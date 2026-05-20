@@ -16,7 +16,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.entity.FakeEntityFieldRegistry;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;

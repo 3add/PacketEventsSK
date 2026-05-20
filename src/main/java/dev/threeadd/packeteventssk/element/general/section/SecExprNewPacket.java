@@ -15,7 +15,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
+import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

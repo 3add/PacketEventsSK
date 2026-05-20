@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.section;
+package dev.threeadd.packeteventssk.element.entity.section;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.EntityUtils;
@@ -16,7 +16,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
