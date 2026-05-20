@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
@@ -98,101 +97,89 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
                 .register();
     }
 
-    private String fieldName;
-    private Class<?> returnType = Object.class;
-    private boolean isArrayField = false;
+    private FieldAccessor <EntityMeta, ?> fieldAccessor;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        this.fieldName = parseResult.regexes.getFirst().group().trim();
+        String fieldName = parseResult.regexes.getFirst().group().trim();
 
         boolean isValidField = false;
         for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
-            FieldAccessor<EntityMeta, ?> accessor = def.getAccessor(this.fieldName);
-            if (accessor != null) {
+            this.fieldAccessor = def.getAccessor(fieldName);
+            if (this.fieldAccessor != null) {
                 isValidField = true;
-                Class<?> expected = accessor.expectedType();
-                this.isArrayField = expected.isArray();
-                this.returnType = this.isArrayField ? expected.getComponentType() : expected;
                 break;
             }
         }
 
         if (!isValidField) {
-            Skript.error("The meta field '" + this.fieldName + "' is not registered or does not exist. Consider checking your spelling.");
+            Skript.error("The meta field '" + fieldName + "' is not registered or does not exist. Consider checking your spelling.");
             return false;
         }
 
-        setExpr((Expression<? extends EntityMeta>) exprs[0]);
+        setExpr((Expression) exprs[0]);
         return true;
     }
 
     @Nullable
     @Override
     protected Object[] get(Event event, EntityMeta[] source) {
-        if (this.fieldName == null) return null;
+        if (this.fieldAccessor == null) return null;
 
-        List<Object> results = new ArrayList<>();
+        List<Object> elements = new ArrayList<>();
 
-        for (EntityMeta meta : source) {
-            if (meta == null) continue;
+        for (EntityMeta entity : source) {
+            if (entity == null) continue;
 
-            FieldAccessor<EntityMeta, ?> targetField = MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), fieldName);
-            if (targetField == null || targetField.getter() == null) continue;
+            Object value = this.fieldAccessor.getter().apply(entity);
+            if (value == null) continue;
 
-            Object value = ((Function<EntityMeta, ?>) targetField.getter()).apply(meta);
-            if (value != null) {
-                if (value.getClass().isArray()) {
-                    int len = Array.getLength(value);
-                    for (int i = 0; i < len; i++) {
-                        results.add(Array.get(value, i));
-                    }
-                } else {
-                    results.add(value);
+            if (value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                int i = 0;
+                while (i < len) {
+                    elements.add(Array.get(value, i++));
                 }
+            } else {
+                elements.add(value);
             }
         }
-        return results.isEmpty() ? null : results.toArray();
+
+        if (elements.isEmpty()) return null;
+        return elements.toArray(new Object[0]);
     }
 
     @Nullable
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
-        if (mode == Changer.ChangeMode.SET && this.fieldName != null) {
-            List<Class<?>> acceptedTypes = new ArrayList<>();
-
-            for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
-                FieldAccessor<EntityMeta, ?> field = def.getAccessor(this.fieldName);
-                if (field != null) {
-                    Class<?> expected = field.expectedType();
-                    Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
-                    if (!acceptedTypes.contains(typeToAccept)) {
-                        acceptedTypes.add(typeToAccept);
-                    }
-                }
-            }
-
-            if (!acceptedTypes.isEmpty()) {
-                return acceptedTypes.toArray(new Class<?>[0]);
-            }
+        if (this.fieldAccessor.setter() == null) {
+            Skript.error("Cannot set " + this.fieldAccessor.name() + " because it is a read-only field.");
+            return null;
         }
+
+        if (mode != Changer.ChangeMode.SET) return null;
+
+        Class<?> expected = this.fieldAccessor.expectedType();
+        Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
+
+        if (expected.equals(typeToAccept)) {
+            return new Class<?>[]{typeToAccept};
+        }
+
         return null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldAccessor.setter() == null) return;
 
-        for (EntityMeta meta : getExpr().getArray(event)) {
-            if (meta == null) continue;
-
-            FieldAccessor<EntityMeta, ?> targetField = MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), fieldName);
-            if (targetField == null || targetField.setter() == null) continue;
+        for (Object obj : getExpr().getArray(event)) {
+            if (!(obj instanceof EntityMeta meta)) continue;
 
             Object newValue;
-            Class<?> expected = targetField.expectedType();
+            Class<?> expected = this.fieldAccessor.expectedType();
 
             if (expected.isArray()) {
                 Class<?> componentType = expected.getComponentType();
@@ -216,27 +203,28 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the meta field '" + this.fieldName + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the meta field '" + this.fieldAccessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<EntityMeta, Object>) targetField.setter()).accept(meta, newValue);
+            ((BiConsumer<EntityMeta, Object>) this.fieldAccessor.setter()).accept(meta, newValue);
         }
     }
 
     @Override
     public boolean isSingle() {
-        return !isArrayField && getExpr().isSingle();
+        return !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override
     public Class<?> getReturnType() {
-        return this.returnType;
+        Class<?> expected = this.fieldAccessor.expectedType();
+        return expected.isArray() ? expected.getComponentType() : expected;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String meta = getExpr() != null ? getExpr().toString(event, debug) : "meta";
-        return "meta field " + fieldName + " of " + meta;
+        return "meta field " + this.fieldAccessor.name() + " of " + meta;
     }
 }

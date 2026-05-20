@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Object> {
@@ -90,29 +89,24 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
                 .register();
     }
 
-    private String fieldName;
-    private Class<?> returnType = Object.class;
-    private boolean isArrayField = false;
+    private FieldAccessor <WrapperEntity, ?> fieldAccessor;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        this.fieldName = parseResult.regexes.getFirst().group().trim();
+        String fieldName = parseResult.regexes.getFirst().group().trim();
 
         boolean isValidField = false;
         for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
-            FieldAccessor<WrapperEntity, ?> accessor = def.getAccessor(this.fieldName);
-            if (accessor != null) {
+            this.fieldAccessor = def.getAccessor(fieldName);
+            if (this.fieldAccessor != null) {
                 isValidField = true;
-                Class<?> expected = accessor.expectedType();
-                this.isArrayField = expected.isArray();
-                this.returnType = this.isArrayField ? expected.getComponentType() : expected;
                 break;
             }
         }
 
         if (!isValidField) {
-            Skript.error("The fake entity field '" + this.fieldName + "' is not registered or does not exist. Consider checking your spelling.");
+            Skript.error("The fake entity field '" + fieldName + "' is not registered or does not exist. Consider checking your spelling.");
             return false;
         }
 
@@ -123,68 +117,61 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     @Nullable
     @Override
     protected Object[] get(Event event, WrapperEntity[] source) {
-        if (this.fieldName == null) return null;
+        if (this.fieldAccessor == null) return null;
 
-        List<Object> results = new ArrayList<>();
+        List<Object> elements = new ArrayList<>();
 
         for (WrapperEntity entity : source) {
             if (entity == null) continue;
 
-            FieldAccessor<WrapperEntity, ?> targetField = FakeEntityFieldRegistry.INSTANCE.getAccessor(entity.getClass(), fieldName);
-            if (targetField == null || targetField.getter() == null) continue;
+            Object value = this.fieldAccessor.getter().apply(entity);
+            if (value == null) continue;
 
-            Object value = ((Function<WrapperEntity, ?>) targetField.getter()).apply(entity);
-            if (value != null) {
-                if (value.getClass().isArray()) {
-                    int len = Array.getLength(value);
-                    for (int i = 0; i < len; i++) {
-                        results.add(Array.get(value, i));
-                    }
-                } else {
-                    results.add(value);
+            if (value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                int i = 0;
+                while (i < len) {
+                    elements.add(Array.get(value, i++));
                 }
+            } else {
+                elements.add(value);
             }
         }
-        return results.isEmpty() ? null : results.toArray();
+        
+        if (elements.isEmpty()) return null;
+        return elements.toArray(new Object[0]);
     }
 
     @Nullable
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
-        if (mode == Changer.ChangeMode.SET && this.fieldName != null) {
-            List<Class<?>> acceptedTypes = new ArrayList<>();
-
-            for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
-                FieldAccessor<WrapperEntity, ?> field = def.getAccessor(this.fieldName);
-                if (field != null) {
-                    Class<?> expected = field.expectedType();
-                    Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
-                    if (!acceptedTypes.contains(typeToAccept)) {
-                        acceptedTypes.add(typeToAccept);
-                    }
-                }
-            }
-
-            if (!acceptedTypes.isEmpty()) {
-                return acceptedTypes.toArray(new Class<?>[0]);
-            }
+        if (this.fieldAccessor.setter() == null) {
+            Skript.error("Cannot set " + this.fieldAccessor.name() + " because it is a read-only field.");
+            return null;
         }
+
+        if (mode != Changer.ChangeMode.SET) return null;
+
+        Class<?> expected = this.fieldAccessor.expectedType();
+        Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
+
+        if (expected.equals(typeToAccept)) {
+            return new Class<?>[]{typeToAccept};
+        }
+
         return null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldName == null) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldAccessor.setter() == null) return;
 
         for (WrapperEntity entity : getExpr().getArray(event)) {
             if (entity == null) continue;
 
-            FieldAccessor<WrapperEntity, ?> targetField = FakeEntityFieldRegistry.INSTANCE.getAccessor(entity.getClass(), fieldName);
-            if (targetField == null || targetField.setter() == null) continue;
-
             Object newValue;
-            Class<?> expected = targetField.expectedType();
+            Class<?> expected = this.fieldAccessor.expectedType();
 
             if (expected.isArray()) {
                 Class<?> componentType = expected.getComponentType();
@@ -202,33 +189,33 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
 
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
-
             if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
                 isCompatible = true;
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the fake entity field '" + this.fieldName + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the fake entity field '" + this.fieldAccessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<WrapperEntity, Object>) targetField.setter()).accept(entity, newValue);
+            ((BiConsumer<WrapperEntity, Object>) this.fieldAccessor.setter()).accept(entity, newValue);
         }
     }
 
     @Override
     public boolean isSingle() {
-        return !isArrayField && getExpr().isSingle();
+        return !this.fieldAccessor.expectedType().isArray() && getExpr().isSingle();
     }
 
     @Override
     public Class<?> getReturnType() {
-        return this.returnType;
+        Class<?> expected = this.fieldAccessor.expectedType();
+        return expected.isArray() ? expected.getComponentType() : expected;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String entity = getExpr() != null ? getExpr().toString(event, debug) : "fake entity";
-        return "fake entity field " + fieldName + " of " + entity;
+        return "fake entity field " + this.fieldAccessor.name() + " of " + entity;
     }
 }
