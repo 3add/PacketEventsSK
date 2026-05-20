@@ -13,14 +13,15 @@ import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.packet.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
-import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.lang.converter.Converters;
 
 import java.util.Locale;
 
 public class Types {
 
+    @SuppressWarnings("UnstableApiUsage")
     public static void register(Registration reg) {
         reg.newType(PacketWrapper.class, "packet")
                 .user("packet")
@@ -49,6 +50,8 @@ public class Types {
                     }
                 })
                 .register();
+
+        Converters.registerConverter(PacketWrapper.class, PacketTypeCommon.class, packet -> packet.getPacketTypeData().getPacketType());
 
         reg.newType(PacketTypeCommon.class, "packettype")
                 .user("packet ?types?")

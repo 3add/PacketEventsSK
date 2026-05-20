@@ -2,6 +2,7 @@ package dev.threeadd.packeteventssk.element.general;
 
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
+import dev.threeadd.packeteventssk.element.general.condition.CondPacketTypeIsBound;
 import dev.threeadd.packeteventssk.element.general.expression.prop.ExprPacketField;
 import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
@@ -24,6 +25,10 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
 
         // property registries (registered before the expr/sec using it)
         PacketFieldRegistry.INSTANCE.registerAll();
+
+        // start conditions
+        CondPacketTypeIsBound.register(reg);
+        // end conditions
 
         // start effects
         EffCancelPacket.register(reg);
