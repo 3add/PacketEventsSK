@@ -2,6 +2,7 @@ package dev.threeadd.packeteventssk.element.general;
 
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
+import dev.threeadd.packeteventssk.element.general.expression.prop.ExprPacketField;
 import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
 import dev.threeadd.packeteventssk.element.general.effect.EffSendOrReceivePacket;

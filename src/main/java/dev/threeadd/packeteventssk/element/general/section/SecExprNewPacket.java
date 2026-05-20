@@ -52,7 +52,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             String fieldLines = schema.getReadableFields();
             if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append(schema.type().getName().toLowerCase(Locale.ENGLISH).replace("_", " "))
                         .append("** fields:\n")
                         .append(fieldLines)
                         .append("\n");

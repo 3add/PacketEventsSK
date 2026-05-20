@@ -26,6 +26,7 @@ import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SecExprNewMeta extends SectionExpression<EntityMeta> {
 
@@ -49,15 +50,57 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
         description.append("Create a new meta from an entity type.\n\n");
         description.append("### Available Metas and their fields\n");
 
-        Collection<FieldSchema<EntityType, EntityMeta>> schemas = MetaFieldRegistry.INSTANCE.getAllSchemas();
+        List<FieldSchema<EntityType, EntityMeta>> schemas = new ArrayList<>(MetaFieldRegistry.INSTANCE.getAllSchemas());
+        schemas.sort(Comparator.comparingInt(schema -> schema.accessors().size()));
         for (FieldSchema<EntityType, EntityMeta> schema : schemas) {
-            String fieldLines = schema.getReadableFields();
+
+            Set<String> myFields = schema.accessors().stream()
+                    .map(FieldAccessor::name)
+                    .collect(Collectors.toSet());
+
+            FieldSchema<EntityType, EntityMeta> parentSchema = null;
+            int maxSubsetSize = -1;
+
+            for (FieldSchema<EntityType, EntityMeta> other : schemas) {
+                if (other == schema) continue;
+                Set<String> otherFields = other.accessors().stream()
+                        .map(FieldAccessor::name)
+                        .collect(Collectors.toSet());
+
+                if (myFields.containsAll(otherFields) && myFields.size() > otherFields.size()) {
+                    if (otherFields.size() > maxSubsetSize) {
+                        maxSubsetSize = otherFields.size();
+                        parentSchema = other;
+                    }
+                }
+            }
+
+            Set<String> parentFieldNames = parentSchema != null
+                    ? parentSchema.accessors().stream().map(FieldAccessor::name).collect(Collectors.toSet())
+                    : Collections.emptySet();
+
+            StringBuilder fieldLines = new StringBuilder();
+            for (FieldAccessor<EntityMeta, ?> field : schema.accessors()) {
+                if (!parentFieldNames.contains(field.name())) {
+                    fieldLines.append("  - `").append(field.name());
+                    if (field.aliases().length > 0) {
+                        fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
+                    }
+
+                    fieldLines.append("`\n");
+                }
+            }
+
             if (!fieldLines.isEmpty()) {
-                description.append("* **")
-                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
-                        .append("** fields:\n")
-                        .append(fieldLines)
-                        .append("\n");
+                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                description.append("* **").append(typeName).append("** fields:\n");
+
+                if (parentSchema != null) {
+                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
+                }
+
+                description.append(fieldLines).append("\n");
             }
         }
 

@@ -16,12 +16,10 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Object> {
 
@@ -30,15 +28,57 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
         description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
         description.append("### Available Fake Entity Fields by Category\n");
 
-        Collection<FieldSchema<EntityType, WrapperEntity>> schemas = FakeEntityFieldRegistry.INSTANCE.getAllSchemas();
+        List<FieldSchema<EntityType, WrapperEntity>> schemas = new ArrayList<>(FakeEntityFieldRegistry.INSTANCE.getAllSchemas());
+        schemas.sort(Comparator.comparingInt(schema -> schema.accessors().size()));
         for (FieldSchema<EntityType, WrapperEntity> schema : schemas) {
-            String fieldLines = schema.getReadableFields();
+
+            Set<String> myFields = schema.accessors().stream()
+                    .map(FieldAccessor::name)
+                    .collect(Collectors.toSet());
+
+            FieldSchema<EntityType, WrapperEntity> parentSchema = null;
+            int maxSubsetSize = -1;
+
+            for (FieldSchema<EntityType, WrapperEntity> other : schemas) {
+                if (other == schema) continue;
+                Set<String> otherFields = other.accessors().stream()
+                        .map(FieldAccessor::name)
+                        .collect(Collectors.toSet());
+
+                if (myFields.containsAll(otherFields) && myFields.size() > otherFields.size()) {
+                    if (otherFields.size() > maxSubsetSize) {
+                        maxSubsetSize = otherFields.size();
+                        parentSchema = other;
+                    }
+                }
+            }
+
+            Set<String> parentFieldNames = parentSchema != null
+                    ? parentSchema.accessors().stream().map(FieldAccessor::name).collect(Collectors.toSet())
+                    : Collections.emptySet();
+
+            StringBuilder fieldLines = new StringBuilder();
+            for (FieldAccessor<WrapperEntity, ?> field : schema.accessors()) {
+                if (!parentFieldNames.contains(field.name())) {
+                    fieldLines.append("  - `").append(field.name());
+                    if (field.aliases().length > 0) {
+                        fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
+                    }
+
+                    fieldLines.append("`\n");
+                }
+            }
+
             if (!fieldLines.isEmpty()) {
-                description.append("* **")
-                        .append(schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " "))
-                        .append("** fields:\n")
-                        .append(fieldLines)
-                        .append("\n");
+                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                description.append("* **").append(typeName).append("** fields:\n");
+
+                if (parentSchema != null) {
+                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
+                }
+
+                description.append(fieldLines).append("\n");
             }
         }
 
