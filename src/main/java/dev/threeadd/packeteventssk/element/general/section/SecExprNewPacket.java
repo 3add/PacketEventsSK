@@ -92,14 +92,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         this.schema = PacketFieldRegistry.INSTANCE.getSchema(this.type);
 
         if (this.schema == null) {
-            Skript.error("Packet creation for " + this.type.getName() + " is not currently supported. Consider creating/handling it through reflection.");
+            Skript.error("Packet creation for " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is not currently supported. Consider creating/handling it through reflection.");
             return false; // can't return an empty packet so this expr can't be used
         }
 
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " packet.");
+                Skript.error("You must provide a section with the required fields to create a " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
 

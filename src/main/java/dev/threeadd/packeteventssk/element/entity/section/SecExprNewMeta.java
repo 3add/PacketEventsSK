@@ -153,7 +153,7 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " meta.");
+                Skript.error("You must provide a section with the required fields to create a " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " meta.");
                 return false;
             }
             return true;

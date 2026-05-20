@@ -148,7 +148,7 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " fake entity.");
+                Skript.error("You must provide a section with the required fields to create a " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " fake entity.");
                 return false;
             }
             return true;
