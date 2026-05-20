@@ -1,10 +1,13 @@
 package dev.threeadd.packeteventssk.element.general;
 
 import ch.njol.skript.classes.Parser;
+import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
+import ch.njol.yggdrasil.Fields;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -17,7 +20,11 @@ import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.lang.converter.Converters;
 
+import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class Types {
 
@@ -46,7 +53,7 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(PacketWrapper<?> packet) {
-                        return "packet:" + packet.hashCode();
+                        return "packet:" + packet.hashCode(); // TODO improve
                     }
                 })
                 .register();
@@ -95,9 +102,10 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(PacketTypeCommon type) {
-                        return "packettype:" + type.getName();
+                        return "packettype:" + type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ");
                     }
                 })
+                // TODO add serialization when skript fixes yggdrasil
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
@@ -125,7 +133,33 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(BlockEntityType type) {
-                        return "blockentitytype:" + type.getName().getKey();
+                        return "blockentitytype:" + type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    }
+                })
+                .serializer(new Serializer<>() {
+
+                    @Override
+                    public Fields serialize(BlockEntityType o) {
+                        Fields fields = new Fields();
+                        fields.putObject("name", o.getName().getKey().toLowerCase(Locale.ENGLISH));
+
+                        return fields;
+                    }
+
+                    @Override
+                    public BlockEntityType deserialize(Fields fields) throws StreamCorruptedException {
+                        String name = fields.getObject("name", String.class);
+                        return BlockEntityTypes.getByName(name);
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return true;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
                     }
                 })
                 .register();
@@ -168,12 +202,59 @@ public class Types {
 
                     @Override
                     public String toString(Skin skin, int flags) {
-                        return "skin: " + skin.properties().stream().map(prop -> "value: '" + prop.getValue() + "', signature: '" + prop.getSignature() + "'").toList();
+                        return skin.properties().stream()
+                                .map(prop -> "value: '" + prop.getValue() + "', signature: '" + prop.getSignature() + "'")
+                                .collect(Collectors.joining(", "));
                     }
 
                     @Override
                     public String toVariableNameString(Skin skin) {
-                        return "skin:" + skin.hashCode();
+                        return "skin:" + toString(skin, 0);
+                    }
+                })
+                .serializer(new Serializer<>() {
+
+                    @Override
+                    public Fields serialize(Skin o) {
+                        Fields fields = new Fields();
+
+                        String[] values = o.properties().stream().map(TextureProperty::getValue).toArray(String[]::new);
+                        String[] signatures = o.properties().stream().map(TextureProperty::getSignature).toArray(String[]::new);
+
+                        fields.putObject("values", values);
+                        fields.putObject("signatures", signatures);
+
+                        return fields;
+                    }
+
+                    @Override
+                    protected Skin deserialize(Fields fields) throws StreamCorruptedException {
+                        String[] values = fields.getObject("values", String[].class);
+                        String[] signatures = fields.getObject("signatures", String[].class);
+
+                        if (values == null || values.length == 0) {
+                            throw new StreamCorruptedException("Skin properties cannot be empty");
+                        }
+
+                        List<TextureProperty> properties = new ArrayList<>();
+                        for (int i = 0; i < values.length; i++) {
+                            String value = values[i];
+                            String signature = (signatures != null && i < signatures.length) ? signatures[i] : null;
+
+                            properties.add(new TextureProperty("textures", value, signature));
+                        }
+
+                        return new Skin(properties);
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return true;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
                     }
                 })
                 .register();
