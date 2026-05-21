@@ -76,11 +76,11 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         "display view range")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getShadowRadius,
-                        (meta, newNum) -> meta.setShadowStrength(newNum.floatValue()),
+                        (meta, newNum) -> meta.setShadowRadius(newNum.floatValue()),
                         "display shadow radius")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getShadowStrength,
-                        (meta, newNum) -> meta.setShadowRadius(newNum.floatValue()),
+                        (meta, newNum) -> meta.setShadowStrength(newNum.floatValue()),
                         "display shadow strength")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getWidth,
