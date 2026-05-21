@@ -82,7 +82,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
         }
 
-        reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[fake] [fake] entity [field] <[a-zA-Z0-9_ ]+>", "fakeentity")
+        reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[fake] fake entity [field] <[a-zA-Z0-9_ ]+>", "fakeentity")
                 .name("Fake Entity Property Field")
                 .description(description.toString())
                 // TODO example

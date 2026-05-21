@@ -7,7 +7,6 @@ import dev.threeadd.packeteventssk.element.entity.effect.EffRideFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.effect.EffSpawnFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.effect.EffTeleportFakeEntity;
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntitiesAll;
-import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityEventValue;
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityFromId;
 import dev.threeadd.packeteventssk.element.entity.expression.ExprFakeEntityFromUuid;
 import dev.threeadd.packeteventssk.element.entity.expression.prop.ExprFakeEntityField;
@@ -48,7 +47,6 @@ public class EntityElementRegistration implements SkriptElementRegistration {
         ExprVisibleFakeEntities.register(reg);
 
         ExprFakeEntitiesAll.register(reg);
-        ExprFakeEntityEventValue.register(reg);
         ExprFakeEntityFromId.register(reg);
         ExprFakeEntityFromUuid.register(reg);
         // end expressions

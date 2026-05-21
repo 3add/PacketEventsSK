@@ -51,10 +51,13 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 .name("General - Packet Field")
                 .description(description.toString())
                 .examples("""
-                        on clientbound entity metadata netty processed:
-                            set {_meta} to entity meta of event-packet
-                            set fake glowing state of {_meta} to true
-                            set entity meta of event-packet to {_meta}
+                        on clientbound entity metadata:
+                            # note that {_meta} is a copy of the packet's meta
+                            set {_meta} to packet meta of event-packet
+                            set meta glowing state of {_meta} to true
+                        
+                            # so we set it again here
+                            set packet meta of event-packet to {_meta}
                         """)
                 .since("1.1.0", "1.1.1 (fixed bugs)")
                 .register();

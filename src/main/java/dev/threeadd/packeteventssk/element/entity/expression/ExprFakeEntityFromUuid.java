@@ -22,14 +22,18 @@ public class ExprFakeEntityFromUuid extends SimpleExpression<WrapperEntity> {
                         command spawnfakeplayer:
                             trigger:
                                 set {_p} to player
-                                create new fake player entity at player for all players:
-                                    set fake skin of the fake entity to {_p}'s skin
-                                    add fake uuid of the fake entity to {-uuid::*}
+                                set {_player} to a new fake player entity:
+                                    location: location of player
+                                    viewers: all players
+                                    username: "test"
+                                    skin: skin of player
+                        
+                                add the fake entity uuid of {_player} to {-id::*}
                         
                         command lookup <text>:
                             trigger:
-                                loop {-uuid::*}:
-                                    if {-uuid::*} contains arg-1 parsed as uuid:
+                                loop {-id::*}:
+                                    if {-id::*} contains arg-1 parsed as uuid:
                                         send "Found %fake entity with uuid loop-value%"
                         """)
                 .since("1.0.0", "1.1.0 (pattern altered)")

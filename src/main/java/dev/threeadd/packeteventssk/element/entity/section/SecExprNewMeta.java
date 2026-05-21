@@ -108,6 +108,7 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
                 .name("General - Create Meta")
                 .description(description.toString())
                 .since("1.1.2")
+                // TODO example
                 .register();
     }
 

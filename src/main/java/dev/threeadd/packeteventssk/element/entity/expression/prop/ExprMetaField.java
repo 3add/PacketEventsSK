@@ -13,7 +13,6 @@ import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
 import me.tofaa.entitylib.meta.EntityMeta;
-import org.apache.commons.lang3.ClassUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,11 +88,11 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
                 .examples("""
                         on clientbound entity metadata:
                             # note that {_meta} is a copy of the packet's meta
-                            set {_meta} to meta of event-packet
-                            set glowing state of {_meta} to true
+                            set {_meta} to packet meta of event-packet
+                            set meta glowing state of {_meta} to true
                         
                             # so we set it again here
-                            set meta of event-packet to {_meta}
+                            set packet meta of event-packet to {_meta}
                         """)
                 .since("1.1.2")
                 .register();

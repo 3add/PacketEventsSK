@@ -12,6 +12,14 @@ public class CondPacketTypeIsBound extends PropertyCondition<PacketTypeCommon> {
 
     public static void register(Registration reg) {
         reg.newPropertyCondition(CondPacketTypeIsBound.class, PropertyType.BE, "(:(client|server))[ ]bound", "packettypes")
+                .name("General - Packet Type Bound")
+                .description("See in which direction a packet (or packettype) is bound")
+                .examples("""
+                        on any packet:
+                            if event-packet is clientbound:
+                                send packet type of event-packet to console
+                        """)
+                .since("1.1.3")
                 .register();
     }
 

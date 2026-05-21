@@ -57,8 +57,8 @@ public class Types {
                                     viewers: all players
                                     location: location of player
                         
-                                set {_meta} to entity field meta of {_zombie}
-                                set meta field glowing state of {_meta} to true
+                                set {_meta} to fake entity meta of {_zombie}
+                                set meta glowing state of {_meta} to true
                         """)
                 .since("1.1.0")
                 .parser(new Parser<>() {

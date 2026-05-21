@@ -107,6 +107,7 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
         reg.newSimpleExpression(SecExprNewFakeEntity.class, WrapperEntity.class, "[a] [new] fake %*entitydata% entity")
                 .name("Fake Entity - Create Fake Entity")
                 .description(description.toString())
+                // TODO example
                 .since("1.0.0", "1.1.2 (changed to SectionExpression)")
                 .register();
     }

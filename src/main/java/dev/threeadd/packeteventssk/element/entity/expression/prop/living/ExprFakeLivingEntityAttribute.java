@@ -18,14 +18,19 @@ import org.jetbrains.annotations.Nullable;
 public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEntity, Number> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeLivingEntityAttribute.class, Number.class, "fake %attributetype% attribute [value]", "fakeentity")
+        reg.newPropertyExpression(ExprFakeLivingEntityAttribute.class, Number.class, "[fake] fake entity [field] %attributetype% attribute [value]", "fakeentity")
                 .name("Fake Living Entity Property - Attribute")
                 .description("The attribute of a fake living entity.")
                 .examples("""
-                        command test:
+                        command spawn:
                             trigger:
-                                spawn a new fake player entity at player for players and store it in {_e}
-                                set {_e}'s fake scale attribute to 2
+                                set {_zombie} to a new fake player entity:
+                                    location: location of player
+                                    viewers: all players
+                                    skin: skin of player
+                                    username: "the rizzler"
+
+                                set fake entity scale attribute of {_zombie} to 5
                         """)
                 .since("1.0.1")
                 .register();
@@ -58,7 +63,7 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
         return values;
     }
 
-    private @Nullable Number getAttributeValue(WrapperEntity entity, Attribute bukkitAttr) {
+    private Number getAttributeValue(WrapperEntity entity, Attribute bukkitAttr) {
         if (entity instanceof WrapperLivingEntity livingFake) {
             com.github.retrooper.packetevents.protocol.attribute.Attribute peAttr = Attributes.getByName(bukkitAttr.getKey().asString());
 
@@ -66,7 +71,7 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
                     .filter(prop -> prop.getAttribute() == peAttr)
                     .findFirst()
                     .map(Property::getValue)
-                    .orElse(null);
+                    .orElse(peAttr.getDefaultValue());
         }
         return null;
     }
@@ -123,6 +128,6 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
     public String toString(@Nullable Event event, boolean debug) {
         String attribute = this.attributeExpr.toString(event, debug);
         String entity = getExpr().toString(event, debug);
-        return String.format("fake %s attribute of %s", attribute, entity);
+        return String.format("fake entity %s attribute of %s", attribute, entity);
     }
 }

@@ -64,7 +64,11 @@ public class Types {
                 .user("packet ?types?")
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
-                // TODO example
+                .examples("""
+                        on any packet:
+                            if event-packet is clientbound:
+                                send packet type of event-packet to console
+                        """)
                 .since("1.0.0")
                 .supplier(() -> PacketTypeRegistry.getAllPackets().iterator())
                 .parser(new Parser<>() {
