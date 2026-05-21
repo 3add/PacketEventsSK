@@ -28,12 +28,12 @@ public class ExprFakeEntityFromUuid extends SimpleExpression<WrapperEntity> {
                                     username: "test"
                                     skin: skin of player
                         
-                                add the fake entity uuid of {_player} to {-id::*}
+                                add the fake entity uuid of {_player} to {-uuid::*}
                         
                         command lookup <text>:
                             trigger:
-                                loop {-id::*}:
-                                    if {-id::*} contains arg-1 parsed as uuid:
+                                loop {-uuid::*}:
+                                    if {-uuid::*} contains arg-1 parsed as uuid:
                                         send "Found %fake entity with uuid loop-value%"
                         """)
                 .since("1.0.0", "1.1.0 (pattern altered)")
