@@ -62,7 +62,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %*packettype%")
                 .name("General - New Packet")
                 .description(description.toString())
-                // TODO example
+                .examples("""
+                        command killTargetForMe:
+                            trigger:
+                                set {_packet} to a new clientbound destroy entities packet:
+                                    entity ids: protocol id of target entity
+                        
+                                silently send packet {_packet} to the player
+                        """)
                 .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
     }

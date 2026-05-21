@@ -85,7 +85,21 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
         reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[fake] fake entity [field] <[a-zA-Z0-9_ ]+>", "fakeentity")
                 .name("Fake Entity Property Field")
                 .description(description.toString())
-                // TODO example
+                .examples("""
+                        on load:
+                            set {-notchSkin} to skin of player named "notch"
+                        
+                        command test5:
+                            trigger:
+                                set {_player} to a new fake player entity:
+                                    name: "test"
+                                    skin: skin of player
+                                    location: location of player
+                                    viewers: players
+                        
+                                wait 1 second
+                                set fake entity skin of {_player} to {-notchSkin}
+                        """)
                 .since("1.1.2")
                 .register();
     }

@@ -108,7 +108,23 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
                 .name("General - Create Meta")
                 .description(description.toString())
                 .since("1.1.2")
-                // TODO example
+                .examples("""
+                        set {_meta} to text display meta data:
+                            display content: " "
+                            display text shadowed state: true
+                            display billboard: center
+                            display scale: vector(1.2,1.2,1.2)
+                            display translation: vector(-0.03,0.65,0)
+                            display background color: rgb(random integer between 0 and 255, random integer between 0 and 255, random integer between 0 and 255)
+                            display view range: 1
+                            display transform interpolation duration: 2 ticks
+                            display interpolation delay: 0 ticks
+
+                        set {_entity} to a new fake text display entity:
+                            viewers: all players
+                            location: location of player ~ vector(0,0.5,0)
+                            meta: {_meta}
+                        """)
                 .register();
     }
 

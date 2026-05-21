@@ -116,7 +116,13 @@ public class Types {
                 .user("block ?entit(y|ies) types?")
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        set {_setTextPacket} to a new clientbound block entity data packet:
+                            block position: {_pos}
+                            block entity type: sign block entity type
+                            nbt compound: createSignNBT({_keybind})
+                        """)
                 .since("1.1.0")
                 .supplier(() -> BlockEntityTypes.values().iterator())
                 .parser(new Parser<>() {
@@ -173,7 +179,13 @@ public class Types {
                 .user("sign ?sides?")
                 .name("General - Sign Side")
                 .description("Represents a side of a sign block (front or back)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        set {_setTextPacket} to a new clientbound block entity data packet:
+                            block position: {_pos}
+                            block entity type: sign block entity type
+                            nbt compound: createSignNBT({_keybind})
+                        """)
                 .since("1.1.0")
                 .register();
 
@@ -182,7 +194,22 @@ public class Types {
                 .user("interaction ?hands?")
                 .name("General - Interaction Hand")
                 .description("Represents an interaction hand (main hand or off hand)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#welcome
+                        on serverbound interact entity:
+                            set {_id} to packet field entity id of event-packet
+                            set {_hand} to packet field hand of event-packet
+                            set {_sneaking} to packet field sneaking state of event-packet
+                        
+                            if all:
+                                {_id} is {-interactables::%player's uuid%}
+                                # this packet is sent for each hand when just regular clicking
+                                # "main hand" is parsed as equipment slot if literal so we parse from text
+                                {_hand} is "main hand" parsed as interaction hand
+                                {_sneaking} is false
+                            then:
+                                send "<rainbow>welcome player!"
+                        """)
                 .since("1.1.2")
                 .register();
 
