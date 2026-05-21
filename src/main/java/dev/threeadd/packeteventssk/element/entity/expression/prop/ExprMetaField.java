@@ -212,7 +212,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
     @Override
     public boolean isSingle() {
-        return !this.fieldAccessor.expectedType().isArray();
+        return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override

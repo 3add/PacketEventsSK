@@ -205,7 +205,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     @Override
     public boolean isSingle() {
-        return !this.fieldAccessor.expectedType().isArray() && getExpr().isSingle();
+        return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override

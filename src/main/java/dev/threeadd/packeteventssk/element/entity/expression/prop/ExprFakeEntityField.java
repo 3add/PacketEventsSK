@@ -217,7 +217,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
     @Override
     public boolean isSingle() {
-        return !this.fieldAccessor.expectedType().isArray() && getExpr().isSingle();
+        return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override
