@@ -5,7 +5,6 @@ import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUpdateSign;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOpenSignEditor;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
 import org.bukkit.block.sign.Side;
