@@ -20,7 +20,7 @@ public class LivingMetaFieldRegistrar implements FieldRegistrar {
         MetaFieldRegistry.INSTANCE.builder(EntityTypes.LIVINGENTITY, LivingEntityMeta.class)
                 .optionalField(Number.class,
                         LivingEntityMeta::getHealth,
-                        (meta, newNum) -> meta.setHealth(newNum.intValue()),
+                        (meta, newNum) -> meta.setHealth(newNum.floatValue()),
                         "health", "hp")
                 .constructor(context -> {
                     LivingEntityMeta meta = (LivingEntityMeta) BaseMetaFieldRegistrar.BASE_ENTITY_META_CONSTRUCTOR.apply((ConstructionContext) context);
@@ -34,7 +34,7 @@ public class LivingMetaFieldRegistrar implements FieldRegistrar {
     static final BiConsumer<ConstructionContext<EntityType, LivingEntityMeta>, LivingEntityMeta> LIVING_ENTITY_CONSUMER = (context, meta) -> {
         Number health = context.getOptional("health", Number.class);
         if (health != null) {
-            meta.setHealth(health.intValue());
+            meta.setHealth(health.floatValue());
         }
     };
 }

@@ -76,7 +76,7 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         "display view range")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getShadowRadius,
-                        (meta, newNum) -> meta.setShadowRadius(newNum.floatValue()),
+                        (meta, newNum) -> meta.setShadowStrength(newNum.floatValue()),
                         "display shadow radius")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getShadowStrength,
@@ -176,8 +176,14 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                             return TextDisplay.TextAlignment.CENTER;
                         }, (w, newAlign) -> {
                             switch (newAlign) {
-                                case LEFT -> w.setAlignLeft(true);
-                                case RIGHT -> w.setAlignRight(true);
+                                case LEFT -> {
+                                    w.setAlignLeft(true);
+                                    w.setAlignRight(false);
+                                }
+                                case RIGHT -> {
+                                    w.setAlignRight(true);
+                                    w.setAlignLeft(false);
+                                }
                                 case CENTER -> {
                                     w.setAlignLeft(false);
                                     w.setAlignRight(false);
@@ -223,8 +229,14 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                     TextDisplay.TextAlignment alignment = context.getOptional("display text alignment", TextDisplay.TextAlignment.class);
                     if (alignment != null) {
                         switch (alignment) {
-                            case LEFT -> meta.setAlignLeft(true);
-                            case RIGHT -> meta.setAlignRight(true);
+                            case LEFT -> {
+                                meta.setAlignLeft(true);
+                                meta.setAlignRight(false);
+                            }
+                            case RIGHT -> {
+                                meta.setAlignRight(true);
+                                meta.setAlignLeft(false);
+                            }
                             case CENTER -> {
                                 meta.setAlignLeft(false);
                                 meta.setAlignRight(false);

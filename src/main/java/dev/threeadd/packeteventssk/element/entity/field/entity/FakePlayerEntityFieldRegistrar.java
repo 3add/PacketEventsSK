@@ -23,7 +23,7 @@ public class FakePlayerEntityFieldRegistrar implements FieldRegistrar {
                 .constructor(context -> {
                     FakeBaseEntityFieldRegistrar.CommonEntityData data = FakeBaseEntityFieldRegistrar.CommonEntityData.extract(context);
 
-                    String name = context.getRequired("username", String.class);
+                    String name = context.getRequired("player username", String.class);
                     UserProfile profile = new UserProfile(data.uuid(), name);
 
                     WrapperPlayer player = new WrapperPlayer(profile, data.entityId());

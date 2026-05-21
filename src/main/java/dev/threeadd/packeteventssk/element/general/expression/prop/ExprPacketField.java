@@ -63,7 +63,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 .register();
     }
 
-    private FieldAccessor<PacketWrapper<?>, ?> fieldAccessor;
+    private FieldAccessor<PacketWrapper<?>, ?> fieldAccessor; // event-specific or type-hint for global
+    private String fieldName; // only used in global mode
+    private boolean globalMode = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -87,11 +89,14 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 return false;
             }
 
+            this.globalMode = false;
+
         } else { // more global check
             boolean isValidField = false;
             for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
-                this.fieldAccessor = def.getAccessor(fieldName);
-                if (this.fieldAccessor  != null) {
+                FieldAccessor<PacketWrapper<?>, ?> candidate = def.getAccessor(fieldName);
+                if (candidate != null) {
+                    this.fieldAccessor = candidate; // kept only as a type hint
                     isValidField = true;
                     break;
                 }
@@ -101,22 +106,36 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 Skript.error("The packet field '" + fieldName + "' is not registered or does not exist. Consider checking your spelling.");
                 return false;
             }
+
+            this.fieldName = fieldName;
+            this.globalMode = true;
         }
 
         setExpr((Expression<? extends PacketWrapper>) exprs[0]);
         return true;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    private @Nullable FieldAccessor<PacketWrapper<?>, ?> resolveAccessor(PacketWrapper<?> wrapper) {
+        if (!globalMode) return this.fieldAccessor;
+        PacketTypeCommon type = wrapper.getPacketTypeData().getPacketType();
+        if (type == null) return null;
+        FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema = PacketFieldRegistry.INSTANCE.getSchema(type);
+        if (schema == null) return null;
+        return schema.getAccessor(this.fieldName);
+    }
+
     @Override
     protected Object[] get(Event event, PacketWrapper[] source) {
-        if (this.fieldAccessor == null) return null;
-
         List<Object> elements = new ArrayList<>();
 
         for (PacketWrapper<?> wrapper : source) {
             if (wrapper == null) continue;
 
-            Object value = this.fieldAccessor.getter().apply(wrapper);
+            FieldAccessor<PacketWrapper<?>, ?> accessor = resolveAccessor(wrapper);
+            if (accessor == null) continue;
+
+            Object value = accessor.getter().apply(wrapper);
             if (value == null) continue;
 
             if (value.getClass().isArray()) {
@@ -138,8 +157,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
-        if (this.fieldAccessor.setter() == null) {
-            Skript.error("Cannot set " + this.fieldAccessor.name() + " because it is a read-only field.");
+        if (this.fieldAccessor == null || this.fieldAccessor.setter() == null) {
+            String name = globalMode ? fieldName : (this.fieldAccessor != null ? this.fieldAccessor.name() : "unknown");
+            Skript.error("Cannot set " + name + " because it is a read-only field.");
             return null;
         }
 
@@ -166,13 +186,16 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @SuppressWarnings({"unchecked"})
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldAccessor.setter() == null) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0) return;
 
         for (PacketWrapper<?> wrapper : getExpr().getArray(event)) {
             if (wrapper == null) continue;
 
+            FieldAccessor<PacketWrapper<?>, ?> accessor = resolveAccessor(wrapper);
+            if (accessor == null || accessor.setter() == null) continue;
+
             Object newValue;
-            Class<?> expected = this.fieldAccessor.expectedType();
+            Class<?> expected = accessor.expectedType();
 
             if (expected.isArray()) {
                 Class<?> componentType = expected.getComponentType();
@@ -182,11 +205,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
                 }
                 newValue = typedArray;
             } else {
-                if (delta.length == 1) {
-                    newValue = delta[0];
-                } else {
-                    newValue = delta;
-                }
+                newValue = delta.length == 1 ? delta[0] : delta;
             }
 
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
@@ -195,21 +214,23 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the packet field '" + this.fieldAccessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the packet field '" + accessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<PacketWrapper<?>, Object>) this.fieldAccessor.setter()).accept(wrapper, newValue);
+            ((BiConsumer<PacketWrapper<?>, Object>) accessor.setter()).accept(wrapper, newValue);
         }
     }
 
     @Override
     public boolean isSingle() {
+        if (this.fieldAccessor == null) return true;
         return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override
     public Class<?> getReturnType() {
+        if (this.fieldAccessor == null) return Object.class;
         Class<?> expected = this.fieldAccessor.expectedType();
         return expected.isArray() ? expected.getComponentType() : expected;
     }
@@ -217,6 +238,7 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String wrapper = getExpr() != null ? getExpr().toString(event, debug) : "packet";
-        return "packet field " + this.fieldAccessor.name() + " of " + wrapper;
+        String name = globalMode ? fieldName : this.fieldAccessor.name();
+        return "packet field " + name + " of " + wrapper;
     }
 }

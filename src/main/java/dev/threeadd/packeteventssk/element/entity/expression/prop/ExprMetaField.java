@@ -98,7 +98,8 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
                 .register();
     }
 
-    private FieldAccessor <EntityMeta, ?> fieldAccessor;
+    private FieldAccessor<EntityMeta, ?> fieldAccessor;
+    private String fieldName;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
@@ -119,8 +120,13 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
             return false;
         }
 
+        this.fieldName = fieldName;
         setExpr((Expression) exprs[0]);
         return true;
+    }
+
+    private @Nullable FieldAccessor<EntityMeta, ?> resolveAccessor(EntityMeta meta) {
+        return MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), this.fieldName);
     }
 
     @Nullable
@@ -131,9 +137,10 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         List<Object> elements = new ArrayList<>();
 
         for (EntityMeta entity : source) {
-            if (entity == null) continue;
+            FieldAccessor<EntityMeta, ?> accessor = resolveAccessor(entity);
+            if (accessor == null) continue;
 
-            Object value = this.fieldAccessor.getter().apply(entity);
+            Object value = accessor.getter().apply(entity);
             if (value == null) continue;
 
             if (value.getClass().isArray()) {
@@ -149,13 +156,14 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
         if (elements.isEmpty()) return null;
 
-        Class<?> returnType = Primitives.wrap(getReturnType()); // wrap primitives to avoid java.lang.ClassCastException on arrays of primitives
+        Class<?> returnType = Primitives.wrap(getReturnType());
         return elements.toArray((Object[]) Array.newInstance(returnType, 0));
     }
 
     @Nullable
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
+        if (this.fieldAccessor == null) return null;
         if (this.fieldAccessor.setter() == null) {
             Skript.error("Cannot set " + this.fieldAccessor.name() + " because it is a read-only field.");
             return null;
@@ -172,13 +180,16 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
     @SuppressWarnings("unchecked")
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldAccessor.setter() == null) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0) return;
 
         for (Object obj : getExpr().getArray(event)) {
             if (!(obj instanceof EntityMeta meta)) continue;
 
+            FieldAccessor<EntityMeta, ?> accessor = resolveAccessor(meta);
+            if (accessor == null || accessor.setter() == null) continue;
+
             Object newValue;
-            Class<?> expected = this.fieldAccessor.expectedType();
+            Class<?> expected = accessor.expectedType();
 
             if (expected.isArray()) {
                 Class<?> componentType = expected.getComponentType();
@@ -202,21 +213,23 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the meta field '" + this.fieldAccessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the meta field '" + accessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<EntityMeta, Object>) this.fieldAccessor.setter()).accept(meta, newValue);
+            ((BiConsumer<EntityMeta, Object>) accessor.setter()).accept(meta, newValue);
         }
     }
 
     @Override
     public boolean isSingle() {
+        if (this.fieldAccessor == null) return true;
         return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override
     public Class<?> getReturnType() {
+        if (this.fieldAccessor == null) return Object.class;
         Class<?> expected = this.fieldAccessor.expectedType();
         return expected.isArray() ? expected.getComponentType() : expected;
     }
@@ -224,6 +237,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String meta = getExpr() != null ? getExpr().toString(event, debug) : "meta";
-        return "meta field " + this.fieldAccessor.name() + " of " + meta;
+        String name = this.fieldAccessor != null ? this.fieldAccessor.name() : this.fieldName;
+        return "meta field " + name + " of " + meta;
     }
 }

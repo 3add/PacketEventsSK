@@ -104,7 +104,8 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
                 .register();
     }
 
-    private FieldAccessor <WrapperEntity, ?> fieldAccessor;
+    private FieldAccessor<WrapperEntity, ?> fieldAccessor;
+    private String fieldName;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -113,8 +114,9 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
         boolean isValidField = false;
         for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
-            this.fieldAccessor = def.getAccessor(fieldName);
-            if (this.fieldAccessor != null) {
+            FieldAccessor<WrapperEntity, ?> candidate = def.getAccessor(fieldName);
+            if (candidate != null) {
+                this.fieldAccessor = candidate;
                 isValidField = true;
                 break;
             }
@@ -125,8 +127,17 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             return false;
         }
 
+        this.fieldName = fieldName;
         setExpr((Expression<? extends WrapperEntity>) exprs[0]);
         return true;
+    }
+
+    private @Nullable FieldAccessor<WrapperEntity, ?> resolveAccessor(WrapperEntity entity) {
+        EntityType type = entity.getEntityType();
+        if (type == null) return null;
+        FieldSchema<EntityType, WrapperEntity> schema = FakeEntityFieldRegistry.INSTANCE.getSchema(type);
+        if (schema == null) return null;
+        return schema.getAccessor(this.fieldName);
     }
 
     @Nullable
@@ -139,7 +150,10 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
         for (WrapperEntity entity : source) {
             if (entity == null) continue;
 
-            Object value = this.fieldAccessor.getter().apply(entity);
+            FieldAccessor<WrapperEntity, ?> accessor = resolveAccessor(entity);
+            if (accessor == null) continue;
+
+            Object value = accessor.getter().apply(entity);
             if (value == null) continue;
 
             if (value.getClass().isArray()) {
@@ -155,13 +169,14 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
         if (elements.isEmpty()) return null;
 
-        Class<?> returnType = Primitives.wrap(getReturnType()); // wrap primitives to avoid java.lang.ClassCastException on arrays of primitives
+        Class<?> returnType = Primitives.wrap(getReturnType());
         return elements.toArray((Object[]) Array.newInstance(returnType, 0));
     }
 
     @Nullable
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
+        if (this.fieldAccessor == null) return null;
         if (this.fieldAccessor.setter() == null) {
             Skript.error("Cannot set " + this.fieldAccessor.name() + " because it is a read-only field.");
             return null;
@@ -178,13 +193,16 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     @SuppressWarnings("unchecked")
     @Override
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
-        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0 || this.fieldAccessor.setter() == null) return;
+        if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0) return;
 
         for (WrapperEntity entity : getExpr().getArray(event)) {
             if (entity == null) continue;
 
+            FieldAccessor<WrapperEntity, ?> accessor = resolveAccessor(entity);
+            if (accessor == null || accessor.setter() == null) continue;
+
             Object newValue;
-            Class<?> expected = this.fieldAccessor.expectedType();
+            Class<?> expected = accessor.expectedType();
 
             if (expected.isArray()) {
                 Class<?> componentType = expected.getComponentType();
@@ -207,21 +225,23 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the fake entity field '" + this.fieldAccessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the fake entity field '" + accessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<WrapperEntity, Object>) this.fieldAccessor.setter()).accept(entity, newValue);
+            ((BiConsumer<WrapperEntity, Object>) accessor.setter()).accept(entity, newValue);
         }
     }
 
     @Override
     public boolean isSingle() {
+        if (this.fieldAccessor == null) return true;
         return getExpr().isSingle() && !this.fieldAccessor.expectedType().isArray();
     }
 
     @Override
     public Class<?> getReturnType() {
+        if (this.fieldAccessor == null) return Object.class;
         Class<?> expected = this.fieldAccessor.expectedType();
         return expected.isArray() ? expected.getComponentType() : expected;
     }
@@ -229,6 +249,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     @Override
     public String toString(@Nullable Event event, boolean debug) {
         String entity = getExpr() != null ? getExpr().toString(event, debug) : "fake entity";
-        return "fake entity field " + this.fieldAccessor.name() + " of " + entity;
+        String name = this.fieldAccessor != null ? this.fieldAccessor.name() : this.fieldName;
+        return "fake entity field " + name + " of " + entity;
     }
 }
