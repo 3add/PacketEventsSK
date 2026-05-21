@@ -112,7 +112,7 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
                         .filter(prop -> prop.getAttribute() == peAttr)
                         .findFirst()
                         .map(Property::getValue)
-                        .orElse(0d);
+                        .orElse(peAttr.getDefaultValue());
 
                 switch (mode) {
                     case SET -> livingFake.getAttributes().setAttribute(peAttr, deltaValue);
