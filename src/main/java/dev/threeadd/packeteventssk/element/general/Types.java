@@ -159,6 +159,10 @@ public class Types {
                     @Override
                     public BlockEntityType deserialize(Fields fields) throws StreamCorruptedException {
                         String name = fields.getObject("name", String.class);
+                        if (name == null) {
+                            throw new StreamCorruptedException("Missing block entity type name");
+                        }
+
                         return BlockEntityTypes.getByName(name);
                     }
 
