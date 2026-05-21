@@ -15,6 +15,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEntity, Number> {
 
     public static void register(Registration reg) {
@@ -56,14 +59,16 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
         Attribute bukkitAttr = this.attributeExpr.getSingle(event);
         if (bukkitAttr == null) return new Number[0];
 
-        Number[] values = new Number[source.length];
-        for (int i = 0; i < source.length; i++) {
-            values[i] = getAttributeValue(source[i], bukkitAttr);
+        List<Number> values = new ArrayList<>(source.length);
+        for (WrapperEntity entity : source) {
+            Number value = getAttributeValue(entity, bukkitAttr);
+            if (value != null) values.add(value);
         }
-        return values;
+
+        return values.toArray(Number[]::new);
     }
 
-    private Number getAttributeValue(WrapperEntity entity, Attribute bukkitAttr) {
+    private @Nullable Number getAttributeValue(WrapperEntity entity, Attribute bukkitAttr) {
         if (entity instanceof WrapperLivingEntity livingFake) {
             com.github.retrooper.packetevents.protocol.attribute.Attribute peAttr = Attributes.getByName(bukkitAttr.getKey().asString());
 
