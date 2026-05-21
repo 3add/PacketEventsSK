@@ -8,10 +8,12 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.shanebeee.skr.Registration;
+import com.google.common.primitives.Primitives;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
 import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
 import me.tofaa.entitylib.meta.EntityMeta;
+import org.apache.commons.lang3.ClassUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,7 +149,9 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
         }
 
         if (elements.isEmpty()) return null;
-        return elements.toArray(new Object[0]);
+
+        Class<?> returnType = Primitives.wrap(getReturnType()); // wrap primitives to avoid java.lang.ClassCastException on arrays of primitives
+        return elements.toArray((Object[]) Array.newInstance(returnType, 0));
     }
 
     @Nullable

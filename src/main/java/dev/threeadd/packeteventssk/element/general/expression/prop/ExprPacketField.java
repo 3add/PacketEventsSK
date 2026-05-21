@@ -10,6 +10,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
+import com.google.common.primitives.Primitives;
 import dev.threeadd.packeteventssk.api.general.packet.PacketSendOrReceiveEvent;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
@@ -127,7 +128,9 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         }
 
         if (elements.isEmpty()) return null;
-        return elements.toArray(new Object[0]);
+
+        Class<?> returnType = Primitives.wrap(getReturnType()); // wrap primitives to avoid java.lang.ClassCastException on arrays of primitives
+        return elements.toArray((Object[]) Array.newInstance(returnType, 0));
     }
 
     @Override
