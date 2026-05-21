@@ -172,11 +172,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
         Class<?> expected = this.fieldAccessor.expectedType();
         Class<?> typeToAccept = expected.isArray() ? expected.getComponentType() : expected;
 
-        if (expected.equals(typeToAccept)) {
-            return new Class<?>[]{typeToAccept};
-        }
-
-        return null;
+        return new Class<?>[]{Primitives.wrap(typeToAccept)};
     }
 
     @SuppressWarnings("unchecked")
