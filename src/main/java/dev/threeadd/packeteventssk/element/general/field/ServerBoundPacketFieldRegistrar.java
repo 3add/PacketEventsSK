@@ -1,11 +1,13 @@
-package dev.threeadd.packeteventssk.element.general.field.packet;
+package dev.threeadd.packeteventssk.element.general.field;
 
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUpdateSign;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import org.bukkit.block.sign.Side;
 import org.bukkit.util.Vector;
 
 public class ServerBoundPacketFieldRegistrar implements FieldRegistrar {
@@ -42,6 +44,25 @@ public class ServerBoundPacketFieldRegistrar implements FieldRegistrar {
                         values.getRequired("interaction hand", InteractionHand.class),
                         ConversionUtil.toPeVectorD(values.getRequired("location vector", Vector.class)),
                         values.getRequired("sneaking state", Boolean.class)
+                ))
+                .build();
+
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Client.UPDATE_SIGN, WrapperPlayClientUpdateSign.class)
+                .requiredField(Vector.class,
+                        w -> ConversionUtil.toBukkitVector(w.getBlockPosition()),
+                        (w, newPos) -> w.setBlockPosition(ConversionUtil.toPeVectorI(newPos)),
+                        "location vector", "location")
+                .requiredField(String[].class,
+                        WrapperPlayClientUpdateSign::getTextLines,
+                        WrapperPlayClientUpdateSign::setTextLines,
+                        "sign lines", "lines")
+                .requiredField(Side.class, w -> w.isFrontText() ? Side.FRONT : Side.BACK,
+                        (w, side) -> w.setFrontText(side == Side.FRONT),
+                        "sign side", "side")
+                .constructor(values -> new WrapperPlayClientUpdateSign(
+                        ConversionUtil.toPeVectorI(values.getRequired("location vector", Vector.class)),
+                        values.getRequired("sign lines", String[].class),
+                        values.getRequired("sign side", Side.class) == Side.FRONT
                 ))
                 .build();
     }

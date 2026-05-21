@@ -2,15 +2,14 @@ package dev.threeadd.packeteventssk.element.general;
 
 import com.github.shanebeee.skr.Registration;
 import dev.threeadd.packeteventssk.api.util.registry.element.SkriptElementRegistration;
+import dev.threeadd.packeteventssk.element.general.condition.CondPacketTypeIsBound;
 import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
 import dev.threeadd.packeteventssk.element.general.effect.EffSendOrReceivePacket;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
 import dev.threeadd.packeteventssk.element.general.expression.ExprSkinFromValue;
 import dev.threeadd.packeteventssk.element.general.expression.prop.*;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
-import dev.threeadd.packeteventssk.element.general.section.SecExprNewMeta;
+import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
 import dev.threeadd.packeteventssk.element.general.section.SecExprNewPacket;
 
 public class GeneralElementRegistration implements SkriptElementRegistration {
@@ -25,7 +24,10 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
 
         // property registries (registered before the expr/sec using it)
         PacketFieldRegistry.INSTANCE.registerAll();
-        MetaFieldRegistry.INSTANCE.registerAll();
+
+        // start conditions
+        CondPacketTypeIsBound.register(reg);
+        // end conditions
 
         // start effects
         EffCancelPacket.register(reg);
@@ -39,7 +41,6 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
 
         // start expressions
         ExprEntityId.register(reg);
-        ExprMetaField.register(reg);
         ExprPacketField.register(reg);
         ExprPacketPacketType.register(reg);
         ExprPlayerSkin.register(reg);
@@ -48,7 +49,6 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
         // end expressions
 
         // start sections
-        SecExprNewMeta.register(reg);
         SecExprNewPacket.register(reg);
         // end sections
 

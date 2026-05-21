@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.field.meta;
+package dev.threeadd.packeteventssk.element.entity.field.meta;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;

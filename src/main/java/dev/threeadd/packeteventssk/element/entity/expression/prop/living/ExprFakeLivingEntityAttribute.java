@@ -15,17 +15,25 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEntity, Number> {
 
     public static void register(Registration reg) {
-        reg.newPropertyExpression(ExprFakeLivingEntityAttribute.class, Number.class, "fake %attributetype% attribute [value]", "fakeentity")
+        reg.newPropertyExpression(ExprFakeLivingEntityAttribute.class, Number.class, "[fake] fake entity [field] %attributetype% attribute [value]", "fakeentity")
                 .name("Fake Living Entity Property - Attribute")
                 .description("The attribute of a fake living entity.")
                 .examples("""
-                        command test:
+                        command spawn:
                             trigger:
-                                spawn a new fake player entity at player for players and store it in {_e}
-                                set {_e}'s fake scale attribute to 2
+                                set {_zombie} to a new fake player entity:
+                                    location: location of player
+                                    viewers: all players
+                                    skin: skin of player
+                                    username: "the rizzler"
+
+                                set fake entity scale attribute of {_zombie} to 5
                         """)
                 .since("1.0.1")
                 .register();
@@ -51,11 +59,13 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
         Attribute bukkitAttr = this.attributeExpr.getSingle(event);
         if (bukkitAttr == null) return new Number[0];
 
-        Number[] values = new Number[source.length];
-        for (int i = 0; i < source.length; i++) {
-            values[i] = getAttributeValue(source[i], bukkitAttr);
+        List<Number> values = new ArrayList<>(source.length);
+        for (WrapperEntity entity : source) {
+            Number value = getAttributeValue(entity, bukkitAttr);
+            if (value != null) values.add(value);
         }
-        return values;
+
+        return values.toArray(Number[]::new);
     }
 
     private @Nullable Number getAttributeValue(WrapperEntity entity, Attribute bukkitAttr) {
@@ -66,7 +76,7 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
                     .filter(prop -> prop.getAttribute() == peAttr)
                     .findFirst()
                     .map(Property::getValue)
-                    .orElse(null);
+                    .orElse(peAttr.getDefaultValue());
         }
         return null;
     }
@@ -102,7 +112,7 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
                         .filter(prop -> prop.getAttribute() == peAttr)
                         .findFirst()
                         .map(Property::getValue)
-                        .orElse(0d);
+                        .orElse(peAttr.getDefaultValue());
 
                 switch (mode) {
                     case SET -> livingFake.getAttributes().setAttribute(peAttr, deltaValue);
@@ -123,6 +133,6 @@ public class ExprFakeLivingEntityAttribute extends PropertyExpression<WrapperEnt
     public String toString(@Nullable Event event, boolean debug) {
         String attribute = this.attributeExpr.toString(event, debug);
         String entity = getExpr().toString(event, debug);
-        return String.format("fake %s attribute of %s", attribute, entity);
+        return String.format("fake entity %s attribute of %s", attribute, entity);
     }
 }

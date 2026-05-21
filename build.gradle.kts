@@ -7,7 +7,7 @@ plugins {
 }
 
 // Version of PacketEventsSK
-val projectVersion = "1.1.2"
+val projectVersion = "1.1.3"
 // API Version
 val apiVersion = "26.1.2"
 // Minimum paper version that PacketEventsSK supports
@@ -53,7 +53,7 @@ dependencies {
     compileOnly("com.github.ShaneBeee:SkBee:3.23.0")
 
     // SkriptRegistration (SKR)
-    implementation("com.github.ShaneBeee:SkriptRegistration:1.4.2")
+    implementation("com.github.ShaneBeee:SkriptRegistration:1.4.3")
 
     // EntityLib
     implementation("io.github.tofaa2:spigot:3.3.0-SNAPSHOT")

@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.field.packet;
+package dev.threeadd.packeteventssk.element.general.field;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;

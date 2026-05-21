@@ -20,9 +20,13 @@ public class ExprFakeEntityFromId extends SimpleExpression<WrapperEntity> {
                         command spawnfakeplayer:
                             trigger:
                                 set {_p} to player
-                                create new fake player entity at player for all players:
-                                    set fake skin of the fake entity to {_p}'s skin
-                                    add the fake entity id of the fake entity to {-id::*}
+                                set {_player} to a new fake player entity:
+                                    location: location of player
+                                    viewers: all players
+                                    username: "test"
+                                    skin: skin of player
+                        
+                                add the fake entity id of {_player} to {-id::*}
                         
                         command lookup <text>:
                             trigger:

@@ -1,10 +1,13 @@
 package dev.threeadd.packeteventssk.element.general;
 
 import ch.njol.skript.classes.Parser;
+import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
+import ch.njol.yggdrasil.Fields;
 import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.protocol.player.TextureProperty;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityType;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -13,14 +16,19 @@ import com.github.shanebeee.skr.skript.EnumWrapper;
 import dev.threeadd.packeteventssk.api.entity.Skin;
 import dev.threeadd.packeteventssk.api.general.packet.PacketTypeRegistry;
 import dev.threeadd.packeteventssk.api.util.DebugUtil;
-import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.lang.converter.Converters;
 
+import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class Types {
 
+    @SuppressWarnings("UnstableApiUsage")
     public static void register(Registration reg) {
         reg.newType(PacketWrapper.class, "packet")
                 .user("packet")
@@ -45,16 +53,22 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(PacketWrapper<?> packet) {
-                        return "packet:" + packet.hashCode();
+                        return "packet:" + packet.hashCode(); // TODO improve
                     }
                 })
                 .register();
+
+        Converters.registerConverter(PacketWrapper.class, PacketTypeCommon.class, packet -> packet.getPacketTypeData().getPacketType());
 
         reg.newType(PacketTypeCommon.class, "packettype")
                 .user("packet ?types?")
                 .name("General - Packet Type")
                 .description("Represents a specific type of packet (e.g. clientbound chunk data packet)")
-                // TODO example
+                .examples("""
+                        on any packet:
+                            if event-packet is clientbound:
+                                send packet type of event-packet to console
+                        """)
                 .since("1.0.0")
                 .supplier(() -> PacketTypeRegistry.getAllPackets().iterator())
                 .parser(new Parser<>() {
@@ -92,45 +106,23 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(PacketTypeCommon type) {
-                        return "packettype:" + type.getName();
+                        return "packettype:" + type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ");
                     }
                 })
-                .register();
-
-        reg.newType(EntityMeta.class, "entitymeta")
-                .user("fake ?entit(y|ies) meta")
-                .name("General - Entity Meta")
-                .description("The entity meta of a minecraft entity (this can both represent a fake entity's meta or a real entity's meta, but is mostly used for fake entities since the only use for real entities is for packet intercepting).")
-                .examples("""
-                        command spawn:
-                            trigger:
-                                create a new fake zombie entity at player for players:
-                                    set fake scale attribute of the fake entity to 2
-                        """)
-                .since("1.1.0")
-                .parser(new Parser<>() {
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(EntityMeta meta, int flags) {
-                        return "entity meta";
-                    }
-
-                    @Override
-                    public String toVariableNameString(EntityMeta meta) {
-                        return "entitymeta:" + meta.hashCode();
-                    }
-                })
+                // TODO add serialization when skript fixes yggdrasil
                 .register();
 
         reg.newType(BlockEntityType.class, "blockentitytype")
                 .user("block ?entit(y|ies) types?")
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        set {_setTextPacket} to a new clientbound block entity data packet:
+                            block position: {_pos}
+                            block entity type: sign block entity type
+                            nbt compound: createSignNBT({_keybind})
+                        """)
                 .since("1.1.0")
                 .supplier(() -> BlockEntityTypes.values().iterator())
                 .parser(new Parser<>() {
@@ -151,7 +143,37 @@ public class Types {
 
                     @Override
                     public String toVariableNameString(BlockEntityType type) {
-                        return "blockentitytype:" + type.getName().getKey();
+                        return "blockentitytype:" + type.getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    }
+                })
+                .serializer(new Serializer<>() {
+
+                    @Override
+                    public Fields serialize(BlockEntityType o) {
+                        Fields fields = new Fields();
+                        fields.putObject("name", o.getName().getKey().toLowerCase(Locale.ENGLISH));
+
+                        return fields;
+                    }
+
+                    @Override
+                    public BlockEntityType deserialize(Fields fields) throws StreamCorruptedException {
+                        String name = fields.getObject("name", String.class);
+                        if (name == null) {
+                            throw new StreamCorruptedException("Missing block entity type name");
+                        }
+
+                        return BlockEntityTypes.getByName(name);
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return true;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
                     }
                 })
                 .register();
@@ -161,7 +183,13 @@ public class Types {
                 .user("sign ?sides?")
                 .name("General - Sign Side")
                 .description("Represents a side of a sign block (front or back)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        set {_setTextPacket} to a new clientbound block entity data packet:
+                            block position: {_pos}
+                            block entity type: sign block entity type
+                            nbt compound: createSignNBT({_keybind})
+                        """)
                 .since("1.1.0")
                 .register();
 
@@ -170,7 +198,22 @@ public class Types {
                 .user("interaction ?hands?")
                 .name("General - Interaction Hand")
                 .description("Represents an interaction hand (main hand or off hand)")
-                // TODO example
+                .examples("""
+                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#welcome
+                        on serverbound interact entity:
+                            set {_id} to packet field entity id of event-packet
+                            set {_hand} to packet field hand of event-packet
+                            set {_sneaking} to packet field sneaking state of event-packet
+                        
+                            if all:
+                                {_id} is {-interactables::%player's uuid%}
+                                # this packet is sent for each hand when just regular clicking
+                                # "main hand" is parsed as equipment slot if literal so we parse from text
+                                {_hand} is "main hand" parsed as interaction hand
+                                {_sneaking} is false
+                            then:
+                                send "<rainbow>welcome player!"
+                        """)
                 .since("1.1.2")
                 .register();
 
@@ -194,12 +237,59 @@ public class Types {
 
                     @Override
                     public String toString(Skin skin, int flags) {
-                        return "skin: " + skin.properties().stream().map(prop -> "value: '" + prop.getValue() + "', signature: '" + prop.getSignature() + "'").toList();
+                        return skin.properties().stream()
+                                .map(prop -> "value: '" + prop.getValue() + "', signature: '" + prop.getSignature() + "'")
+                                .collect(Collectors.joining(", "));
                     }
 
                     @Override
                     public String toVariableNameString(Skin skin) {
-                        return "skin:" + skin.hashCode();
+                        return "skin:" + toString(skin, 0);
+                    }
+                })
+                .serializer(new Serializer<>() {
+
+                    @Override
+                    public Fields serialize(Skin o) {
+                        Fields fields = new Fields();
+
+                        String[] values = o.properties().stream().map(TextureProperty::getValue).toArray(String[]::new);
+                        String[] signatures = o.properties().stream().map(TextureProperty::getSignature).toArray(String[]::new);
+
+                        fields.putObject("values", values);
+                        fields.putObject("signatures", signatures);
+
+                        return fields;
+                    }
+
+                    @Override
+                    protected Skin deserialize(Fields fields) throws StreamCorruptedException {
+                        String[] values = fields.getObject("values", String[].class);
+                        String[] signatures = fields.getObject("signatures", String[].class);
+
+                        if (values == null || values.length == 0) {
+                            throw new StreamCorruptedException("Skin properties cannot be empty");
+                        }
+
+                        List<TextureProperty> properties = new ArrayList<>();
+                        for (int i = 0; i < values.length; i++) {
+                            String value = values[i];
+                            String signature = (signatures != null && i < signatures.length) ? signatures[i] : null;
+
+                            properties.add(new TextureProperty("textures", value, signature));
+                        }
+
+                        return new Skin(properties);
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return true;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
                     }
                 })
                 .register();

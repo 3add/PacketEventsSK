@@ -23,14 +23,14 @@ public class ExprVisibleFakeEntities extends PropertyExpression<Player, WrapperE
                 .name("Fake Entity - Visible Fake Entities")
                 .description("Used to get all fake entities viewed by a player")
                 .examples("""
-                        command test:
+                        command test1:
                             trigger:
-                                set {_p} to player
-                                create a new fake zombie entity at player for players:
-                                    set fake scale attribute of the fake entity to 2
+                                set {_e} to a new fake zombie entity:
+                                    location: location of player
+                                    viewers: players
                         
-                                    if visible fake entities of {_p} contains the fake entity:
-                                        send "You can see the fake entity!" to {_p}
+                                if visible fake entities of player contains {_e}:
+                                    send "You can see the fake entity!"
                         """)
                 .since("1.0.1")
                 .register();

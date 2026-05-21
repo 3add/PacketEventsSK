@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.element.general.section;
+package dev.threeadd.packeteventssk.element.entity.section;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.EntityUtils;
@@ -16,7 +16,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.general.field.meta.MetaFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
@@ -26,15 +26,16 @@ import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SecExprNewMeta extends SectionExpression<EntityMeta> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<EntityType, EntityMeta>, EntryValidator> VALIDATORS = new HashMap<>();
 
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<EntityMeta, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
@@ -42,22 +43,64 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new meta from an entity type.\n\n");
         description.append("### Available Metas and their fields\n");
 
-        Collection<FieldSchema<EntityType, EntityMeta>> schemas = MetaFieldRegistry.INSTANCE.getAllSchemas();
+        List<FieldSchema<EntityType, EntityMeta>> schemas = new ArrayList<>(MetaFieldRegistry.INSTANCE.getAllSchemas());
+        schemas.sort(Comparator.comparingInt(schema -> schema.accessors().size()));
         for (FieldSchema<EntityType, EntityMeta> schema : schemas) {
-            String fieldLines = schema.getReadableFields();
+
+            Set<String> myFields = schema.accessors().stream()
+                    .map(FieldAccessor::name)
+                    .collect(Collectors.toSet());
+
+            FieldSchema<EntityType, EntityMeta> parentSchema = null;
+            int maxSubsetSize = -1;
+
+            for (FieldSchema<EntityType, EntityMeta> other : schemas) {
+                if (other == schema) continue;
+                Set<String> otherFields = other.accessors().stream()
+                        .map(FieldAccessor::name)
+                        .collect(Collectors.toSet());
+
+                if (myFields.containsAll(otherFields) && myFields.size() > otherFields.size()) {
+                    if (otherFields.size() > maxSubsetSize) {
+                        maxSubsetSize = otherFields.size();
+                        parentSchema = other;
+                    }
+                }
+            }
+
+            Set<String> parentFieldNames = parentSchema != null
+                    ? parentSchema.accessors().stream().map(FieldAccessor::name).collect(Collectors.toSet())
+                    : Collections.emptySet();
+
+            StringBuilder fieldLines = new StringBuilder();
+            for (FieldAccessor<EntityMeta, ?> field : schema.accessors()) {
+                if (!parentFieldNames.contains(field.name())) {
+                    fieldLines.append("  - `").append(field.name());
+                    if (field.aliases().length > 0) {
+                        fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
+                    }
+
+                    fieldLines.append("`\n");
+                }
+            }
+
             if (!fieldLines.isEmpty()) {
-                description.append("* **")
-                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
-                        .append("** fields:\n")
-                        .append(fieldLines)
-                        .append("\n");
+                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                description.append("* **").append(typeName).append("** fields:\n");
+
+                if (parentSchema != null) {
+                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
+                }
+
+                description.append(fieldLines).append("\n");
             }
         }
 
@@ -65,6 +108,23 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
                 .name("General - Create Meta")
                 .description(description.toString())
                 .since("1.1.2")
+                .examples("""
+                        set {_meta} to text display meta data:
+                            display content: " "
+                            display text shadowed state: true
+                            display billboard: center
+                            display scale: vector(1.2,1.2,1.2)
+                            display translation: vector(-0.03,0.65,0)
+                            display background color: rgb(random integer between 0 and 255, random integer between 0 and 255, random integer between 0 and 255)
+                            display view range: 1
+                            display transform interpolation duration: 2 ticks
+                            display interpolation delay: 0 ticks
+
+                        set {_entity} to a new fake text display entity:
+                            viewers: all players
+                            location: location of player ~ vector(0,0.5,0)
+                            meta: {_meta}
+                        """)
                 .register();
     }
 
@@ -110,13 +170,19 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " meta.");
+                Skript.error("You must provide a section with the required fields to create a " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " meta.");
                 return false;
             }
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " meta.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }

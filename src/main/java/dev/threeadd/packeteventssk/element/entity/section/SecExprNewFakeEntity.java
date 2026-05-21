@@ -16,7 +16,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.entity.field.FakeEntityFieldRegistry;
+import dev.threeadd.packeteventssk.element.entity.field.entity.FakeEntityFieldRegistry;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.event.Event;
@@ -26,44 +26,102 @@ import org.skriptlang.skript.lang.entry.EntryContainer;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<EntityType, WrapperEntity>, EntryValidator> VALIDATORS = new HashMap<>();
 
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<WrapperEntity, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
-                for (String alias : field.aliases()) { // register aliases
+                for (String alias : field.aliases()) {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new fake entity from an entity type.\n\n");
         description.append("### Available Entities and their fields\n");
 
-        Collection<FieldSchema<EntityType, WrapperEntity>> schemas = FakeEntityFieldRegistry.INSTANCE.getAllSchemas();
+        List<FieldSchema<EntityType, WrapperEntity>> schemas = new ArrayList<>(FakeEntityFieldRegistry.INSTANCE.getAllSchemas());
+        schemas.sort(Comparator.comparingInt(schema -> schema.accessors().size()));
         for (FieldSchema<EntityType, WrapperEntity> schema : schemas) {
-            String fieldLines = schema.getReadableFields();
+
+            Set<String> myFields = schema.accessors().stream()
+                    .map(FieldAccessor::name)
+                    .collect(Collectors.toSet());
+
+            FieldSchema<EntityType, WrapperEntity> parentSchema = null;
+            int maxSubsetSize = -1;
+
+            for (FieldSchema<EntityType, WrapperEntity> other : schemas) {
+                if (other == schema) continue;
+                Set<String> otherFields = other.accessors().stream()
+                        .map(FieldAccessor::name)
+                        .collect(Collectors.toSet());
+
+                if (myFields.containsAll(otherFields) && myFields.size() > otherFields.size()) {
+                    if (otherFields.size() > maxSubsetSize) {
+                        maxSubsetSize = otherFields.size();
+                        parentSchema = other;
+                    }
+                }
+            }
+
+            Set<String> parentFieldNames = parentSchema != null
+                    ? parentSchema.accessors().stream().map(FieldAccessor::name).collect(Collectors.toSet())
+                    : Collections.emptySet();
+
+            StringBuilder fieldLines = new StringBuilder();
+            for (FieldAccessor<WrapperEntity, ?> field : schema.accessors()) {
+                if (!parentFieldNames.contains(field.name())) {
+                    fieldLines.append("  - `").append(field.name());
+                    if (field.aliases().length > 0) {
+                        fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
+                    }
+
+                    fieldLines.append("`\n");
+                }
+            }
+
             if (!fieldLines.isEmpty()) {
-                description.append("* **")
-                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
-                        .append("** fields:\n")
-                        .append(fieldLines)
-                        .append("\n");
+                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                description.append("* **").append(typeName).append("** fields:\n");
+
+                if (parentSchema != null) {
+                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
+                }
+
+                description.append(fieldLines).append("\n");
             }
         }
 
         reg.newSimpleExpression(SecExprNewFakeEntity.class, WrapperEntity.class, "[a] [new] fake %*entitydata% entity")
                 .name("Fake Entity - Create Fake Entity")
                 .description(description.toString())
+                .examples("""
+                        on load:
+                            set {-notchSkin} to skin of player named "notch"
+                        
+                        command test5:
+                            trigger:
+                                set {_player} to a new fake player entity:
+                                    name: "test"
+                                    skin: skin of player
+                                    location: location of player
+                                    viewers: players
+                        
+                                wait 1 second
+                                set fake entity skin of {_player} to {-notchSkin}
+                        """)
                 .since("1.0.0", "1.1.2 (changed to SectionExpression)")
                 .register();
     }
@@ -105,13 +163,19 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " fake entity.");
+                Skript.error("You must provide a section with the required fields to create a " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " fake entity.");
                 return false;
             }
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }

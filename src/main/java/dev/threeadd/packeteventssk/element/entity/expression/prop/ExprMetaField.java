@@ -11,8 +11,8 @@ import com.github.shanebeee.skr.Registration;
 import com.google.common.primitives.Primitives;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.entity.field.entity.FakeEntityFieldRegistry;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
+import dev.threeadd.packeteventssk.element.entity.field.meta.MetaFieldRegistry;
+import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,25 +21,25 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Object> {
+public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
-        description.append("### Available Fake Entity Fields by Category\n");
+        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
+        description.append("### Available Meta Fields by Category\n");
 
-        List<FieldSchema<EntityType, WrapperEntity>> schemas = new ArrayList<>(FakeEntityFieldRegistry.INSTANCE.getAllSchemas());
+        List<FieldSchema<EntityType, EntityMeta>> schemas = new ArrayList<>(MetaFieldRegistry.INSTANCE.getAllSchemas());
         schemas.sort(Comparator.comparingInt(schema -> schema.accessors().size()));
-        for (FieldSchema<EntityType, WrapperEntity> schema : schemas) {
+        for (FieldSchema<EntityType, EntityMeta> schema : schemas) {
 
             Set<String> myFields = schema.accessors().stream()
                     .map(FieldAccessor::name)
                     .collect(Collectors.toSet());
 
-            FieldSchema<EntityType, WrapperEntity> parentSchema = null;
+            FieldSchema<EntityType, EntityMeta> parentSchema = null;
             int maxSubsetSize = -1;
 
-            for (FieldSchema<EntityType, WrapperEntity> other : schemas) {
+            for (FieldSchema<EntityType, EntityMeta> other : schemas) {
                 if (other == schema) continue;
                 Set<String> otherFields = other.accessors().stream()
                         .map(FieldAccessor::name)
@@ -58,7 +58,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
                     : Collections.emptySet();
 
             StringBuilder fieldLines = new StringBuilder();
-            for (FieldAccessor<WrapperEntity, ?> field : schema.accessors()) {
+            for (FieldAccessor<EntityMeta, ?> field : schema.accessors()) {
                 if (!parentFieldNames.contains(field.name())) {
                     fieldLines.append("  - `").append(field.name());
                     if (field.aliases().length > 0) {
@@ -82,75 +82,62 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
         }
 
-        reg.newPropertyExpression(ExprFakeEntityField.class, Object.class, "[fake] fake entity [field] <[a-zA-Z0-9_ ]+>", "fakeentity")
-                .name("Fake Entity Property Field")
+        reg.newPropertyExpression(ExprMetaField.class, Object.class, "[fake] [entity] meta [field] <[a-zA-Z0-9_ ]+>", "entitymeta")
+                .name("Entity Meta Property Field")
                 .description(description.toString())
                 .examples("""
-                        on load:
-                            set {-notchSkin} to skin of player named "notch"
+                        on clientbound entity metadata:
+                            # note that {_meta} is a copy of the packet's meta
+                            set {_meta} to packet meta of event-packet
+                            set meta glowing state of {_meta} to true
                         
-                        command test5:
-                            trigger:
-                                set {_player} to a new fake player entity:
-                                    name: "test"
-                                    skin: skin of player
-                                    location: location of player
-                                    viewers: players
-                        
-                                wait 1 second
-                                set fake entity skin of {_player} to {-notchSkin}
+                            # so we set it again here
+                            set packet meta of event-packet to {_meta}
                         """)
                 .since("1.1.2")
                 .register();
     }
 
-    private FieldAccessor<WrapperEntity, ?> fieldAccessor;
+    private FieldAccessor<EntityMeta, ?> fieldAccessor;
     private String fieldName;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         String fieldName = parseResult.regexes.getFirst().group().trim();
 
         boolean isValidField = false;
-        for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
-            FieldAccessor<WrapperEntity, ?> candidate = def.getAccessor(fieldName);
-            if (candidate != null) {
-                this.fieldAccessor = candidate;
+        for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+            this.fieldAccessor = def.getAccessor(fieldName);
+            if (this.fieldAccessor != null) {
                 isValidField = true;
                 break;
             }
         }
 
         if (!isValidField) {
-            Skript.error("The fake entity field '" + fieldName + "' is not registered or does not exist. Consider checking your spelling.");
+            Skript.error("The meta field '" + fieldName + "' is not registered or does not exist. Consider checking your spelling.");
             return false;
         }
 
         this.fieldName = fieldName;
-        setExpr((Expression<? extends WrapperEntity>) exprs[0]);
+        setExpr((Expression) exprs[0]);
         return true;
     }
 
-    private @Nullable FieldAccessor<WrapperEntity, ?> resolveAccessor(WrapperEntity entity) {
-        EntityType type = entity.getEntityType();
-        if (type == null) return null;
-        FieldSchema<EntityType, WrapperEntity> schema = FakeEntityFieldRegistry.INSTANCE.getSchema(type);
-        if (schema == null) return null;
-        return schema.getAccessor(this.fieldName);
+    private @Nullable FieldAccessor<EntityMeta, ?> resolveAccessor(EntityMeta meta) {
+        return MetaFieldRegistry.INSTANCE.getAccessor(meta.getClass(), this.fieldName);
     }
 
     @Nullable
     @Override
-    protected Object[] get(Event event, WrapperEntity[] source) {
+    protected Object[] get(Event event, EntityMeta[] source) {
         if (this.fieldAccessor == null) return null;
 
         List<Object> elements = new ArrayList<>();
 
-        for (WrapperEntity entity : source) {
-            if (entity == null) continue;
-
-            FieldAccessor<WrapperEntity, ?> accessor = resolveAccessor(entity);
+        for (EntityMeta entity : source) {
+            FieldAccessor<EntityMeta, ?> accessor = resolveAccessor(entity);
             if (accessor == null) continue;
 
             Object value = accessor.getter().apply(entity);
@@ -195,10 +182,10 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
     public void change(Event event, Object[] delta, Changer.ChangeMode mode) {
         if (mode != Changer.ChangeMode.SET || delta == null || delta.length == 0) return;
 
-        for (WrapperEntity entity : getExpr().getArray(event)) {
-            if (entity == null) continue;
+        for (Object obj : getExpr().getArray(event)) {
+            if (!(obj instanceof EntityMeta meta)) continue;
 
-            FieldAccessor<WrapperEntity, ?> accessor = resolveAccessor(entity);
+            FieldAccessor<EntityMeta, ?> accessor = resolveAccessor(meta);
             if (accessor == null || accessor.setter() == null) continue;
 
             Object newValue;
@@ -220,16 +207,17 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
 
             boolean isCompatible = expected == Object.class || expected.isInstance(newValue);
+
             if (!isCompatible && expected.isArray() && newValue.getClass().isArray()) {
                 isCompatible = true;
             }
 
             if (!isCompatible) {
-                Skript.warning("Cannot set the fake entity field '" + accessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
+                Skript.warning("Cannot set the meta field '" + accessor.name() + "' to a value of type " + newValue.getClass().getSimpleName() + ". Expected type: " + expected.getSimpleName());
                 continue;
             }
 
-            ((BiConsumer<WrapperEntity, Object>) accessor.setter()).accept(entity, newValue);
+            ((BiConsumer<EntityMeta, Object>) accessor.setter()).accept(meta, newValue);
         }
     }
 
@@ -248,8 +236,8 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String entity = getExpr() != null ? getExpr().toString(event, debug) : "fake entity";
+        String meta = getExpr() != null ? getExpr().toString(event, debug) : "meta";
         String name = this.fieldAccessor != null ? this.fieldAccessor.name() : this.fieldName;
-        return "fake entity field " + name + " of " + entity;
+        return "meta field " + name + " of " + meta;
     }
 }

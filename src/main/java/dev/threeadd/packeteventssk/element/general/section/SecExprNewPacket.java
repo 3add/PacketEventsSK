@@ -15,7 +15,7 @@ import com.github.shanebeee.skr.skript.SimpleEntryValidator;
 import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
 import dev.threeadd.packeteventssk.api.util.field.FieldAccessor;
 import dev.threeadd.packeteventssk.api.util.field.FieldSchema;
-import dev.threeadd.packeteventssk.element.general.field.packet.PacketFieldRegistry;
+import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,22 +26,22 @@ import java.util.*;
 
 public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<PacketTypeCommon, PacketWrapper<?>>, EntryValidator> VALIDATORS = new HashMap<>();
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
-                for (String alias : field.aliases()) { // register aliases
+                for (String alias : field.aliases()) {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new packet from a packet type.\n\n");
@@ -52,7 +52,7 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             String fieldLines = schema.getReadableFields();
             if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(schema.type().toString().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append(schema.type().getName().toLowerCase(Locale.ENGLISH).replace("_", " "))
                         .append("** fields:\n")
                         .append(fieldLines)
                         .append("\n");
@@ -62,7 +62,14 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         reg.newSimpleExpression(SecExprNewPacket.class, (Class) PacketWrapper.class, "[a] [new] %*packettype%")
                 .name("General - New Packet")
                 .description(description.toString())
-                // TODO example
+                .examples("""
+                        command killTargetForMe:
+                            trigger:
+                                set {_packet} to a new clientbound destroy entities packet:
+                                    entity ids: protocol id of target entity
+                        
+                                silently send packet {_packet} to the player
+                        """)
                 .since("1.0.0", "1.1.0 (changed to SectionExpression) and large changes")
                 .register();
     }
@@ -92,21 +99,27 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
         this.schema = PacketFieldRegistry.INSTANCE.getSchema(this.type);
 
         if (this.schema == null) {
-            Skript.error("Packet creation for " + this.type.getName() + " is not currently supported. Consider creating/handling it through reflection.");
+            Skript.error("Packet creation for " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " is not currently supported. Consider creating/handling it through reflection.");
             return false; // can't return an empty packet so this expr can't be used
         }
 
         boolean hasRequiredFields = this.schema.accessors().stream().anyMatch(field -> !field.isOptional());
         if (sectionNode == null) {
             if (hasRequiredFields) {
-                Skript.error("You must provide a section with the required fields to create a " + this.type.getName() + " packet.");
+                Skript.error("You must provide a section with the required fields to create a " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
                 return false;
             }
 
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }
