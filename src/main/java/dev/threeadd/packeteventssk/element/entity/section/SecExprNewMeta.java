@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 
 public class SecExprNewMeta extends SectionExpression<EntityMeta> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<EntityType, EntityMeta>, EntryValidator> VALIDATORS = new HashMap<>();
 
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<EntityType, EntityMeta> def : MetaFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<EntityMeta, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
@@ -43,8 +43,8 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new meta from an entity type.\n\n");
@@ -176,7 +176,13 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " meta.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }

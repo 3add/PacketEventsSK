@@ -26,22 +26,22 @@ import java.util.*;
 
 public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<PacketTypeCommon, PacketWrapper<?>>, EntryValidator> VALIDATORS = new HashMap<>();
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<PacketWrapper<?>, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
-                for (String alias : field.aliases()) { // register aliases
+                for (String alias : field.aliases()) {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new packet from a packet type.\n\n");
@@ -113,7 +113,13 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + this.type.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }

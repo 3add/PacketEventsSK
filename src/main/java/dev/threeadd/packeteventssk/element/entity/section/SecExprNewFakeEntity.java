@@ -30,21 +30,21 @@ import java.util.stream.Collectors;
 
 public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
 
-    private static EntryValidator VALIDATOR;
+    private static final Map<FieldSchema<EntityType, WrapperEntity>, EntryValidator> VALIDATORS = new HashMap<>();
 
     public static void register(Registration reg) {
 
-        SimpleEntryValidator builder = SimpleEntryValidator.builder();
         for (FieldSchema<EntityType, WrapperEntity> def : FakeEntityFieldRegistry.INSTANCE.getAllSchemas()) {
+            SimpleEntryValidator builder = SimpleEntryValidator.builder();
             for (FieldAccessor<WrapperEntity, ?> field : def.accessors()) {
                 builder.addOptionalEntry(field.name(), Object.class);
 
-                for (String alias : field.aliases()) { // register aliases
+                for (String alias : field.aliases()) {
                     builder.addOptionalEntry(alias, Object.class);
                 }
             }
+            VALIDATORS.put(def, builder.build());
         }
-        VALIDATOR = builder.build();
 
         StringBuilder description = new StringBuilder();
         description.append("Create a new fake entity from an entity type.\n\n");
@@ -169,7 +169,13 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
             return true;
         }
 
-        EntryContainer container = VALIDATOR.validate(sectionNode);
+        EntryValidator validator = VALIDATORS.get(this.schema);
+        if (validator == null) {
+            Skript.error("No validator found for " + bukkitType.toString().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity.");
+            return false;
+        }
+
+        EntryContainer container = validator.validate(sectionNode);
         if (container == null) {
             return false;
         }
