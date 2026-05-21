@@ -60,7 +60,7 @@ public class ServerBoundPacketFieldRegistrar implements FieldRegistrar {
                         (w, side) -> w.setFrontText(side == Side.FRONT),
                         "sign side", "side")
                 .constructor(values -> new WrapperPlayClientUpdateSign(
-                        ConversionUtil.toPeVectorI(values.getRequired("block position", Vector.class)),
+                        ConversionUtil.toPeVectorI(values.getRequired("location vector", Vector.class)),
                         values.getRequired("sign lines", String[].class),
                         values.getRequired("sign side", Side.class) == Side.FRONT
                 ))
