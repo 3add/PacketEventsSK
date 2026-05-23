@@ -8,6 +8,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.protocol.PacketSide;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.shanebeee.skr.Registration;
@@ -49,10 +50,11 @@ public class SecExprNewPacket extends SectionExpression<PacketWrapper<?>> {
 
         Collection<FieldSchema<PacketTypeCommon, PacketWrapper<?>>> schemas = PacketFieldRegistry.INSTANCE.getAllSchemas();
         for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema : schemas) {
+            String typeString = (schema.type().getSide().equals(PacketSide.SERVER) ? "clientbound" : "serverbound") + " " + schema.type().getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet";
             String fieldLines = schema.getReadableFields();
             if (!fieldLines.isEmpty()) {
                 description.append("* **")
-                        .append(schema.type().getName().toLowerCase(Locale.ENGLISH).replace("_", " "))
+                        .append(typeString)
                         .append("** fields:\n")
                         .append(fieldLines)
                         .append("\n");

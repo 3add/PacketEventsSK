@@ -25,7 +25,7 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
+        description.append("Gets or sets a metadata property field value from an entity meta instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields)\n\n");
         description.append("### Available Meta Fields by Category\n");
 
         List<FieldSchema<EntityType, EntityMeta>> schemas = new ArrayList<>(MetaFieldRegistry.INSTANCE.getAllSchemas());
@@ -70,11 +70,11 @@ public class ExprMetaField extends PropertyExpression<EntityMeta, Object> {
             }
 
             if (!fieldLines.isEmpty()) {
-                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                String typeName = "fake " + schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                 description.append("* **").append(typeName).append("** fields:\n");
 
                 if (parentSchema != null) {
-                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    String parentName = "fake " + parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                     description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
                 }
 

@@ -25,7 +25,7 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
 
     public static void register(Registration reg) {
         StringBuilder description = new StringBuilder();
-        description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields\n\n");
+        description.append("Gets or sets a fake entity property field value from a fake entity instance by its name.\nNote that some entities inherit properties (for example all entities inherit \"entity\" fields)\n\n");
         description.append("### Available Fake Entity Fields by Category\n");
 
         List<FieldSchema<EntityType, WrapperEntity>> schemas = new ArrayList<>(FakeEntityFieldRegistry.INSTANCE.getAllSchemas());
@@ -61,6 +61,11 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             for (FieldAccessor<WrapperEntity, ?> field : schema.accessors()) {
                 if (!parentFieldNames.contains(field.name())) {
                     fieldLines.append("  - `").append(field.name());
+
+                    if (!field.isOptional()) {
+                        fieldLines.append("*");
+                    }
+
                     if (field.aliases().length > 0) {
                         fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
                     }
@@ -70,11 +75,11 @@ public class ExprFakeEntityField extends PropertyExpression<WrapperEntity, Objec
             }
 
             if (!fieldLines.isEmpty()) {
-                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                String typeName = "fake " + schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                 description.append("* **").append(typeName).append("** fields:\n");
 
                 if (parentSchema != null) {
-                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    String parentName = "fake " + parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                     description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
                 }
 

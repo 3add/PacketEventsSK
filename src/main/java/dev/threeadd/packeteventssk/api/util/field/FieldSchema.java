@@ -22,7 +22,7 @@ public record FieldSchema<K, O>(
         List<String> fieldStrings = new ArrayList<>();
         for (FieldAccessor<O, ?> accessor : accessors) {
             if (accessor.aliases().length > 0) {
-                fieldStrings.add(accessor.name() + " (" + String.join(", ", accessor.aliases()) + ")");
+                fieldStrings.add(accessor.name() + (!accessor.isOptional() ? "*" : "") + " (" + String.join(", ", accessor.aliases()) + ")");
             } else {
                 fieldStrings.add(accessor.name());
             }

@@ -92,11 +92,11 @@ public class SecExprNewMeta extends SectionExpression<EntityMeta> {
             }
 
             if (!fieldLines.isEmpty()) {
-                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                String typeName = "fake " + schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                 description.append("* **").append(typeName).append("** fields:\n");
 
                 if (parentSchema != null) {
-                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    String parentName = "fake " + parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                     description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
                 }
 

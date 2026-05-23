@@ -83,6 +83,11 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
             for (FieldAccessor<WrapperEntity, ?> field : schema.accessors()) {
                 if (!parentFieldNames.contains(field.name())) {
                     fieldLines.append("  - `").append(field.name());
+
+                    if (!field.isOptional()) {
+                        fieldLines.append("*");
+                    }
+
                     if (field.aliases().length > 0) {
                         fieldLines.append(" (").append(String.join(", ", field.aliases())).append(")");
                     }
@@ -92,11 +97,11 @@ public class SecExprNewFakeEntity extends SectionExpression<WrapperEntity> {
             }
 
             if (!fieldLines.isEmpty()) {
-                String typeName = schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                String typeName = "fake " + schema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                 description.append("* **").append(typeName).append("** fields:\n");
 
                 if (parentSchema != null) {
-                    String parentName = parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ");
+                    String parentName = "fake " + parentSchema.type().getName().getKey().toLowerCase(Locale.ENGLISH).replace("_", " ") + " entity";
                     description.append("  - *(Inherits all fields from **").append(parentName).append("**)*\n");
                 }
 
