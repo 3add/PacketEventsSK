@@ -7,7 +7,7 @@ plugins {
 }
 
 // Version of PacketEventsSK
-val projectVersion = "1.1.3"
+val projectVersion = "1.1.4"
 // API Version
 val apiVersion = "26.1.2"
 // Minimum paper version that PacketEventsSK supports
