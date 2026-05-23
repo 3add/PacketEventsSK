@@ -104,5 +104,20 @@ public class ClientBoundPacketFieldRegistrar implements FieldRegistrar {
                         Arrays.stream(values.getRequired("entity ids", Number[].class)).mapToInt(Number::intValue).toArray()
                 ))
                 .build();
+
+        PacketFieldRegistry.INSTANCE.builder(PacketType.Play.Server.ENTITY_STATUS, WrapperPlayServerEntityStatus.class)
+                .requiredField(Number.class,
+                        WrapperPlayServerEntityStatus::getEntityId,
+                        (w, newNum) -> w.setEntityId(newNum.intValue()),
+                        "entity id", "id")
+                .requiredField(Number.class,
+                        WrapperPlayServerEntityStatus::getStatus,
+                        (w, newNum) -> w.setStatus(newNum.intValue()),
+                        "entity status", "status")
+                .constructor(values -> new WrapperPlayServerEntityStatus(
+                        values.getRequired("entity id", Number.class).intValue(),
+                        values.getRequired("entity status", Number.class).intValue()
+                ))
+                .build();
     }
 }
