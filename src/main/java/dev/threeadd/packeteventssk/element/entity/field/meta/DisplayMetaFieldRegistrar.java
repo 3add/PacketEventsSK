@@ -153,7 +153,10 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         meta -> ColorRGB.fromBukkitColor(Color.fromARGB(meta.getBackgroundColor())),
                         (meta, newColor) -> meta.setBackgroundColor(newColor.asARGB()),
                         "display background color")
-                // TODO text opacity is a byte which I haven't decided on how I want to do them
+                .optionalField(Number.class,
+                        w -> (int) w.getTextOpacity(),
+                        (w, newNum) -> w.setTextOpacity((byte) newNum.intValue()),
+                        "display text opacity")
                 .optionalField(Boolean.class,
                         TextDisplayMeta::isShadow,
                         TextDisplayMeta::setShadow,
@@ -209,7 +212,10 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         meta.setBackgroundColor(color.asARGB());
                     }
 
-                    // text opacity in the future (see the to do)
+                    Number opacity = context.getOptional("display text opacity", Number.class);
+                    if (opacity != null) {
+                        meta.setTextOpacity((byte) opacity.intValue());
+                    }
 
                     Boolean shadow = context.getOptional("display text shadowed state", Boolean.class);
                     if (shadow != null) {
