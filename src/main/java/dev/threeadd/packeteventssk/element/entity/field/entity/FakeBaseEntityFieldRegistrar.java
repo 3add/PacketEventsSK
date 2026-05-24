@@ -57,14 +57,15 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
             }
 
             EntityMeta meta = context.getOptional("entity meta data", EntityMeta.class);
-            int entityId;
+            Number providedId = context.getOptional("entity id", Number.class);
+            int entityId = (providedId != null) ? providedId.intValue() : EntityLib.getPlatform().getEntityIdProvider().provide(uuid, type);
 
             if (meta != null) {
-                entityId = meta.getEntityId();
+               EntityMeta cloneMeta = EntityMeta.createMeta(entityId, type); // always respect or create a new id (don't copy from provided entity meta)
+               cloneMeta.getMetadata().copyFrom(meta.getMetadata());
+               meta = cloneMeta;
             } else {
-                Number providedId = context.getOptional("entity id", Number.class);
-                entityId = (providedId != null) ? providedId.intValue() : EntityLib.getPlatform().getEntityIdProvider().provide(uuid, type);
-                meta = new EntityMeta(entityId);
+                meta = EntityMeta.createMeta(entityId, type);
             }
 
             return new CommonEntityData(entityId, uuid, meta);
