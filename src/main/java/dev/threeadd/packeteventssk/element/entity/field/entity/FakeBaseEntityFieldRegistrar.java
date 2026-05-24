@@ -60,7 +60,7 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
             int entityId;
 
             if (meta != null) {
-                entityId = meta.createPacket().getEntityId();
+                entityId = meta.getEntityId();
             } else {
                 Number providedId = context.getOptional("entity id", Number.class);
                 entityId = (providedId != null) ? providedId.intValue() : EntityLib.getPlatform().getEntityIdProvider().provide(uuid, type);
