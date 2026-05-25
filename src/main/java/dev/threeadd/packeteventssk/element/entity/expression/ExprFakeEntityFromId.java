@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExprFakeEntityFromId extends SimpleExpression<WrapperEntity> {
 
     public static void register(Registration reg) {
-        reg.newSimpleExpression(ExprFakeEntityFromId.class, WrapperEntity.class, "fake[ ]entity (from|with) id %integer%")
+        reg.newSimpleExpression(ExprFakeEntityFromId.class, WrapperEntity.class, "fake[ ]entity (from|with) [protocol] id %integer%")
                 .name("Fake Entity - From Entity ID")
                 .description("Retrieve a fake entity from it's entity id, this only works for spawned fake entities")
                 .examples("""
