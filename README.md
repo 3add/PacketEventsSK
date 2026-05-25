@@ -15,9 +15,12 @@
   <a href="http://skripthub.net/docs/?addon=PacketEventsSK">
     <img src="http://skripthub.net/static/addon/ViewTheDocsButton.png" alt="SkriptHubViewTheDocs">
   </a>
-</div>
 
+Brought to you by 3add.
+
+## Use PacketEventsSK
 Please refer to the [Documentation](https://docs.packeteventssk.threeadd.dev/) for more information on how to use PacketEventsSK.
-
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
+
+</div>
