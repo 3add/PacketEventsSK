@@ -17,57 +17,7 @@
   </a>
 </div>
 
-## Requirements
-PacketEventsSK requires the following to run:
+Please refer to the [Documentation](https://docs.packeteventssk.threeadd.dev/) for more information on how to use PacketEventsSK.
 
-- **Minecraft 1.18+** Paper-compatible server  
-- **[PacketEvents](https://modrinth.com/plugin/packetevents)** installed as a separate paper plugin
-
-Optionally install [SkBee](https://modrinth.com/plugin/skbee/versions) for the NBT Compound hook.
-> [!CAUTION]
-> PacketEventsSK attempts to support the latest versions of skript and minecraft:
-> - **Paper 1.21.10+**
-> - **Skript 2.15.0+**
-> - **SkBee 1.17.2+**
->
-> There are many more versions that work, but you won't receive support for those.
-## Features
-PacketEventsSK adds advanced packet functionality to Skript, including:
-
-- Fake entity creation and manipulation (includes tracking and metadata management)
-- Interception and modification of incoming and outgoing packets (manipulation and cancellation)
-- SkBee integration for NBT Compound creation and manipulation
-- Access to all PacketEvents packet types
-- Metadata wrappers and packet utilities  
-
-Learn more in the **[Wiki](https://github.com/3add/PacketEventsSK/wiki)**.
-## Credits
-### PacketEventsSK
-The main project.
-
-- [All Contributors](https://github.com/3add/PacketEventsSK/graphs/contributors)
-- [Install Here](https://modrinth.com/plugin/packeteventssk)
-### PacketEvents
-Packet management library.
-
-- [GitHub Repository](https://github.com/retrooper/packetevents)
-- [Install Here](https://modrinth.com/plugin/packetevents)
-### EntityLib
-Fake entity management and metadata wrappers.
-
-- [GitHub Repository](https://github.com/Tofaa2/EntityLib)
-- **Included with PacketEventsSK**
-### SkBee
-SkBee provides the NBT Compound hook for fields using NBT.
-
-- [GitHub Repository](https://github.com/ShaneBeee/SkBee)
-- [Install Here](https://modrinth.com/plugin/skbee/versions)
-### Other
-Other elements use common types provided by other frequently used addons.
-
-Such as:
-- Entity Pose (provided by: SkBee)
-  
-These elements will not register without SkBee present.
 ## Support
 Need help, found a bug, or want to contribute? Join [the Discord](https://discord.gg/CzQ863nxDB)! (alternatively open a PR or an issue)
