@@ -75,10 +75,10 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
         String fieldName = parseResult.regexes.getFirst().group().trim();
         PacketSendOrReceiveParserData data = getParser().getData(PacketSendOrReceiveParserData.class);
 
-        if (getParser().isCurrentEvent(PacketSendOrReceiveEvent.class)) { // for the listening event
-            PacketTypeCommon eventPacketType = data.getPacketType();
-            if (eventPacketType == null) return false;
+        boolean isPacketEvent = getParser().isCurrentEvent(PacketSendOrReceiveEvent.class);
+        PacketTypeCommon eventPacketType = isPacketEvent ? data.getPacketType() : null;
 
+        if (eventPacketType != null) { // Specific packet event context
             FieldSchema<PacketTypeCommon, PacketWrapper<?>> schema = PacketFieldRegistry.INSTANCE.getSchema(eventPacketType);
             if (schema == null) {
                 Skript.error("No fields are currently registered for the " + eventPacketType.getName().toLowerCase(Locale.ENGLISH).replace("_", " ") + " packet.");
@@ -93,12 +93,12 @@ public class ExprPacketField extends PropertyExpression<PacketWrapper, Object> {
 
             this.globalMode = false;
 
-        } else { // more global check
+        } else { // Global expression context or generic "on any packet" event context
             boolean isValidField = false;
             for (FieldSchema<PacketTypeCommon, PacketWrapper<?>> def : PacketFieldRegistry.INSTANCE.getAllSchemas()) {
                 FieldAccessor<PacketWrapper<?>, ?> candidate = def.getAccessor(fieldName);
                 if (candidate != null) {
-                    this.fieldAccessor = candidate; // kept only as a type hint
+                    this.fieldAccessor = candidate; // Kept as a type hint for getReturnType()
                     isValidField = true;
                     break;
                 }
