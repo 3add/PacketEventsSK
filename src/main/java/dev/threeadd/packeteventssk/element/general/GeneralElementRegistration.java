@@ -7,6 +7,7 @@ import dev.threeadd.packeteventssk.element.general.effect.EffCancelPacket;
 import dev.threeadd.packeteventssk.element.general.effect.EffFetchSkin;
 import dev.threeadd.packeteventssk.element.general.effect.EffSendOrReceivePacket;
 import dev.threeadd.packeteventssk.element.general.event.EvtPacketSendOrReceive;
+import dev.threeadd.packeteventssk.element.general.expression.ExprEntityFromId;
 import dev.threeadd.packeteventssk.element.general.expression.ExprSkinFromValue;
 import dev.threeadd.packeteventssk.element.general.expression.prop.*;
 import dev.threeadd.packeteventssk.element.general.field.PacketFieldRegistry;
@@ -45,6 +46,7 @@ public class GeneralElementRegistration implements SkriptElementRegistration {
         ExprPacketPacketType.register(reg);
         ExprPlayerSkin.register(reg);
 
+        ExprEntityFromId.register(reg);
         ExprSkinFromValue.register(reg);
         // end expressions
 
