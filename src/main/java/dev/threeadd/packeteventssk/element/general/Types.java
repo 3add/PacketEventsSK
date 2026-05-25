@@ -117,7 +117,7 @@ public class Types {
                 .name("General - Block Entity Type")
                 .description("Represents a type of block entity (e.g. chest, sign, etc.)")
                 .examples("""
-                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        # Snippet from https://docs.packeteventssk.threeadd.dev/examples/mod-detection.html
                         set {_setTextPacket} to a new clientbound block entity data packet:
                             block position: {_pos}
                             block entity type: sign block entity type
@@ -184,7 +184,7 @@ public class Types {
                 .name("General - Sign Side")
                 .description("Represents a side of a sign block (front or back)")
                 .examples("""
-                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#sign-exploit
+                        # Snippet from https://docs.packeteventssk.threeadd.dev/examples/mod-detection.html
                         set {_setTextPacket} to a new clientbound block entity data packet:
                             block position: {_pos}
                             block entity type: sign block entity type
@@ -199,7 +199,7 @@ public class Types {
                 .name("General - Interaction Hand")
                 .description("Represents an interaction hand (main hand or off hand)")
                 .examples("""
-                        # Snippet from https://github.com/3add/PacketEventsSK/wiki/Examples#welcome
+                        # Snippet from https://docs.packeteventssk.threeadd.dev/examples/welcome-display.html
                         on serverbound interact entity:
                             set {_id} to packet field entity id of event-packet
                             set {_hand} to packet field hand of event-packet

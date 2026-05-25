@@ -29,7 +29,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
                         PacketSendOrReceiveEvent.AsyncPacketEvent.class
                 }, "([any] packet|%*-packettype%) [(:(sync|async|netty)) processed] [with packet[events] priority (:(lowest|low|normal|high|highest|monitor))]")
                 .name("General - On Packet")
-                .description("Listen to incoming/outgoing packets, more on [the wiki](https://github.com/3add/PacketEventsSK/wiki/Events)")
+                .description("Listen to incoming/outgoing packets, more on [the docs](https://docs.packeteventssk.threeadd.dev/dev/packet-listening.html)")
                 .examples("""
                                 on serverbound interact entity packet netty processed:
                                     cancel packet
