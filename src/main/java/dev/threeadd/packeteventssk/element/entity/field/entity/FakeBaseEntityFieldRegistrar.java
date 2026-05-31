@@ -32,7 +32,8 @@ public class FakeBaseEntityFieldRegistrar implements FieldRegistrar {
                         (w, newVec) -> w.setLocation(ConversionUtil.toPeLocation(newVec)),
                         "entity location", "location")
                 .optionalField(Number.class, WrapperEntity::getEntityId, null, "entity id", "id")
-                .optionalField(EntityMeta.class, WrapperEntity::getEntityMeta, null, "entity meta data", "meta data", "meta")
+                .optionalField(EntityMeta.class, WrapperEntity::getEntityMeta, (entity, meta) ->
+                        entity.consumeMeta(newMeta -> meta.getMetadata().copyFrom(newMeta.getMetadata())), "entity meta data", "meta data", "meta")
                 .optionalField(EntityType.class, WrapperEntity::getEntityType, null, "entity type", "type")
                 .optionalField(UUID.class, WrapperEntity::getUuid, null, "entity uuid", "uuid")
                 .constructor(context -> {
