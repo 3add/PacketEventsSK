@@ -4,56 +4,96 @@ import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.event.UserDisconnectEvent;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityTracker implements PacketListener {
 
-    private static final Map<UUID, Map<Integer, EntityType>> PLAYER_ENTITIES = new ConcurrentHashMap<>();
+    private static final Map<UUID, Map<Integer, TrackedEntity>> PLAYER_ENTITIES = new ConcurrentHashMap<>();
 
-    /**
-     * Get the type of entity as viewed by a specific player. This method first checks the cache for the given player and entity id, and if not found, falls back to the global frequency-based method.
-     *
-     * @param playerUuid The player uuid of the player viewing the owning entity
-     * @param entityId   The entity id of the owning entity
-     * @return The type of the entity viewed by the player
-     */
-    public static EntityType getType(UUID playerUuid, int entityId) {
-        Map<Integer, EntityType> playerCache = PLAYER_ENTITIES.get(playerUuid);
-        if (playerCache != null) {
-            EntityType type = playerCache.get(entityId);
-            if (type != null) {
-                return type;
-            }
+    public static class TrackedEntity {
+        private final int entityId;
+        private EntityType type;
+        private final Set<Integer> fakePassengers = ConcurrentHashMap.newKeySet();
+
+        public TrackedEntity(int entityId, @Nullable EntityType type) {
+            this.entityId = entityId;
+            this.type = type;
         }
 
+        public int getEntityId() {
+            return entityId;
+        }
+
+        @Nullable
+        public EntityType getType() {
+            return type;
+        }
+
+        public void setType(@Nullable EntityType type) {
+            this.type = type;
+        }
+
+        public Set<Integer> getFakePassengers() {
+            return fakePassengers;
+        }
+
+        public void addFakePassenger(int passengerId) {
+            this.fakePassengers.add(passengerId);
+        }
+
+        public void clearFakePassengers() {
+            this.fakePassengers.clear();
+        }
+    }
+
+    @Nullable
+    public static Set<Integer> getFakePassengers(UUID playerUuid, int vehicleId) {
+        Map<Integer, TrackedEntity> playerCache = PLAYER_ENTITIES.get(playerUuid);
+        if (playerCache != null) {
+            TrackedEntity tracked = playerCache.get(vehicleId);
+            if (tracked != null) {
+                return tracked.getFakePassengers();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static EntityType getType(UUID playerUuid, int entityId) {
+        Map<Integer, TrackedEntity> playerCache = PLAYER_ENTITIES.get(playerUuid);
+        if (playerCache != null) {
+            TrackedEntity tracked = playerCache.get(entityId);
+            if (tracked != null && tracked.getType() != null) {
+                return tracked.getType();
+            }
+        }
         return getType(entityId);
     }
 
-    /**
-     * Gets the most frequently seen entity type for the given entity id across all players.
-     * This is a best-effort method to determine the entity type when no specific player context is available,
-     * but it may be inaccurate if multiple entity types with the same id are viewed by different players.
-     * Use {@link EntityTracker#getType(UUID, int)} when possible for more accurate results.
-     *
-     * @param entityId The entity id of the owning entity
-     * @return The most frequently seen type for this entity id, or {@link EntityTypes#ENTITY} if no clients are viewing it or if there is a tie in frequencies.
-     */
+    @Nullable
     public static EntityType getType(int entityId) {
         Map<EntityType, Integer> frequencies = new HashMap<>();
         int maxCount = 0;
         EntityType mostFrequent = null;
 
-        for (Map<Integer, EntityType> playerMap : PLAYER_ENTITIES.values()) {
-            EntityType type = playerMap.get(entityId);
-            if (type != null) {
+        for (Map<Integer, TrackedEntity> playerMap : PLAYER_ENTITIES.values()) {
+            TrackedEntity tracked = playerMap.get(entityId);
+            if (tracked != null && tracked.getType() != null) {
+                EntityType type = tracked.getType();
                 int count = frequencies.getOrDefault(type, 0) + 1;
                 frequencies.put(type, count);
 
@@ -63,32 +103,38 @@ public class EntityTracker implements PacketListener {
                 }
             }
         }
-
-        return mostFrequent != null ? mostFrequent : EntityTypes.ENTITY;
+        return mostFrequent;
     }
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.SPAWN_ENTITY) {
-            handleSpawn(event);
-        } else if (event.getPacketType() == PacketType.Play.Server.DESTROY_ENTITIES) {
-            handleDestroy(event);
+        switch (event.getPacketType()) {
+            case PacketType.Play.Server.SPAWN_ENTITY -> handleSpawn(event);
+            case PacketType.Play.Server.SET_PASSENGERS -> handleSetPassengers(event);
+            case PacketType.Play.Server.DESTROY_ENTITIES -> handleDestroy(event); // memory cleanup
+            default -> {}
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void handleSpawn(PacketSendEvent event) {
         WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(event);
         int entityId = spawnPacket.getEntityId();
         EntityType type = spawnPacket.getEntityType();
         UUID userUuid = event.getUser().getUUID();
+        if (userUuid == null) return;
 
-        PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>()).put(entityId, type);
+        PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>())
+                .computeIfAbsent(entityId, id -> new TrackedEntity(id, type))
+                .setType(type);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void handleDestroy(PacketSendEvent event) {
         WrapperPlayServerDestroyEntities destroyPacket = new WrapperPlayServerDestroyEntities(event);
         UUID userUuid = event.getUser().getUUID();
-        Map<Integer, EntityType> playerCache = PLAYER_ENTITIES.get(userUuid);
+        if (userUuid == null) return;
+        Map<Integer, TrackedEntity> playerCache = PLAYER_ENTITIES.get(userUuid);
 
         if (playerCache != null) {
             for (int id : destroyPacket.getEntityIds()) {
@@ -97,9 +143,59 @@ public class EntityTracker implements PacketListener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
+    private void handleSetPassengers(PacketSendEvent event) {
+        WrapperPlayServerSetPassengers packet = new WrapperPlayServerSetPassengers(event);
+        int vehicleId = packet.getEntityId();
+        UUID userUuid = event.getUser().getUUID();
+        if (userUuid == null) return;
+
+        Map<Integer, TrackedEntity> playerCache = PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>());
+        int[] rawPassengers = packet.getPassengers();
+
+        boolean containsFakeEntities = false;
+        for (int id : rawPassengers) {
+            if (EntityLib.getApi().getEntity(id) != null) {
+                containsFakeEntities = true;
+                break;
+            }
+        }
+
+        if (containsFakeEntities) {
+            TrackedEntity trackedVehicle = playerCache.computeIfAbsent(vehicleId, id -> new TrackedEntity(id, null));
+            trackedVehicle.clearFakePassengers();
+            for (int id : rawPassengers) {
+                if (EntityLib.getApi().getEntity(id) != null) {
+                    trackedVehicle.addFakePassenger(id);
+                }
+            }
+        } else {
+            TrackedEntity trackedVehicle = playerCache.get(vehicleId);
+            if (trackedVehicle != null && !trackedVehicle.getFakePassengers().isEmpty()) {
+                Player player = event.getPlayer();
+                if (player != null) {
+                    Set<Integer> updatedPassengers = new LinkedHashSet<>();
+                    for (int id : rawPassengers) {
+                        updatedPassengers.add(id);
+                    }
+                    for (int passengerId : trackedVehicle.getFakePassengers()) {
+                        WrapperEntity activeFakeEntity = EntityLib.getApi().getEntity(passengerId);
+                        if (activeFakeEntity != null && activeFakeEntity.getViewers().contains(player.getUniqueId())) {
+                            updatedPassengers.add(passengerId);
+                        }
+                    }
+                    packet.setPassengers(updatedPassengers.stream().mapToInt(Integer::intValue).toArray());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onUserDisconnect(UserDisconnectEvent event) {
-        if (event.getUser().getUUID() == null) return;
-        PLAYER_ENTITIES.remove(event.getUser().getUUID());
+        UUID uuid = event.getUser().getUUID();
+        if (uuid == null) return;
+
+        PLAYER_ENTITIES.remove(uuid);
     }
 }

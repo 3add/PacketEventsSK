@@ -52,6 +52,7 @@ public class EffSendOrReceivePacket extends Effect {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void execute(Event event) {
         PacketWrapper<?>[] packets = packetWrapperExpr.getAll(event);

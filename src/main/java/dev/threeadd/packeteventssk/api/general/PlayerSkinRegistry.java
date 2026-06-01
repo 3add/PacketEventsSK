@@ -29,6 +29,7 @@ public class PlayerSkinRegistry implements Listener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void cacheSkin(Player player) {
         User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
         if (user == null || user.getProfile() == null || user.getProfile().getTextureProperties() == null || user.getProfile().getTextureProperties().isEmpty()) {

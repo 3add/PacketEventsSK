@@ -4,14 +4,23 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.shanebeee.skr.Registration;
+import dev.threeadd.packeteventssk.api.general.EntityTracker;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class EffRideFakeEntity extends Effect {
 
@@ -38,65 +47,84 @@ public class EffRideFakeEntity extends Effect {
                 .register();
     }
 
-    private Expression<WrapperEntity> passengerExpr;
-    private Expression<Object> vehicleExpr;
+    private Expression<?> passengerExpr;
+    private Expression<?> vehicleExpr;
     private boolean mount;
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        this.passengerExpr = (Expression<WrapperEntity>) expressions[0];
-        this.vehicleExpr = (Expression<Object>) expressions[1];
-        mount = matchedPattern == 0;
-
+        this.passengerExpr = expressions[0];
+        this.vehicleExpr = expressions[1];
+        this.mount = matchedPattern == 0;
         return true;
     }
 
     @Override
     protected void execute(Event event) {
-        WrapperEntity[] passengers = passengerExpr.getAll(event);
+        Object[] rawPassengers = passengerExpr.getAll(event);
         Object vehicle = vehicleExpr.getSingle(event);
 
-        if (passengers == null || passengers.length == 0 || vehicle == null) return;
-
-        if (vehicle instanceof WrapperEntity fakeVehicle) {
-            for (WrapperEntity passenger : passengers) {
-                if (mount) {
-                    fakeVehicle.addPassenger(passenger);
-                } else {
-                    fakeVehicle.removePassenger(passenger);
-                }
-            }
+        if (rawPassengers == null || vehicle == null) {
             return;
         }
 
-        if (vehicle instanceof Entity realVehicle) {
-            int vehicleId = realVehicle.getEntityId();
+        if (vehicle instanceof WrapperEntity fakeEntity) {
+            handleFakeVehicle(fakeEntity, rawPassengers);
+        } else if (vehicle instanceof Entity bukkitEntity) {
+            handleVanillaVehicle(bukkitEntity, rawPassengers);
+        }
+    }
 
-            List<Entity> realPassengers = realVehicle.getPassengers();
-            int[] passengerIds;
+    private void handleFakeVehicle(WrapperEntity fakeEntity, Object[] rawPassengers) {
+        for (Object raw : rawPassengers) {
+            if (raw instanceof WrapperEntity passenger) {
+                if (this.mount) {
+                    fakeEntity.addPassenger(passenger);
+                } else {
+                    fakeEntity.removePassenger(passenger);
+                }
+            }
+        }
+    }
 
-            if (mount) {
-                passengerIds = new int[realPassengers.size() + passengers.length];
-                for (int i = 0; i < realPassengers.size(); i++) {
-                    passengerIds[i] = realPassengers.get(i).getEntityId();
-                }
-                for (int i = 0; i < passengers.length; i++) {
-                    passengerIds[realPassengers.size() + i] = passengers[i].getEntityId();
-                }
-            } else {
-                passengerIds = new int[realPassengers.size()];
-                for (int i = 0; i < realPassengers.size(); i++) {
-                    passengerIds[i] = realPassengers.get(i).getEntityId();
+    private void handleVanillaVehicle(Entity bukkitEntity, Object[] rawPassengers) {
+        int vehicleId = bukkitEntity.getEntityId();
+
+        Set<Player> viewers = Arrays.stream(rawPassengers)
+                .filter(WrapperEntity.class::isInstance)
+                .map(WrapperEntity.class::cast)
+                .flatMap(passenger -> passenger.getViewers().stream())
+                .map(Bukkit::getPlayer)
+                .filter(player -> player != null && player.isOnline())
+                .collect(Collectors.toSet());
+
+        int[] vanillaPassengers = bukkitEntity.getPassengers().stream().mapToInt(Entity::getEntityId).toArray();
+
+        for (Player player : viewers) {
+            UUID uuid = player.getUniqueId();
+            Set<Integer> cachedFake = EntityTracker.getFakePassengers(uuid, vehicleId);
+            Set<Integer> targetFakePassengers = new LinkedHashSet<>(cachedFake != null ? cachedFake : Collections.emptySet());
+
+            for (Object raw : rawPassengers) {
+                if (raw instanceof WrapperEntity passenger) {
+                    if (this.mount) {
+                        targetFakePassengers.add(passenger.getEntityId());
+                    } else {
+                        targetFakePassengers.remove(passenger.getEntityId());
+                    }
                 }
             }
 
-            WrapperPlayServerSetPassengers packet = new WrapperPlayServerSetPassengers(vehicleId, passengerIds);
+            int[] blendedArray = new int[vanillaPassengers.length + targetFakePassengers.size()];
+            System.arraycopy(vanillaPassengers, 0, blendedArray, 0, vanillaPassengers.length);
 
-            // Send the packet to everyone who can see these fake entities
-            for (WrapperEntity passenger : passengers) {
-                passenger.sendPacketToViewers(packet);
+            int index = vanillaPassengers.length;
+            for (int id : targetFakePassengers) {
+                blendedArray[index++] = id;
             }
+
+            WrapperPlayServerSetPassengers packet = new WrapperPlayServerSetPassengers(vehicleId, blendedArray);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
         }
     }
 
