@@ -67,8 +67,8 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
                         (meta, newBillboard) -> meta.setBillboardConstraints(ConversionUtil.toBillboardConstraints(newBillboard)),
                         "display billboard constraints", "display billboard")
                 .optionalField(Number.class,
-                        AbstractDisplayMeta::getBrightnessOverride,
-                        (meta, newNum) -> meta.setBrightnessOverride(newNum.intValue()),
+                        meta -> ConversionUtil.fromPackedBrightness(meta.getBrightnessOverride()),
+                        (meta, newNum) -> meta.setBrightnessOverride(ConversionUtil.toPackedBrightness(newNum.intValue())),
                         "display brightness override", "display brightness")
                 .optionalField(Number.class,
                         AbstractDisplayMeta::getViewRange,
@@ -297,7 +297,7 @@ public class DisplayMetaFieldRegistrar implements FieldRegistrar {
 
         Number brightnessOverride = context.getOptional("display brightness override", Number.class);
         if (brightnessOverride != null) {
-            meta.setBrightnessOverride(brightnessOverride.intValue());
+            meta.setBrightnessOverride(ConversionUtil.toPackedBrightness(brightnessOverride.intValue()));
         }
 
         Number viewRange = context.getOptional("display view range", Number.class);
