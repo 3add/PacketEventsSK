@@ -82,6 +82,16 @@ public class ConversionUtil {
         return timespan.getAs(Timespan.TimePeriod.TICK);
     }
 
+    public static int toPackedBrightness(int level) {
+        int clamped = Math.clamp(level, 0, 15);
+        return (clamped << 4) | (clamped << 20);
+    }
+
+    public static int fromPackedBrightness(int packed) {
+        if (packed == -1) return -1;
+        return (packed >> 4) & 0xF;
+    }
+
     public static Display.Billboard toBillboard(AbstractDisplayMeta.BillboardConstraints billboardConstraints) {
         return Display.Billboard.valueOf(billboardConstraints.name());
     }
