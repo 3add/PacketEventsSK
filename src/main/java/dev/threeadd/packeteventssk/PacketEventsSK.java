@@ -2,6 +2,7 @@ package dev.threeadd.packeteventssk;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import dev.threeadd.packeteventssk.api.entity.EntityPassengerListener;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
 import dev.threeadd.packeteventssk.api.general.PlayerSkinRegistry;
 import dev.threeadd.packeteventssk.api.simple.ChatSessionListener;
@@ -33,7 +34,11 @@ public final class PacketEventsSK extends JavaPlugin {
         this.config = new Config(this);
 
         // PE listener
-        PacketEvents.getAPI().getEventManager().registerListener(new EntityTracker(), PacketListenerPriority.MONITOR);
+        PacketEvents.getAPI().getEventManager().registerListener(new EntityTracker(), PacketListenerPriority.HIGH); // has to listen to packets (before injection below)
+
+        if (getPluginConfig().getConfigValue(Configurable.ELEMENTS_ENTITY)) {
+            PacketEvents.getAPI().getEventManager().registerListener(new EntityPassengerListener(), PacketListenerPriority.HIGHEST); // has to inject entity ids packets
+        }
 
         if (getPluginConfig().getConfigValue(Configurable.ELEMENTS_SIMPLE)) {
             PacketEvents.getAPI().getEventManager().registerListener(new GlowingEntityListener(), PacketListenerPriority.NORMAL);

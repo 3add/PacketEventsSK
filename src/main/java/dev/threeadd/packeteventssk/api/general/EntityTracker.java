@@ -9,12 +9,9 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.tofaa.entitylib.EntityLib;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -161,32 +158,26 @@ public class EntityTracker implements PacketListener {
             }
         }
 
-        if (containsFakeEntities) {
-            TrackedEntity trackedVehicle = playerCache.computeIfAbsent(vehicleId, id -> new TrackedEntity(id, null));
-            trackedVehicle.clearFakePassengers();
-            for (int id : rawPassengers) {
-                if (EntityLib.getApi().getEntity(id) != null) {
-                    trackedVehicle.addFakePassenger(id);
-                }
-            }
-        } else {
+        if (!containsFakeEntities) {
             TrackedEntity trackedVehicle = playerCache.get(vehicleId);
             if (trackedVehicle != null && !trackedVehicle.getFakePassengers().isEmpty()) {
-                Player player = event.getPlayer();
-                if (player != null) {
-                    Set<Integer> updatedPassengers = new LinkedHashSet<>();
-                    for (int id : rawPassengers) {
-                        updatedPassengers.add(id);
-                    }
-                    for (int passengerId : trackedVehicle.getFakePassengers()) {
-                        WrapperEntity activeFakeEntity = EntityLib.getApi().getEntity(passengerId);
-                        if (activeFakeEntity != null && activeFakeEntity.getViewers().contains(player.getUniqueId())) {
-                            updatedPassengers.add(passengerId);
-                        }
-                    }
-                    packet.setPassengers(updatedPassengers.stream().mapToInt(Integer::intValue).toArray());
-                }
+                trackedVehicle.clearFakePassengers();
+                playerCache.remove(vehicleId);
             }
+            return;
+        }
+
+        TrackedEntity trackedVehicle = playerCache.computeIfAbsent(vehicleId, id -> new TrackedEntity(id, null));
+        trackedVehicle.clearFakePassengers();
+
+        for (int id : rawPassengers) {
+            if (EntityLib.getApi().getEntity(id) != null) {
+                trackedVehicle.addFakePassenger(id);
+            }
+        }
+
+        if (trackedVehicle.getFakePassengers().isEmpty()) {
+            playerCache.remove(vehicleId);
         }
     }
 

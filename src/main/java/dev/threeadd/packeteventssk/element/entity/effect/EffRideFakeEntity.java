@@ -30,8 +30,8 @@ public class EffRideFakeEntity extends Effect {
                         "(make|let|force) fake [entit(y|ies)] %fakeentities% [to] (dismount|(dismount|leave) as passenger[s]) (from|of) %fakeentity/livingentity%")
                 .name("Fake Entity - Ride")
                 .description("""
-                        Make fake entities ride another entity (fake or real), or remove them as passengers.
-                        **Note: Real entities are just a single packet being sent, when a player relogs, changes worlds or some other circumstances the passengers will be altered by the vanilla server.**
+                          Make fake entities ride another entity (fake or real), or remove them as passengers.
+                          For fake entities the server tracks the entities and appends to outgoing packets.
                         """)
                 .examples("""
                         command test:
@@ -97,6 +97,12 @@ public class EffRideFakeEntity extends Effect {
                 .map(Bukkit::getPlayer)
                 .filter(player -> player != null && player.isOnline())
                 .collect(Collectors.toSet());
+
+        if (viewers.isEmpty()) {
+            viewers = bukkitEntity.getWorld().getPlayers().stream()
+                    .filter(Player::isOnline)
+                    .collect(Collectors.toSet());
+        }
 
         int[] vanillaPassengers = bukkitEntity.getPassengers().stream().mapToInt(Entity::getEntityId).toArray();
 
