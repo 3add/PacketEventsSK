@@ -56,6 +56,7 @@ public class EffTeleportFakeEntity extends Effect {
         com.github.retrooper.packetevents.protocol.world.Location peLoc = SpigotConversionUtil.fromBukkitLocation(location);
         for (WrapperEntity entity : entities) {
             entity.teleport(peLoc);
+            entity.rotateHead(peLoc);
         }
     }
 
