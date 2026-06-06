@@ -9,25 +9,25 @@ public abstract class Registry<T> {
 
     @SafeVarargs
     public final Registry<T> register(T... items) {
-        registeredItems.addAll(List.of(items));
+        this.registeredItems.addAll(List.of(items));
         return this;
     }
 
     public final Registry<T> register(List<T> items) {
-        registeredItems.addAll(items);
+        this.registeredItems.addAll(items);
         return this;
     }
 
     public final <E extends T> E register(E item) {
-        registeredItems.add(item);
+        this.registeredItems.add(item);
         return item;
     }
 
     public final void unRegister(T item) {
-        registeredItems.remove(item);
+        this.registeredItems.remove(item);
     }
 
     public final List<T> getRegisteredItems() {
-        return List.copyOf(registeredItems);
+        return List.copyOf(this.registeredItems);
     }
 }

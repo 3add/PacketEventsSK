@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.api.util.field;
+package dev.threeadd.packeteventssk.api.field;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,11 +18,11 @@ public class ConstructionContext<K, BaseType> {
     }
 
     public K getKey() {
-        return key;
+        return this.key;
     }
 
     private void assertAccessorRegistered(String fieldName) {
-        for (FieldAccessor<BaseType, ?> accessor : registeredAccessors) {
+        for (FieldAccessor<BaseType, ?> accessor : this.registeredAccessors) {
             if (accessor.matches(fieldName)) return;
         }
         throw new IllegalArgumentException("Attempted to look up field '" + fieldName + "', but it is not defined in this schema.");
@@ -31,7 +31,7 @@ public class ConstructionContext<K, BaseType> {
     public <T> @NotNull T getRequired(String fieldName, Class<? extends T> clazz) {
         T field = getOptional(fieldName, clazz);
         if (field == null)
-            throw new IllegalStateException("Required field '" + fieldName + "' was not provided for type " + key);
+            throw new IllegalStateException("Required field '" + fieldName + "' was not provided for type " + this.key);
         return field;
     }
 
@@ -39,7 +39,7 @@ public class ConstructionContext<K, BaseType> {
         assertAccessorRegistered(fieldName);
 
         FieldAccessor<BaseType, ?> targetAccessor = null;
-        for (FieldAccessor<BaseType, ?> accessor : registeredAccessors) {
+        for (FieldAccessor<BaseType, ?> accessor : this.registeredAccessors) {
             if (accessor.matches(fieldName)) {
                 targetAccessor = accessor;
                 break;
@@ -47,11 +47,11 @@ public class ConstructionContext<K, BaseType> {
         }
 
         if (targetAccessor != null) {
-            if (arguments.containsKey(targetAccessor.name())) return clazz.cast(arguments.get(targetAccessor.name()));
+            if (this.arguments.containsKey(targetAccessor.name())) return clazz.cast(this.arguments.get(targetAccessor.name()));
             for (String alias : targetAccessor.aliases()) {
-                if (arguments.containsKey(alias)) return clazz.cast(arguments.get(alias));
+                if (this.arguments.containsKey(alias)) return clazz.cast(this.arguments.get(alias));
             }
-            for (Map.Entry<String, Object> entry : arguments.entrySet()) {
+            for (Map.Entry<String, Object> entry : this.arguments.entrySet()) {
                 if (targetAccessor.matches(entry.getKey())) return clazz.cast(entry.getValue());
             }
         }

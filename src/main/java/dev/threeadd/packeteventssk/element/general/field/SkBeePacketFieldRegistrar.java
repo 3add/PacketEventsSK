@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBl
 import com.shanebeestudios.skbee.api.nbt.NBTCompound;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
 import dev.threeadd.packeteventssk.api.util.SkBeeConversionUtil;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import org.bukkit.util.Vector;
 
 /**

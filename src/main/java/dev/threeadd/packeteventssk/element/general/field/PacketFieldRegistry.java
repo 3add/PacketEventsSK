@@ -3,8 +3,8 @@ package dev.threeadd.packeteventssk.element.general.field;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import dev.threeadd.packeteventssk.api.util.LogUtil;
-import dev.threeadd.packeteventssk.api.util.field.BaseFieldRegistry;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.BaseFieldRegistry;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +38,6 @@ public class PacketFieldRegistry extends BaseFieldRegistry<PacketTypeCommon, Pac
 
     @Override
     public List<FieldRegistrar> getRegistrars() {
-        return registrars;
+        return this.registrars;
     }
 }

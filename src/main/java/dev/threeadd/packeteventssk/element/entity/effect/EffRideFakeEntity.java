@@ -61,8 +61,8 @@ public class EffRideFakeEntity extends Effect {
 
     @Override
     protected void execute(Event event) {
-        Object[] rawPassengers = passengerExpr.getAll(event);
-        Object vehicle = vehicleExpr.getSingle(event);
+        Object[] rawPassengers = this.passengerExpr.getAll(event);
+        Object vehicle = this.vehicleExpr.getSingle(event);
 
         if (rawPassengers == null || vehicle == null) {
             return;

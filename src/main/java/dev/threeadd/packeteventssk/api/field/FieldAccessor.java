@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.api.util.field;
+package dev.threeadd.packeteventssk.api.field;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,8 +21,8 @@ public record FieldAccessor<O, T>(
      * @return true if this accessor answers to the given name
      */
     public boolean matches(String input) {
-        if (name.equalsIgnoreCase(input)) return true;
-        for (String alias : aliases) {
+        if (this.name.equalsIgnoreCase(input)) return true;
+        for (String alias : this.aliases) {
             if (alias.equalsIgnoreCase(input)) return true;
         }
         return false;

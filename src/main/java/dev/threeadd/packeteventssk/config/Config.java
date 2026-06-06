@@ -26,13 +26,13 @@ public class Config {
     }
 
     private void loadConfig() {
-        if (configFile == null) {
-            configFile = new File(plugin.getDataFolder(), "config.yml");
+        if (this.configFile == null) {
+            this.configFile = new File(this.plugin.getDataFolder(), "config.yml");
         }
-        if (!configFile.exists()) {
-            plugin.saveResource("config.yml", false);
+        if (!this.configFile.exists()) {
+            this.plugin.saveResource("config.yml", false);
         }
-        config = YamlConfiguration.loadConfiguration(configFile);
+        this.config = YamlConfiguration.loadConfiguration(this.configFile);
 
         updateConfig();
         loadConfigValues();
@@ -41,29 +41,29 @@ public class Config {
     private void updateConfig() {
         try {
             boolean hasUpdated = false;
-            InputStream stream = plugin.getResource(configFile.getName());
-            if (stream == null) throw new IllegalStateException("Couldn't find " + configFile.getName());
+            InputStream stream = this.plugin.getResource(this.configFile.getName());
+            if (stream == null) throw new IllegalStateException("Couldn't find " + this.configFile.getName());
             InputStreamReader is = new InputStreamReader(stream);
             YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(is);
             ConfigurationSection mainSection = newConfig.getConfigurationSection("");
             if (mainSection == null)
-                throw new IllegalStateException("Couldn't find main section in " + configFile.getName());
+                throw new IllegalStateException("Couldn't find main section in " + this.configFile.getName());
 
             for (String key : mainSection.getKeys(true)) {
-                if (!config.contains(key)) {
-                    config.set(key, newConfig.get(key));
+                if (!this.config.contains(key)) {
+                    this.config.set(key, newConfig.get(key));
                     hasUpdated = true;
                 }
 
                 if (!newConfig.contains(key)) {
-                    config.set(key, null);
+                    this.config.set(key, null);
                     hasUpdated = true;
                 }
             }
             if (hasUpdated)
-                config.save(configFile);
+                this.config.save(this.configFile);
         } catch (IOException e) {
-            throw new IllegalStateException("Couldn't update config file " + configFile.getName(), e);
+            throw new IllegalStateException("Couldn't update config file " + this.configFile.getName(), e);
         }
     }
 
@@ -72,13 +72,13 @@ public class Config {
         for (Configurable<?> configurable : Configurable.getList()) {
             String identifier = configurable.getId();
 
-            Object object = configurable.getType().cast(config.get(identifier));
-            configValues.put(identifier, object);
+            Object object = configurable.getType().cast(this.config.get(identifier));
+            this.configValues.put(identifier, object);
         }
     }
 
     public <T> T getConfigValue(Configurable<T> configurable) {
-        Object value = configValues.get(configurable.getId());
+        Object value = this.configValues.get(configurable.getId());
         return configurable.getType().cast(value);
     }
 }

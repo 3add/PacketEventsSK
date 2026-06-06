@@ -2,8 +2,8 @@ package dev.threeadd.packeteventssk.element.entity.field.entity;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
-import dev.threeadd.packeteventssk.api.util.field.InheritingFieldRegistry;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.InheritingFieldRegistry;
 import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +19,11 @@ public class FakeEntityFieldRegistry extends InheritingFieldRegistry<EntityType,
                 new FakeBaseEntityFieldRegistrar(),
                 new FakePlayerEntityFieldRegistrar()
         );
+    }
+
+    @Override
+    public EntityType getBaseKey() {
+        return EntityTypes.ENTITY;
     }
 
     @Override

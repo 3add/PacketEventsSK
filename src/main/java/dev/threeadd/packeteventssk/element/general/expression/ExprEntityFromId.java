@@ -36,7 +36,7 @@ public class ExprEntityFromId extends SimpleExpression<Entity> {
 
     @Override
     protected Entity @Nullable [] get(Event event) {
-        Integer id = idExpr.getSingle(event);
+        Integer id = this.idExpr.getSingle(event);
         if (id == null) return null;
 
         Entity entity = SpigotConversionUtil.getEntityById(null, id);

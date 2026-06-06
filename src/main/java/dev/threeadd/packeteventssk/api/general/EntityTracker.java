@@ -4,8 +4,10 @@ import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.event.UserDisconnectEvent;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerJoinGame;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import me.tofaa.entitylib.EntityLib;
@@ -32,12 +34,12 @@ public class EntityTracker implements PacketListener {
         }
 
         public int getEntityId() {
-            return entityId;
+            return this.entityId;
         }
 
         @Nullable
         public EntityType getType() {
-            return type;
+            return this.type;
         }
 
         public void setType(@Nullable EntityType type) {
@@ -45,7 +47,7 @@ public class EntityTracker implements PacketListener {
         }
 
         public Set<Integer> getFakePassengers() {
-            return fakePassengers;
+            return this.fakePassengers;
         }
 
         public void addFakePassenger(int passengerId) {
@@ -106,9 +108,15 @@ public class EntityTracker implements PacketListener {
     @Override
     public void onPacketSend(PacketSendEvent event) {
         switch (event.getPacketType()) {
+            // type tracking
             case PacketType.Play.Server.SPAWN_ENTITY -> handleSpawn(event);
+            case PacketType.Play.Server.JOIN_GAME -> handleJoinGame(event);
+
+            // passengers tracking
             case PacketType.Play.Server.SET_PASSENGERS -> handleSetPassengers(event);
-            case PacketType.Play.Server.DESTROY_ENTITIES -> handleDestroy(event); // memory cleanup
+
+            // cleanup
+            case PacketType.Play.Server.DESTROY_ENTITIES -> handleDestroy(event);
             default -> {}
         }
     }
@@ -124,6 +132,18 @@ public class EntityTracker implements PacketListener {
         PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>())
                 .computeIfAbsent(entityId, id -> new TrackedEntity(id, type))
                 .setType(type);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void handleJoinGame(PacketSendEvent event) {
+        WrapperPlayServerJoinGame joinPacket = new WrapperPlayServerJoinGame(event);
+        int entityId = joinPacket.getEntityId();
+        UUID userUuid = event.getUser().getUUID();
+        if (userUuid == null) return;
+
+        PLAYER_ENTITIES.computeIfAbsent(userUuid, k -> new ConcurrentHashMap<>())
+                .computeIfAbsent(entityId, id -> new TrackedEntity(id, EntityTypes.PLAYER))
+                .setType(EntityTypes.PLAYER);
     }
 
     @SuppressWarnings("ConstantConditions")

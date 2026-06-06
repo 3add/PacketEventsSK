@@ -1,4 +1,4 @@
-package dev.threeadd.packeteventssk.api.util.field;
+package dev.threeadd.packeteventssk.api.field;
 
 public interface FieldRegistrar {
     void register();

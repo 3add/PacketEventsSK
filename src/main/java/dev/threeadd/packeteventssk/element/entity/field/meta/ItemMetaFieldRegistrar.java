@@ -2,8 +2,8 @@ package dev.threeadd.packeteventssk.element.entity.field.meta;
 
 import ch.njol.skript.aliases.ItemType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.ConstructionContext;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.projectile.ItemEntityMeta;
 

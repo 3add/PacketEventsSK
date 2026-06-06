@@ -19,11 +19,11 @@ public class AddonLoader {
     }
 
     public Registration getRegistration() {
-        return registration;
+        return this.registration;
     }
 
     protected boolean canLoad() {
-        if (skriptPlugin == null || !skriptPlugin.isEnabled()) {
+        if (this.skriptPlugin == null || !this.skriptPlugin.isEnabled()) {
             LogUtil.error("Skript plugin not found or is disabled, Skript elements cannot load");
             return false;
         }

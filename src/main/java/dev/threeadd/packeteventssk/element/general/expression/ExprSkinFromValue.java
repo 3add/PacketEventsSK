@@ -66,8 +66,8 @@ public class ExprSkinFromValue extends SimpleExpression<Skin> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String skinValue = valueExpr.getSingle(event);
-        String signaturePart = signatureExpr != null ? " and signature " + signatureExpr.toString(event, debug) : "";
+        String skinValue = this.valueExpr.getSingle(event);
+        String signaturePart = this.signatureExpr != null ? " and signature " + this.signatureExpr.toString(event, debug) : "";
 
         return String.format("skin from value %s%s", skinValue, signaturePart);
     }

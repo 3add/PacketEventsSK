@@ -48,12 +48,12 @@ public class EffDisplayedSkin extends Effect {
 
     @Override
     protected void execute(Event event) {
-        Player[] targets = targetExpr.getAll(event);
-        Skin newSkin = skinExpr.getSingle(event);
+        Player[] targets = this.targetExpr.getAll(event);
+        Skin newSkin = this.skinExpr.getSingle(event);
 
         if (targets == null || targets.length == 0 || newSkin == null) return;
 
-        Player[] viewers = viewersExpr != null ? viewersExpr.getAll(event) : new Player[0];
+        Player[] viewers = this.viewersExpr != null ? this.viewersExpr.getAll(event) : new Player[0];
 
         if (viewers == null || viewers.length == 0) {
             for (Player target : targets) {
@@ -69,9 +69,9 @@ public class EffDisplayedSkin extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String target = targetExpr.toString(event, debug);
-        String skin = skinExpr.toString(event, debug);
-        String viewersPart = viewersExpr != null ? " for " + viewersExpr.toString(event, debug) : "";
+        String target = this.targetExpr.toString(event, debug);
+        String skin = this.skinExpr.toString(event, debug);
+        String viewersPart = this.viewersExpr != null ? " for " + this.viewersExpr.toString(event, debug) : "";
         return String.format("set displayed skin of %s to %s%s", target, skin, viewersPart);
     }
 }

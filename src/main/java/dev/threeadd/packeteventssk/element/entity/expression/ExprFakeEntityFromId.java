@@ -49,7 +49,7 @@ public class ExprFakeEntityFromId extends SimpleExpression<WrapperEntity> {
 
     @Override
     protected WrapperEntity @Nullable [] get(Event event) {
-        Integer id = idExpr.getSingle(event);
+        Integer id = this.idExpr.getSingle(event);
         if (id == null) return null;
 
         WrapperEntity entity = EntityLib.getApi().getEntity(id);

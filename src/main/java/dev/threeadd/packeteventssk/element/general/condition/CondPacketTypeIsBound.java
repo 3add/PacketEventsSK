@@ -32,7 +32,7 @@ public class CondPacketTypeIsBound extends PropertyCondition<PacketTypeCommon> {
             return false;
         }
 
-        isClientbound = parseResult.hasTag("client");
+        this.isClientbound = parseResult.hasTag("client");
 
         return true;
     }
@@ -40,12 +40,12 @@ public class CondPacketTypeIsBound extends PropertyCondition<PacketTypeCommon> {
     @Override
     public boolean check(PacketTypeCommon value) {
         // bad naming from packetevents
-        if (isClientbound) return value.getSide() == PacketSide.SERVER;
+        if (this.isClientbound) return value.getSide() == PacketSide.SERVER;
         else return value.getSide() == PacketSide.CLIENT;
     }
 
     @Override
     protected String getPropertyName() {
-        return isClientbound ? "clientbound" : "serverbound";
+        return this.isClientbound ? "clientbound" : "serverbound";
     }
 }

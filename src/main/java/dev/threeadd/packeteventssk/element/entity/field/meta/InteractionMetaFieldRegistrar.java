@@ -1,8 +1,8 @@
 package dev.threeadd.packeteventssk.element.entity.field.meta;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import dev.threeadd.packeteventssk.api.util.field.ConstructionContext;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.ConstructionContext;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import me.tofaa.entitylib.meta.other.InteractionMeta;
 
 // Should fully match: https://minecraft.wiki/w/Java_Edition_protocol/Entity_metadata#Interaction

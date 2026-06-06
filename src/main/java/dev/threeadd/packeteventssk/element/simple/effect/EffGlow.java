@@ -51,12 +51,12 @@ public class EffGlow extends Effect {
 
     @Override
     protected void execute(Event event) {
-        Entity[] targets = targetExpr.getAll(event);
-        Boolean newState = stateExpr.getSingle(event);
+        Entity[] targets = this.targetExpr.getAll(event);
+        Boolean newState = this.stateExpr.getSingle(event);
 
         if (targets == null || targets.length == 0 || newState == null) return;
 
-        Player[] viewers = viewersExpr != null ? viewersExpr.getAll(event) : null;
+        Player[] viewers = this.viewersExpr != null ? this.viewersExpr.getAll(event) : null;
 
         Set<UUID> viewerUuids;
 
@@ -83,9 +83,9 @@ public class EffGlow extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String target = targetExpr.toString(event, debug);
-        String glowingState = stateExpr.toString(event, debug);
-        String viewersPart = viewersExpr != null ? " for " + viewersExpr.toString(event, debug) : "";
+        String target = this.targetExpr.toString(event, debug);
+        String glowingState = this.stateExpr.toString(event, debug);
+        String viewersPart = this.viewersExpr != null ? " for " + this.viewersExpr.toString(event, debug) : "";
         return String.format("set glowing state of %s to %s%s", target, glowingState, viewersPart);
     }
 }

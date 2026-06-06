@@ -84,7 +84,7 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
             return false;
         }
 
-        PacketSendOrReceiveListener.registerListener(packetType, this.processType, this.priority);
+        PacketSendOrReceiveListener.registerListener(this.packetType, this.processType, this.priority);
         return true;
     }
 
@@ -152,15 +152,15 @@ public class EvtPacketSendOrReceive extends SkriptEvent {
         }
 
         public @Nullable PacketTypeCommon getPacketType() {
-            return packetType;
+            return this.packetType;
         }
 
         public @Nullable EvtPacketSendOrReceive.ProcessType getProcessType() {
-            return processType;
+            return this.processType;
         }
 
         public @Nullable PacketListenerPriority getPriority() {
-            return priority;
+            return this.priority;
         }
     }
 }

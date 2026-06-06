@@ -6,7 +6,7 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientIn
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientSelectBundleItem;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUpdateSign;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import org.bukkit.block.sign.Side;
 import org.bukkit.util.Vector;
 

@@ -49,12 +49,12 @@ public class PacketSendOrReceiveListener implements PacketListener {
 
     @Override
     public void onPacketReceive(@NonNull PacketReceiveEvent event) {
-        trigger(event, priority);
+        trigger(event, this.priority);
     }
 
     @Override
     public void onPacketSend(@NonNull PacketSendEvent event) {
-        trigger(event, priority);
+        trigger(event, this.priority);
     }
 
     private static void trigger(ProtocolPacketEvent event, PacketListenerPriority priority) {

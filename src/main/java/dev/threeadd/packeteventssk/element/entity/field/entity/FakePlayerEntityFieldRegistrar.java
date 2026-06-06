@@ -3,7 +3,7 @@ package dev.threeadd.packeteventssk.element.entity.field.entity;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import dev.threeadd.packeteventssk.api.entity.Skin;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import me.tofaa.entitylib.wrapper.WrapperPlayer;
 
 public class FakePlayerEntityFieldRegistrar implements FieldRegistrar {

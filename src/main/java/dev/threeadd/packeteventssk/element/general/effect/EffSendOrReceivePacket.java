@@ -42,11 +42,11 @@ public class EffSendOrReceivePacket extends Effect {
         this.playerExpr = (Expression<Player>) expressions[1];
 
         if (parseResult.hasTag("receive")) {
-            isSend = false;
+            this.isSend = false;
         }
 
         if (parseResult.hasTag("silently")) {
-            isSilent = true;
+            this.isSilent = true;
         }
 
         return true;
@@ -55,8 +55,8 @@ public class EffSendOrReceivePacket extends Effect {
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void execute(Event event) {
-        PacketWrapper<?>[] packets = packetWrapperExpr.getAll(event);
-        Player[] targets = playerExpr.getAll(event);
+        PacketWrapper<?>[] packets = this.packetWrapperExpr.getAll(event);
+        Player[] targets = this.playerExpr.getAll(event);
         if (packets == null || packets.length == 0 || targets == null) return;
 
         for (Player target : targets) {
@@ -64,7 +64,7 @@ public class EffSendOrReceivePacket extends Effect {
             if (user == null) continue;
 
             for (PacketWrapper<?> packet : packets) {
-                handlePacket(user, packet, isSend, isSilent);
+                handlePacket(user, packet, this.isSend, this.isSilent);
             }
         }
     }
@@ -85,11 +85,11 @@ public class EffSendOrReceivePacket extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        String silentPrefix = isSilent ? "silently " : "";
-        String action = isSend ? "send packet" : "receive packet";
-        String packetName = packetWrapperExpr.toString(event, debug);
-        String direction = isSend ? "to" : "from";
-        String targetPlayers = playerExpr.toString(event, debug);
+        String silentPrefix = this.isSilent ? "silently " : "";
+        String action = this.isSend ? "send packet" : "receive packet";
+        String packetName = this.packetWrapperExpr.toString(event, debug);
+        String direction = this.isSend ? "to" : "from";
+        String targetPlayers = this.playerExpr.toString(event, debug);
         return String.format("%s%s %s %s %s", silentPrefix, action, packetName, direction, targetPlayers);
     }
 }

@@ -28,11 +28,11 @@ public class Configurable<T> {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public Class<T> getType() {
-        return type;
+        return this.type;
     }
 
     public static List<Configurable<?>> getList() {

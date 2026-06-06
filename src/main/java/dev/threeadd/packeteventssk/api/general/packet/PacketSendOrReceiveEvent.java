@@ -24,15 +24,15 @@ public abstract class PacketSendOrReceiveEvent extends Event {
     }
 
     public ProtocolPacketEvent getEvent() {
-        return event;
+        return this.event;
     }
 
     public PacketWrapper<?> getWrapper() {
-        return wrapper;
+        return this.wrapper;
     }
 
     public PacketListenerPriority getPriority() {
-        return priority;
+        return this.priority;
     }
 
     @Override
@@ -51,12 +51,12 @@ public abstract class PacketSendOrReceiveEvent extends Event {
 
         @Override
         public boolean isCancelled() {
-            return event.isCancelled();
+            return this.event.isCancelled();
         }
 
         @Override
         public void setCancelled(boolean state) {
-            event.setCancelled(state);
+            this.event.setCancelled(state);
         }
     }
 

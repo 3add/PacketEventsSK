@@ -5,7 +5,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import dev.threeadd.packeteventssk.api.general.EntityTracker;
 import dev.threeadd.packeteventssk.api.util.ConversionUtil;
-import dev.threeadd.packeteventssk.api.util.field.FieldRegistrar;
+import dev.threeadd.packeteventssk.api.field.FieldRegistrar;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import me.tofaa.entitylib.meta.EntityMeta;
 import org.bukkit.block.data.BlockData;
