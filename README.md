@@ -20,14 +20,14 @@
 ## Requirements
 PacketEventsSK requires the following to run:
 
-- **Minecraft 1.18+** Paper-compatible server  
+- **Minecraft 26.2+** Paper-compatible server
 - **[PacketEvents](https://modrinth.com/plugin/packetevents)** installed as a separate paper plugin
 
 Optionally install [SkBee](https://modrinth.com/plugin/skbee/versions) for the NBT Compound hook.
 > [!CAUTION]
 > PacketEventsSK attempts to support the latest versions of skript and minecraft:
-> - **Paper 1.21.10+**
-> - **Skript 2.15.0+**
+> - **Paper 26.2+**
+> - **Skript 2.16.0+**
 > - **SkBee 1.17.2+**
 >
 > There are many more versions that work, but you won't receive support for those.

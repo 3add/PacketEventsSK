@@ -9,9 +9,9 @@ plugins {
 // Version of PacketEventsSK
 val projectVersion = "1.1.3"
 // API Version
-val apiVersion = "26.1.2"
+val apiVersion = "26.2"
 // Minimum paper version that PacketEventsSK supports
-val minApiVersion = "1.21.10"
+val minApiVersion = "26.2"
 // Where this builds on the server
 val serverLocation = "C:/Users/jaspe/Desktop/Servers/packetSKTestServer/plugins"
 
@@ -44,10 +44,10 @@ dependencies {
     paperweight.paperDevBundle("$apiVersion.build.+")
 
     // PacketEvents
-    compileOnly("com.github.retrooper:packetevents-spigot:2.12.1")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
 
     // Skript
-    compileOnly("com.github.SkriptLang:Skript:2.15.2")
+    compileOnly("com.github.SkriptLang:Skript:2.16.0")
 
     // SkBee
     compileOnly("com.github.ShaneBeee:SkBee:3.23.0")
@@ -56,7 +56,7 @@ dependencies {
     implementation("com.github.ShaneBeee:SkriptRegistration:1.4.3")
 
     // EntityLib
-    implementation("io.github.tofaa2:spigot:3.3.0-SNAPSHOT")
+    implementation("io.github.tofaa2:spigot:3.3.6-SNAPSHOT")
 
     // bStats Metrics
     implementation("org.bstats:bstats-bukkit:3.2.1")
